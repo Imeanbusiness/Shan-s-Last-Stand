@@ -1,0 +1,75 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Pixelify+Sans:wght@400..700&display=swap');
+
+html {
+    overflow: hidden;
+    font-family: 'Pixelify Sans', sans-serif;
+}
+
+
+body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: #eee;
+  margin: 0;
+  background-image: url("Byrne.jpg");
+  background-size: cover;
+
+}
+
+#gameArea {
+  position: relative;
+  height: 600px;
+  width: 600px;
+  border: 2px solid black;
+  background: white;
+  top: -10px;
+  background-image: url("CalcNotes.jpg");
+  background-size: cover
+}
+
+#player {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 80px;
+  width: 80px;
+}
+
+#playerHUD {
+  position: relative;
+  height: 100px;
+  width: 600px;
+  border: 2px solid black;
+  background: white;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 50px ;
+  justify-content: center;
+  text-align: center;
+  background-color: darkgray;
+  gap: 1em; /* Spacing between grid items */
+
+}
+
+.HudTitle {
+    margin: 10px;
+    align-items: left;
+    grid-row: 1;
+    color: red;
+}
+
+.HudVar {
+    margin: 10px;
+    align-items: left;
+    grid-row: 2;
+    color: red;
+}
+
+.element::-webkit-scrollbar {
+  display: none; /* Hides the scrollbar */
+}
+
