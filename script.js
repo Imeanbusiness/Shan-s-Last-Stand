@@ -6,11 +6,12 @@ sanityTimer = 0;
 puzzlecooldown = 5000;
 healthCount = 0;
 tankCount = 0;
+showerCount = 0;
 spawntime = 0;
 elapsed = 0;
 shanstate = 2;
 Filename = "ShansStand/"
-
+//2000
 
 const ouch = new Audio('Ouch.mp3'); // Replace with your sound file path
 const ShotgunSound = new Audio('ShotgunSound.mp3');
@@ -190,21 +191,22 @@ document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = fals
 
 // Enemy class
 class Charger {
-  constructor(x, y, speed, enemyHP, damage, fileName, sound) {
+  constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
     this.x = x;
     this.y = y;
     this.speed = speed;
     this.enemyHP = enemyHP;
     this.fileName = fileName;
     this.damage =damage
-    this.sound = sound;
+    this.width = width;
+    this.height = height;
     // Create the DOM element
     this.el = document.createElement("div");
     this.el.style.position = "absolute";
     this.el.style.left = `${x}px`;
     this.el.style.top = `${y}px`;
-    this.el.style.height = "60px";
-    this.el.style.width = "60px";
+    this.el.style.height = height+"px";
+    this.el.style.width = width+"px";
     this.el.id = "enemy"+enemyCount;
     this.el.style.backgroundImage = "url('"+fileName+"')";
     this.el.style.backgroundSize = "cover";
@@ -301,6 +303,10 @@ class Tank {
     }
 }
 
+Mult = 1
+Boost = false
+
+
 class HealPickup {
     constructor(x, y) {
     this.x = x;
@@ -321,10 +327,32 @@ class HealPickup {
   }
 }
 
+class ScoreBoost {
+    constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    
+
+    // Create the DOM element
+    this.el = document.createElement("div");
+    this.el.style.position = "absolute";
+    this.el.style.left = `${x}px`;
+    this.el.style.top = `${y}px`;
+    this.el.style.height = "45px";
+    this.el.style.width = "45px";
+    this.el.id = "enemy"+enemyCount;
+    this.el.style.backgroundImage = "url('CalcBook.jpg')";
+    this.el.style.backgroundSize = "cover";
+    gameArea.appendChild(this.el);
+  }
+}
+
+
 // Game loop
 let lastFrameTime = 0;
 const fps = 60;
 const frameDuration = 1000 / fps;
+scoreBoostCount = 0;
 
 function update(timestamp) {
   try {
@@ -345,6 +373,14 @@ function update(timestamp) {
             } else {
                 sanity = 0;
             }
+        }
+
+        if (Boost==true && BoostTime <= 360) {
+            Mult = 2
+            BoostTime++
+        } else {
+            Boost = false
+            Mult = true;
         }
 
     if (keysPressed[" "] && attack == false) {
@@ -469,10 +505,10 @@ function update(timestamp) {
 
     // --- Charger Spawning ---
     if (spawntime > 50) {
-        if (Math.random()*100 < 1 && chargerCount<9) { // ~1% chance per frame
+        if (Math.random()*100 < 1 && chargerCount<7) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
-          enemies.push(new Charger(ex, ey, 2, 400*(0.9+Wave/10)**2, 5, "Dom.png")); // speed = 2
+          enemies.push(new Charger(ex, ey, 2, 400*(0.9+Wave/10)**2, 5, "Dom.png", 50, 50)); // speed = 2
           enemyCount++;
           chargerCount++;
           spawntime = 0;
@@ -485,19 +521,27 @@ function update(timestamp) {
           enemyCount++;
           spawntime = 0;
         }
-        if (Math.random()*100 <1.6 && Math.random()*100 > 1.3 && chargerCount<92 && Wave>1) { // ~1% chance per frame
+        if (Math.random()*100 < 1.5 && Math.random()*100 > 1.4 && tankCount<3 && Wave>1) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
-          enemies.push(new Charger(ex, ey, 0.75, 800*(0.9+Wave/10)**2, 8, "Zuk.png")); // speed = 2
-          chargerCount++;
+          enemies.push(new Charger(ex, ey, 0.75, 800*(0.9+Wave/10)**2, 7, "Zuk.png", 70, 70)); // speed = 2
+          tankCount++;
           enemyCount++;
           spawntime = 0;
         }
-        if (Math.random()*100 <2 && Math.random()*100 > 1.97 && chargerCount<2 && Wave>2) { // ~1% chance per frame
+        if (Math.random()*100 <2 && Math.random()*100 > 1.999 && showerCount<2 && Wave>2) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
-          enemies.push(new Charger(ex, ey, 0.25, 4000*(0.9+Wave/10)**2, 20, "Shower.jpg")); // speed = 2
-          chargerCount++;
+          enemies.push(new Charger(ex, ey, 0.25, 4000*(0.9+Wave/10)**2, 20, "Shower.jpg", 85, 85)); // speed = 2
+          showerCount++;
+          enemyCount++;
+          spawntime = 0;
+        }
+        if (Math.random()*100 < 2.03 && Math.random()*100 > 2 && scoreBoostCount<1) { // ~1% chance per frame
+          let ex = Math.random() * 520 + 40; // inside game area
+          let ey = Math.random() * 520 + 40;
+          enemies.push(new ScoreBoost(ex, ey)); // speed = 2
+          scoreBoostCount++;
           enemyCount++;
           spawntime = 0;
         }
@@ -516,10 +560,10 @@ function update(timestamp) {
         const e1 = enemies[i];
         const e2 = enemies[j];
         if (
-          e1.x < e2.x + chargerSize &&
-          e1.x + chargerSize > e2.x &&
-          e1.y < e2.y + chargerSize &&
-          e1.y + chargerSize > e2.y
+          e1.x < e2.x + e1.width &&
+          e1.x + e2.width > e2.x &&
+          e1.y < e2.y + e1.width &&
+          e1.y + e2.width > e2.y
         ) {
           colliding[i] = true;
           colliding[j] = true;
@@ -565,7 +609,27 @@ function update(timestamp) {
                 enemy.el.remove();
                 enemies.splice(idx, 1);
                 healthCount = Math.max(healthCount - 1, 0);
-            } else if (enemy instanceof Charger) {
+            } else if (enemy instanceof ScoreBoost) {
+                
+                Boost = true;
+                BoostTime = 0;
+                enemy.el.remove();
+                enemies.splice(idx, 1);
+                healthCount = Math.max(scoreBoostCount - 1, 0);
+                newMessage = document.createElement("p");
+                newMessage.style.position = "absolute";
+                newMessage.id = "SystemMessage"
+
+                newMessage.style.transform = `translate(-50%, -50%)`;
+                newMessage.style.top = "2%";
+                newMessage.style.left = "20%";
+                gameArea.appendChild(newMessage)
+                document.getElementById("SystemMessage").innerHTML = "You got the score boost!"
+
+                
+
+                
+            }  else if (enemy instanceof Charger) {
                 if (!invinc) {
                     playerhp -= Math.floor((enemy.damage + Math.floor(Math.random() * 5)) * (0.9 + Wave / 10) ** 2);
                     if (playerhp < 0) {
@@ -714,16 +778,24 @@ function update(timestamp) {
                 enemy.enemyHP -= (900*sanity/100)+ (score/100) * (sanity/100);
                 if (enemy.enemyHP <= 0) {
                     enemy.el.remove();
-                    chargerCount--;
-                    score += 200;
+                    score += 250;
                     domDeath.play();
+                    if (enemy.fileName == "Zuk.png") {
+                        score += 250;
+                        tankCount -= 1;
+                    } else if (enemy.fileName == "Shower.jpg") {
+                        score += 750;
+                        showerCount -= 1;
+                    } else {
+                        chargerCount--
+                    }
                     return false; // remove enemy
                 }
             }
 
             return true; // keep enemy
         });
-        if (score >= Wave*2000) { 
+        if (score >= Wave*2500) { 
             Wave++;
         }
         // Remove the shot after a short time
@@ -762,7 +834,10 @@ function update(timestamp) {
         enemies.forEach(enemy => enemy.el.remove());
         enemies = [];
         chargerCount = 0;
+        healthCount = 0;
         enemyCount = 0;
+        showerCount = 0;
+        tankCount = 0;
 
         console.log("Game Reset!");
         if (score > localStorage.getItem(Filename+"HS")) {
