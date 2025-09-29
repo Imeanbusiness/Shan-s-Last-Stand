@@ -2,16 +2,23 @@ const player = document.getElementById("player");
 const gameArea = document.getElementById("gameArea");
 sanity = 50;
 const ShotgunCooldown = 1100; // milliseconds
+const CalcgunCooldown = 1500;
 sanityTimer = 0;
 puzzlecooldown = 5000;
 healthCount = 0;
+scoreBoostCount = 0;
 tankCount = 0;
 showerCount = 0;
 spawntime = 0;
 elapsed = 0;
 shanstate = 2;
+CurrWeap = 1;
 Filename = "ShansStand/"
+CalcgunVelocity = 
 //2000
+
+Hmessagetimer = 0
+SBmessagetimer = 0
 
 const ouch = new Audio('Ouch.mp3'); // Replace with your sound file path
 const ShotgunSound = new Audio('ShotgunSound.mp3');
@@ -123,6 +130,15 @@ document.addEventListener("keydown", e => {keysPressed[e.key.toLowerCase()] = tr
         for (let key in keysPressed) {
             keysPressed[key] = false;
         }
+        try {
+            const healthMsg = document.getElementById("HealthMessage");
+            if (healthMsg) healthMsg.remove();
+
+            const sbMsg = document.getElementById("SBMessage");
+            if (sbMsg) sbMsg.remove();
+        } catch (e) {
+
+        }
 }
 
 });
@@ -179,6 +195,15 @@ document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = fals
             sanity = 100;
         }
         console.log(sanity)
+        try {
+            const healthMsg = document.getElementById("HealthMessage");
+            if (healthMsg) healthMsg.remove();
+
+            const sbMsg = document.getElementById("SBMessage");
+            if (sbMsg) sbMsg.remove();
+        } catch (e) {
+
+        }
         for (let key in keysPressed) {
             keysPressed[key] = false;
         }
@@ -302,10 +327,10 @@ class Tank {
         }
     }
 }
-
+Atdelay = 0;
 Mult = 1
 Boost = false
-
+scoreBoostCount = 0;
 
 class HealPickup {
     constructor(x, y) {
@@ -353,6 +378,7 @@ let lastFrameTime = 0;
 const fps = 60;
 const frameDuration = 1000 / fps;
 scoreBoostCount = 0;
+attackingDelay = 0
 
 function update(timestamp) {
   try {
@@ -383,20 +409,67 @@ function update(timestamp) {
             Mult = true;
         }
 
-    if (keysPressed[" "] && attack == false) {
-        attack = true;
-        console.log("attack!")
-        FirstAttack = true;
+        if (CurrWeap == 1 && !attack) {
+            player.src = "Player.png"
+        }
+        if (CurrWeap == 2 && !attack) {
+            player.src = "Player2.png"
+        }
 
-
-        setTimeout(() => {
-            attack = false;
-        }, ShotgunCooldown);
-    }
-
+        if (SBmessagetimer >= 60) {
+            try {
     
+                const sbMsg = document.getElementById("SBMessage");
+                if (sbMsg) sbMsg.remove();
+            } catch (e) {
+    
+            }
+        }
+        if (Hmessagetimer >= 60) {
+            try {
+                const healthMsg = document.getElementById("HealthMessage");
+                if (healthMsg) healthMsg.remove();
+
+            } catch (e) {
+    
+            }
+        }
+
+        
+        if (keysPressed["1"] && CurrWeap != 1) {
+            CurrWeap = 1;
+            attack = false;
+            Atdelay = 40;
+            attackingDelay = 20000;
+            }
+            
+        if (keysPressed["2"] && CurrWeap != 2) {
+            CurrWeap = 2;
+            attack = false;
+            Atdelay = 40;
+            attackingDelay = 20000;
+            }
+                
+        Atdelay--
+        attackingDelay++
+        
+        
+        if (attack && attackingDelay >= ShotgunCooldown/1000 * 60 && CurrWeap == 1) {
+            attack = false 
+        }
+        if (attack && attackingDelay >= CalcgunCooldown/1000 * 60 && CurrWeap == 2) {
+            attack = false 
+        }
 
 
+        if (keysPressed[" "] && attack == false && Atdelay <= 0) {
+            attack = true;
+            console.log("attack!")
+            FirstAttack = true;
+            attackingDelay = 0;
+        }
+                
+                
     if (keysPressed["w"] || keysPressed["arrowup"]) {
         if (y >= 50) {
 
@@ -495,17 +568,26 @@ function update(timestamp) {
 
     player.style.left = `${x}px`;
     player.style.top = `${y}px`;
-    player.src = "Player.png";
+    //player.src = "Player.png";
     player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
 
     if (attack) {
-        player.src = "PlayerAttacking.png";
+        if (CurrWeap == 1) {
+            player.src = "PlayerAttacking.png";
+        } else if (CurrWeap == 2) {
+
+            player.src = "PlayerAttacking2.png";
+        }
+        
+        
         player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
     }
 
     // --- Charger Spawning ---
     if (spawntime > 50) {
-        if (Math.random()*100 < 1 && chargerCount<7) { // ~1% chance per frame
+        spawnEnemy = Math.random()*100
+
+        if (spawnEnemy < 1 && chargerCount<7) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
           enemies.push(new Charger(ex, ey, 2, 400*(0.9+Wave/10)**2, 5, "Dom.png", 50, 50)); // speed = 2
@@ -513,7 +595,7 @@ function update(timestamp) {
           chargerCount++;
           spawntime = 0;
         }
-        if (Math.random()*100 <1.2 && Math.random()*100 > 1 && healthCount<2 && elapsed > 600) { // ~1% chance per frame
+        if (spawnEnemy <1.3 && spawnEnemy > 1 && healthCount<2 && elapsed > 600) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
           enemies.push(new HealPickup(ex, ey)); // speed = 2
@@ -521,7 +603,7 @@ function update(timestamp) {
           enemyCount++;
           spawntime = 0;
         }
-        if (Math.random()*100 < 1.5 && Math.random()*100 > 1.4 && tankCount<3 && Wave>1) { // ~1% chance per frame
+        if (spawnEnemy < 1.6 && spawnEnemy > 1.3 && tankCount<3 && Wave>1) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
           enemies.push(new Charger(ex, ey, 0.75, 800*(0.9+Wave/10)**2, 7, "Zuk.png", 70, 70)); // speed = 2
@@ -529,7 +611,7 @@ function update(timestamp) {
           enemyCount++;
           spawntime = 0;
         }
-        if (Math.random()*100 <2 && Math.random()*100 > 1.999 && showerCount<2 && Wave>2) { // ~1% chance per frame
+        if (spawnEnemy <2 && spawnEnemy > 1.99 && showerCount<2 && Wave>2) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
           enemies.push(new Charger(ex, ey, 0.25, 4000*(0.9+Wave/10)**2, 20, "Shower.jpg", 85, 85)); // speed = 2
@@ -537,7 +619,7 @@ function update(timestamp) {
           enemyCount++;
           spawntime = 0;
         }
-        if (Math.random()*100 < 2.03 && Math.random()*100 > 2 && scoreBoostCount<1) { // ~1% chance per frame
+        if (spawnEnemy < 2.1 && spawnEnemy > 2 && scoreBoostCount<1) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
           enemies.push(new ScoreBoost(ex, ey)); // speed = 2
@@ -609,22 +691,47 @@ function update(timestamp) {
                 enemy.el.remove();
                 enemies.splice(idx, 1);
                 healthCount = Math.max(healthCount - 1, 0);
+                newMessage = document.createElement("p");
+                newMessage.style.position = "absolute";
+                newMessage.id = "HealthMessage"
+
+                newMessage.style.transform = `translate(-50%, -50%)`;
+                newMessage.style.top = "5%";
+                newMessage.style.left = "25%";
+                gameArea.appendChild(newMessage)
+                document.getElementById("HealthMessage").innerHTML = "Picked up a healing Shaunulator"
+                Hmessagetimer = 0;
+                if (playerhp < 40) {
+                    newMessage.style.top = "5%";
+                    newMessage.style.left = "37%";
+                    document.getElementById("HealthMessage").innerHTML = "Picked up a healing Shaunulator that you really need!"
+                }
+                
+
+                setTimeout(() => {
+                    newMessage.remove()
+                }, 1000);
             } else if (enemy instanceof ScoreBoost) {
                 
                 Boost = true;
                 BoostTime = 0;
                 enemy.el.remove();
                 enemies.splice(idx, 1);
-                healthCount = Math.max(scoreBoostCount - 1, 0);
+                scoreBoostCount = Math.max(scoreBoostCount - 1, 0);
                 newMessage = document.createElement("p");
                 newMessage.style.position = "absolute";
-                newMessage.id = "SystemMessage"
-
+                newMessage.id = "SBMessage"
+                SBmessagetimer = 0;
                 newMessage.style.transform = `translate(-50%, -50%)`;
                 newMessage.style.top = "2%";
                 newMessage.style.left = "20%";
                 gameArea.appendChild(newMessage)
-                document.getElementById("SystemMessage").innerHTML = "You got the score boost!"
+                document.getElementById("SBMessage").innerHTML = "You got the score boost!"
+                
+
+                setTimeout(() => {
+                    newMessage.remove()
+                }, 1000);
 
                 
 
@@ -743,8 +850,8 @@ function update(timestamp) {
 
         }
 
-        el.style.height = "65px";
-        el.style.width = "100px";
+        el.style.height = "85px";
+        el.style.width = "130px";
         el.id = "ShotgunShot";
         el.style.backgroundImage = "url('ShotgunShot.png')";
         el.style.backgroundSize = "cover";
@@ -752,13 +859,13 @@ function update(timestamp) {
         gameArea.appendChild(el);
 
         switch (direction) {
-            case "n": el.style.left = `${x}px`; el.style.top = `${y-50}px`; break;
-            case "ne": el.style.left = `${x+40}px`; el.style.top = `${y-50}px`; break;
-            case "e": el.style.left = `${x+55}px`; el.style.top = `${y-7}px`; break;
-            case "se": el.style.left = `${x+40}px`; el.style.top = `${y+50}px`; break;
-            case "s": el.style.left = `${x}px`; el.style.top = `${y+55}px`; break;
-            case "sw": el.style.left = `${x-50}px`; el.style.top = `${y+50}px`; break;
-            case "w": el.style.left = `${x-55}px`; el.style.top = `${y-7}px`; break;
+            case "n": el.style.left = `${x}px`; el.style.top = `${y-70}px`; break;
+            case "ne": el.style.left = `${x+45}px`; el.style.top = `${y-60}px`; break;
+            case "e": el.style.left = `${x+75}px`; el.style.top = `${y-7}px`; break;
+            case "se": el.style.left = `${x+50}px`; el.style.top = `${y+60}px`; break;
+            case "s": el.style.left = `${x}px`; el.style.top = `${y+75}px`; break;
+            case "sw": el.style.left = `${x-50}px`; el.style.top = `${y+55}px`; break;
+            case "w": el.style.left = `${x-65}px`; el.style.top = `${y-7}px`; break;
             case "nw": el.style.left = `${x-50}px`; el.style.top = `${y-50}px`; break;
         }
 
@@ -775,16 +882,16 @@ function update(timestamp) {
                             shotRect.top > enemyRect.bottom);
 
             if (overlap) {
-                enemy.enemyHP -= (900*sanity/100)+ (score/100) * (sanity/100);
+                enemy.enemyHP -= (1100*sanity/100)+ (score/100) * (sanity/100);
                 if (enemy.enemyHP <= 0) {
                     enemy.el.remove();
-                    score += 250;
+                    score += 250*Mult;
                     domDeath.play();
                     if (enemy.fileName == "Zuk.png") {
-                        score += 250;
+                        score += 250*Mult;
                         tankCount -= 1;
                     } else if (enemy.fileName == "Shower.jpg") {
-                        score += 750;
+                        score += 750*Mult;
                         showerCount -= 1;
                     } else {
                         chargerCount--
@@ -837,6 +944,7 @@ function update(timestamp) {
         healthCount = 0;
         enemyCount = 0;
         showerCount = 0;
+        scoreBoostCount = 0;
         tankCount = 0;
 
         console.log("Game Reset!");
