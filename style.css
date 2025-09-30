@@ -1,8 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Pixelify+Sans:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
 html {
     overflow: hidden;
-    font-family: 'Pixelify Sans', sans-serif;
+    font-family: 'Orbitron', sans-serif;
     font-size: 20px;
 }
 
@@ -107,7 +108,7 @@ body {
 
 .menuContent button {
   color: red;
-  font-family: 'Pixelify Sans', sans-serif;
+  font-family: 'Orbitron', sans-serif;
   font-size: 20px;
   padding: 8px 16px;
   cursor: pointer;
