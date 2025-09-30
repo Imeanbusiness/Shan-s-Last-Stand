@@ -8,14 +8,40 @@
   <link href="style.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-  <div id="gameArea">
-    <img src="Player.png" id="player">
+  <div id="mainMenu">
+    <div class="menuContent">
+      <h1>Shanvanth's Last Stand</h1>
+      <button id="playButton">Play</button>
+      <button id="helpButton">How to Play</button>
+      <button id="highScoresButton">High Scores</button>
+    </div>
   </div>
-  <div id="playerHUD">
+  <div id="difficultyMenu" style="display:none;">
+    <div id="difficultyDesc"></div>
+    <div class="menuContent">
+      <h2>Select Difficulty</h2>
+      <div class="difficultyButtons">
+        <button id="difficulty1">I can't handle limits!</button>
+        <button id="difficulty2">Derivatives are doable</button>
+        <button id="difficulty3">Who needs a calculator!?</button>
+        <button id="difficulty4">I AM A CALC GOD</button>
+      </div>
+      <button id="backToMain">Back</button>
+    </div>
+  </div>
+  <div id="gameArea" style="display:none;">
+    <img src="Player.png" id="player">
+    <div id="screenFlash" style="display:none;"></div>
+  </div>
+  <div id="playerHUD" style="display:none;">
     
     <div class = "HealthBar">
         <p class = "HudTitle">HP:</p>
         <p id="HP" class = "HudVar">100%</p>
+    </div>
+    <div class = "Weapon">
+        <p class = "HudTitle">Weapon:</p>
+        <p id="weapon" class = "HudVar">Shauntgun</p>
     </div>
     <div class = "Score">
         <p class = "HudTitle">Score:</p>
@@ -31,6 +57,10 @@
     <div class = "Wave">
         <p class = "HudTitle">Wave:</p>
         <p id="wave" class = "HudVar">0</p>
+    </div>
+    <div class = "Dash">
+        <p class = "HudTitle">Dash:</p>
+        <p id="dash" class = "HudVar">0%</p>
     </div>
   </div>
 

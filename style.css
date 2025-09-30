@@ -22,12 +22,12 @@ body {
 
 #gameArea {
   position: relative;
-  height: 600px;
-  width: 600px;
+  height: 650px;
+  width: 650px;
   border: 2px solid black;
   background: white;
   top: -10px;
-  background-image: url("CalcNotes.jpg");
+  background-image: url("LovedayClass.png");
   background-size: cover
 }
 
@@ -43,17 +43,76 @@ body {
 #playerHUD {
   position: relative;
   height: 100px;
-  width: 600px;
+  width: 650px;
   border: 2px solid black;
   background: white;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(7, 1fr);
   grid-template-rows: 50px ;
   justify-content: center;
   text-align: center;
   background-color: darkgray;
   gap: 1em; /* Spacing between grid items */
+  font-size: 14px;
 
+}
+
+#mainMenu {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  
+}
+
+.difficultyButtons { display: flex; flex-direction: column; gap: 12px; }
+
+#difficultyMenu {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  
+}
+
+#difficultyDesc {
+  position: absolute;
+  left: 65%;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 260px;
+  min-height: 120px;
+  border: 2px solid black;
+  background: rgba(255,255,255,0.9);
+  padding: 12px;
+  display: none;
+}
+
+.menuContent {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+  padding: 24px 32px;
+  background: rgba(255,255,255,0.9);
+  border: 2px solid black;
+  color: red;
+}
+
+.menuContent h1 { margin: 0 0 8px 0; color: red; }
+
+.menuContent button {
+  color: red;
+  font-family: 'Pixelify Sans', sans-serif;
+  font-size: 20px;
+  padding: 8px 16px;
+  cursor: pointer;
+  border: 2px solid black;
+  background: white;
 }
 
 .HudTitle {
@@ -61,6 +120,7 @@ body {
     align-items: left;
     grid-row: 1;
     color: red;
+    font-size: 14px;
 }
 
 .HudVar {
@@ -68,9 +128,22 @@ body {
     align-items: left;
     grid-row: 2;
     color: red;
+    font-size: 12px;
 }
 
 .element::-webkit-scrollbar {
   display: none; /* Hides the scrollbar */
+}
+
+#screenFlash {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  display: none;
+  background: transparent;
+  transition: background 120ms ease;
 }
 
