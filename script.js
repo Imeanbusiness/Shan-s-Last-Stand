@@ -3,6 +3,7 @@ const gameArea = document.getElementById("gameArea");
 sanity = 50;
 const ShotgunCooldown = 1100; // milliseconds
 const CalcgunCooldown = 1500;
+const iFrames = 1000;
 const BaseSpeed = 5.5;
 sanityTimer = 0;
 puzzlecooldown = 4000;
@@ -538,6 +539,40 @@ function lineBlockedByObstacles(x1, y1, x2, y2) {
         if (segmentsIntersect(x1, y1, x2, y2, left, bottom, left, top)) return true;    // left
     }
     return false;
+}
+
+// -------- Damage helpers --------
+function applyDamage(enemy, damageAmount) {
+    const hpBefore = enemy.enemyHP;
+    enemy.enemyHP -= damageAmount;
+    const applied = Math.max(0, Math.min(hpBefore, damageAmount));
+    return applied;
+}
+
+let lastDamageTimeout = null;
+function showLastDamageAbovePlayer(damage) {
+    try {
+        let el = document.getElementById("LastDamage");
+        if (!el) {
+            el = document.createElement("div");
+            el.id = "LastDamage";
+            el.style.position = "absolute";
+            el.style.color = "#ffd700";
+            el.style.fontWeight = "bold";
+            el.style.fontSize = "18px";
+            el.style.textShadow = "1px 1px 2px black";
+            el.style.pointerEvents = "none";
+            gameArea.appendChild(el);
+        }
+        el.innerText = Math.floor(damage);
+        el.style.left = `${x}px`;
+        el.style.top = `${y - 80}px`;
+        el.style.opacity = 1;
+        if (lastDamageTimeout) clearTimeout(lastDamageTimeout);
+        lastDamageTimeout = setTimeout(() => {
+            try { const n = document.getElementById("LastDamage"); if (n) n.remove(); } catch (e) {}
+        }, 600);
+    } catch (e) {}
 }
 
 // Choose a detour waypoint around the first blocking obstacle between enemy and player
@@ -1127,7 +1162,7 @@ function update(timestamp) {
                     setFlash("rgba(255, 0, 0, 0.25)", 120);
                     setTimeout(() => {
                         invinc = false;
-                    }, 500);
+                    }, iFrames);
                 }
             }
         }
@@ -1227,7 +1262,9 @@ function update(timestamp) {
                     const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
                     const blocked = lineBlockedByObstacles(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
                     if (!blocked) {
-                        enemy.enemyHP -= (1100*sanity/100)+ (score/100) * (sanity/100);
+                        const dmg = (1100*sanity/100)+ (score/100) * (sanity/100);
+                        const dealt = applyDamage(enemy, dmg);
+                        showLastDamageAbovePlayer(dealt);
                         if (enemy.enemyHP <= 0) {
                             enemy.el.remove();
                             score += 250*Mult;
@@ -1308,7 +1345,10 @@ function update(timestamp) {
                 const enemyRect = enemy.el.getBoundingClientRect();
                 const overlap = !(projRect.right < enemyRect.left || projRect.left > enemyRect.right || projRect.bottom < enemyRect.top || projRect.top > enemyRect.bottom);
                 if (overlap) {
+                    const before = enemy.enemyHP;
                     calcDamage(enemy);
+                    const dealt = Math.max(0, before - enemy.enemyHP);
+                    showLastDamageAbovePlayer(dealt);
                     if (enemy.enemyHP <= 0) {
                         enemy.el.remove();
                         score += 250*Mult;
@@ -1526,7 +1566,7 @@ document.addEventListener("DOMContentLoaded", () => {
         diffDesc.textContent = msg;
         diffDesc.style.display = msg ? "block" : "none";
     }
-    if (d1) d1.addEventListener("mouseenter", () => setDesc("Enemies are slow and deal less damage. Enemies spawn less often. Are you new to this math stuff or something? Sanity is never reduced. Score Multiplier: x0.25"));
+    if (d1) d1.addEventListener("mouseenter", () => setDesc("A nice and easy baby puzzle. Enemies are slow and deal less damage. Enemies spawn less often. Are you new to this math stuff or something? Sanity is never reduced. Score Multiplier: x0.25"));
     if (d2) d2.addEventListener("mouseenter", () => setDesc("A balanced practice exam. The enemies are normal speed and deal normal damage. Sanity is reduced at a normal rate. Recommended for average players. Score Multiplier: x1"));
     if (d3) d3.addEventListener("mouseenter", () => setDesc("Tough test. Faster and more agile enemies, heavier damage. Mistakes are not recommended. Enemies spawn more often. Sanity is reduced faster. Score Multiplier: x1.75"));
     if (d4) d4.addEventListener("mouseenter", () => setDesc("Unfair final. Brutal stats. You were warned. Sanity is reduced faster. Enemies are lighting fast and deal insane damage. Enemies swarm you. Mistakes are not allowed. Only a master of calc can last even 20 seconds. Score Multiplier: x4"));
