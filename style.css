@@ -35,8 +35,8 @@ body {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  height: 80px;
-  width: 80px;
+  height: 65px;
+  width: 65px;
 }
 
 #playerHUD {

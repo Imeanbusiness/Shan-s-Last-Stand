@@ -3,6 +3,7 @@ const gameArea = document.getElementById("gameArea");
 sanity = 50;
 const ShotgunCooldown = 1100; // milliseconds
 const CalcgunCooldown = 1500;
+const BaseSpeed = 5;
 sanityTimer = 0;
 puzzlecooldown = 5000;
 healthCount = 0;
@@ -13,10 +14,14 @@ spawntime = 0;
 elapsed = 0;
 shanstate = 2;
 CurrWeap = 1;
+dashCharge = false;
 Filename = "ShansStand/"
-CalcgunVelocity = 
+//player
 //2000
 
+dashing = false;
+
+dashtimer = 90;
 Hmessagetimer = 0
 SBmessagetimer = 0
 
@@ -25,6 +30,8 @@ const ShotgunSound = new Audio('ShotgunSound.mp3');
 const backgroundMusic = new Audio("shaunsshotgun.mp3");
 const deathSound = new Audio("ShanDeath.mp3");
 const domDeath = new Audio("DomDeath.mp3");
+const ZukDeath = new Audio("ZukDeath.mp3");
+const dashCharged = new Audio("DashCharge.mp3");
 
 
 function showDamage(x, y, damage) {
@@ -68,7 +75,8 @@ window.onload = function() {
         let maxwave = localStorage.getItem(Filename+"Wave");
 
     }
-    alert("Welcome to the game! Use WASD or Arrow keys to move, Space to shoot, and C to answer a math question to regain sanity.\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
+    alert("Welcome to the game!\nControls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nC to answer a math question to regain sanity\n\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
+
     backgroundMusic.play();
     backgroundMusic.loop = true;   // 🔁 make it loop
     backgroundMusic.volume = 2;  // optional: set volume
@@ -91,6 +99,7 @@ let x = 280;
 let y = 280;
 let speed = 5;
 let direction = "n";
+let lockdirection = "n";
 const chargerSize = 60;
 let chargerCount = 0;
 attack = false;
@@ -211,6 +220,12 @@ document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = fals
         MathQuest = false;
         }, puzzlecooldown);
 
+    }
+    if (e.key.toLowerCase()=="h") { 
+        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nC to answer a math question to regain sanity\n\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
+        for (let key in keysPressed) {
+            keysPressed[key] = false;
+        }
     }
 });
 
@@ -468,8 +483,28 @@ function update(timestamp) {
             FirstAttack = true;
             attackingDelay = 0;
         }
-                
-                
+    dashtimer++;
+    
+    if (dashtimer >= 4) {
+        speed = BaseSpeed;
+        dashing = false;
+    }
+    
+    if (dashtimer >= 50 && !dashCharge) {
+        dashCharge = true; 
+        dashCharged.play();
+
+    }
+    
+    if (keysPressed["shift"] && dashtimer >= 60 && !dashing) {
+        speed = 25;
+        dashing = true;
+        dashtimer = 0;
+        dashCharge = false;
+        
+        lockdirection = direction;
+    }
+
     if (keysPressed["w"] || keysPressed["arrowup"]) {
         if (y >= 50) {
 
@@ -518,12 +553,27 @@ function update(timestamp) {
 
     }
 
+    if (dashing) {
+        switch (lockdirection) {
+            case "n": dy = -speed; dx = 0; break;
+            case "ne": dy = -speed; dx = speed; break;
+            case "e": dy = 0; dx = speed; break;
+            case "se": dy = speed; dx = speed; break;
+            case "s": dy = speed; dx = 0; break;
+            case "sw": dy = speed; dx = -speed; break;
+            case "w": dy = 0; dx = -speed; break;
+            case "nw": dy = -speed; dx = -speed; break;
+        }
+    }
+
     
 
     if (attack) {
         dx = dx*0.8;
         dy = dy*0.8;
     }
+
+    
 
 
     if (dx !== 0 && dy !== 0) {
@@ -697,13 +747,14 @@ function update(timestamp) {
 
                 newMessage.style.transform = `translate(-50%, -50%)`;
                 newMessage.style.top = "5%";
-                newMessage.style.left = "25%";
+                newMessage.style.left = "52%";
+                newMessage.style.width = "100%"
                 gameArea.appendChild(newMessage)
                 document.getElementById("HealthMessage").innerHTML = "Picked up a healing Shaunulator"
                 Hmessagetimer = 0;
                 if (playerhp < 40) {
                     newMessage.style.top = "5%";
-                    newMessage.style.left = "37%";
+                    newMessage.style.left = "52%";
                     document.getElementById("HealthMessage").innerHTML = "Picked up a healing Shaunulator that you really need!"
                 }
                 
@@ -886,14 +937,16 @@ function update(timestamp) {
                 if (enemy.enemyHP <= 0) {
                     enemy.el.remove();
                     score += 250*Mult;
-                    domDeath.play();
+                    
                     if (enemy.fileName == "Zuk.png") {
                         score += 250*Mult;
                         tankCount -= 1;
+                        ZukDeath.play();
                     } else if (enemy.fileName == "Shower.jpg") {
                         score += 750*Mult;
                         showerCount -= 1;
                     } else {
+                        domDeath.play();
                         chargerCount--
                     }
                     return false; // remove enemy
