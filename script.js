@@ -661,7 +661,7 @@ function update(timestamp) {
           enemyCount++;
           spawntime = 0;
         }
-        if (spawnEnemy <2 && spawnEnemy > 1.99 && showerCount<2 && Wave>2) { // ~1% chance per frame
+        if (spawnEnemy <2 && spawnEnemy > 1.9 && showerCount<2 && Wave>2) { // ~1% chance per frame
           let ex = Math.random() * 520 + 40; // inside game area
           let ey = Math.random() * 520 + 40;
           enemies.push(new Charger(ex, ey, 0.25, 4000*(0.9+Wave/10)**2, 20, "Shower.jpg", 85, 85)); // speed = 2
