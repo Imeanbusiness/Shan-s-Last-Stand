@@ -1,39 +1,61 @@
-const player = document.getElementById("player");
-const gameArea = document.getElementById("gameArea");
-sanity = 50;
-const ShotgunCooldown = 1100; // milliseconds
-const CalcgunCooldown = 1500;
-const iFrames = 1000;
-const BaseSpeed = 5.5;
-sanityTimer = 0;
-puzzlecooldown = 4000;
-healthCount = 0;
-scoreBoostCount = 0;
-tankCount = 0;
-showerCount = 0;
-spawntime = 0;
-elapsed = 0;
-shanstate = 2;
-CurrWeap = 1;
-dashCharge = false;
-Filename = "ShansStand/"
-//player
-//550
+(function(){
+    'use strict';
 
-dashing = false;
+    // DOM refs
+    const player = document.getElementById("player");
+    const gameArea = document.getElementById("gameArea");
 
-dashtimer = 90;
-Hmessagetimer = 0
-SBmessagetimer = 0
+    // Config constants
+    const ShotgunCooldown = 1100; // milliseconds
+    const CalcgunCooldown = 1500;
+    const iFrames = 1000;
+    const BaseSpeed = 5.5;
 
-const ouch = new Audio('Ouch.mp3'); // Replace with your sound file path
-const ShotgunSound = new Audio('ShotgunSound.mp3');
-const CalcgunSound = new Audio('Pew.mp3');
-const backgroundMusic = new Audio("shaunsshotgun.mp3");
-const deathSound = new Audio("ShanDeath.mp3");
-const domDeath = new Audio("DomDeath.mp3");
-const ZukDeath = new Audio("ZukDeath.mp3");
-const dashCharged = new Audio("DashCharge.mp3");
+    // Game state (declared here so they're not globals on window)
+    let sanity = 50;
+    let sanityTimer = 0;
+    let puzzlecooldown = 4000;
+    let healthCount = 0;
+    let scoreBoostCount = 0;
+    let tankCount = 0;
+    let showerCount = 0;
+    let spawntime = 0;
+    let elapsed = 0;
+    let shanstate = 2;
+    let CurrWeap = 1;
+    let dashCharge = false;
+    const Filename = "ShansStand/";
+
+    // Player control state
+    let dashing = false;
+    let dashtimer = 90;
+    let Hmessagetimer = 0;
+    let SBmessagetimer = 0;
+
+    // Audio
+    const ouch = new Audio('Ouch.mp3'); // Replace with your sound file path
+    const ShotgunSound = new Audio('ShotgunSound.mp3');
+    const CalcgunSound = new Audio('Pew.mp3');
+    const backgroundMusic = new Audio("shaunsshotgun.mp3");
+    const deathSound = new Audio("ShanDeath.mp3");
+    const domDeath = new Audio("DomDeath.mp3");
+    const ZukDeath = new Audio("ZukDeath.mp3");
+    const dashCharged = new Audio("DashCharge.mp3");
+
+    // Other globals that were previously implicitly global
+    let MathQuest = false;
+    let Atdelay = 0;
+    let Mult = 1;
+    let Boost = false;
+    let attackingDelay = 0;
+    let BoostTime = 0;
+    let attack = false;
+    let FirstAttack = false;
+    let spawnEnemy = 0;
+    // transient vars that must not be globals
+    let number1 = 0, number2 = 0, number3 = 0, chance = 0, ans = null;
+    let newMessage = null;
+    let time = 0;
 
 
 function showDamage(x, y, damage) {
@@ -631,28 +653,53 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
 }
 
 // Game loop
+function lovedayRoom() {
+    gameArea.style.backgroundImage = "url('LovedayClass.png')"
+    addObstacle(0, 0, 40, 120, { color: "#947A54" });   
+    addObstacle(110, 80, 80, 40, { color: "#947A54" });   
+    addObstacle(190, 0, 40, 120, { color: "#947A54" }); 
+    addObstacle(500, 100, 150, 50, { color: "grey" });
+    addObstacle(250, 200, 150, 350, { color: "#F8DFA1" }); 
+    
+    for (let i = 0; i < 7; i++) {
+        addObstacle(262.5, 210+45*i, 25, 20, { color: "#000000" }); 
+    }
+    for (let i = 0; i < 7; i++) {
+        addObstacle(362.5, 210+45*i, 25, 20, { color: "#000000" }); 
+    }
+    addObstacle(0, 215, 50, 370, { color: "#F8DFA1" }); 
+    for (let i = 0; i < 7; i++) {
+        addObstacle(12.5, 230+45*i, 25, 20, { color: "#000000" }); 
+    }
+    addObstacle(600, 215, 50, 370, { color: "#F8DFA1" }); 
+    for (let i = 0; i < 7; i++) {
+        addObstacle(612.5, 230+45*i, 25, 20, { color: "#000000" }); 
+    }
+    addObstacle(320, 225, 10, 300, { color: "white" });
 
-addObstacle(0, 0, 40, 120, { color: "#947A54" });   
-addObstacle(110, 80, 80, 40, { color: "#947A54" });   
-addObstacle(190, 0, 40, 120, { color: "#947A54" }); 
-addObstacle(500, 100, 150, 50, { color: "grey" });
-addObstacle(250, 200, 150, 350, { color: "#F8DFA1" }); 
-
-for (let i = 0; i < 7; i++) {
-    addObstacle(262.5, 210+45*i, 25, 20, { color: "#000000" }); 
 }
-for (let i = 0; i < 7; i++) {
-    addObstacle(362.5, 210+45*i, 25, 20, { color: "#000000" }); 
+function roboticsRoom() {
+    gameArea.style.backgroundImage = "url('Robotikroom.png')"
+     addObstacle(0, 50, 50, 550, { color: "#F8DFA1" }); 
+    for (let i = 0; i < 9; i++) {
+        addObstacle(12.5, 70+60*i, 25, 20, { color: "#000000" }); 
+    }
+    addObstacle(600, 50, 50, 550, { color: "#F8DFA1" }); 
+    for (let i = 0; i < 9; i++) {
+        addObstacle(612.5, 70+60*i, 25, 20, { color: "#000000" }); 
+    }
+    addObstacle(140, 100, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(375, 100, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(140, 270, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(375, 270, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(140, 440, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(375, 440, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(75, 450, 40, 40, { color: "#333333", blocksProjectiles: false });
+    addObstacle(540, 280, 40, 40, { color: "#333333", blocksProjectiles: false });
+    addObstacle(470, 135, 35, 20, { color: "#000000" }); 
+    addObstacle(150, 600, 500, 50, { color: "#32527B" });
+    
 }
-addObstacle(0, 215, 50, 370, { color: "#F8DFA1" }); 
-for (let i = 0; i < 7; i++) {
-    addObstacle(12.5, 230+45*i, 25, 20, { color: "#000000" }); 
-}
-addObstacle(600, 215, 50, 370, { color: "#F8DFA1" }); 
-for (let i = 0; i < 7; i++) {
-    addObstacle(612.5, 230+45*i, 25, 20, { color: "#000000" }); 
-}
-addObstacle(320, 225, 10, 300, { color: "white" });
 
 let lastFrameTime = 0;
 const fps = 60;
@@ -700,6 +747,23 @@ function update(timestamp) {
             }
         }
       }
+
+
+      if (x <50) {
+        x = 50
+      }
+      if (x > 650) {
+        x = 650
+      }
+      if (y <50) {
+        y = 50
+      }
+      if (y > 650) {
+        y = 650
+      }
+
+
+
         if (Boost==true && BoostTime <= 360) {
             Mult = 2
             BoostTime++
@@ -1009,7 +1073,9 @@ function update(timestamp) {
         }
 
     }
-
+    if (playerhp >= 100) {
+        playerhp = 100
+    }
     elapsed++
     spawntime++
 
@@ -1409,6 +1475,12 @@ function update(timestamp) {
         showerCount = 0;
         scoreBoostCount = 0;
         tankCount = 0;
+
+        // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
+        try {
+            obstacles.forEach(o => { if (o && o.el) o.el.remove(); });
+        } catch (e) { }
+        obstacles = [];
         score *= (difficulty/2)**2;
         score = Math.floor(score);
 
@@ -1458,8 +1530,10 @@ function showGameUI() {
     const diff = document.getElementById("difficultyMenu");
     const area = document.getElementById("gameArea");
     const hud = document.getElementById("playerHUD");
+    const maps = document.getElementById("mapMenu");
     if (menu) menu.style.display = "none";
     if (diff) diff.style.display = "none";
+    if (maps) maps.style.display = "none";
     if (area) area.style.display = "block";
     if (hud) hud.style.display = "grid";
 }
@@ -1513,6 +1587,7 @@ function startGameFromMenu() {
     if (gameStarted) return;
     gameStarted = true;
     showGameUI();
+
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -1522,11 +1597,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const diffMenu = document.getElementById("difficultyMenu");
     const mainMenu = document.getElementById("mainMenu");
     const backBtn = document.getElementById("backToMain");
+    const backBtn2 = document.getElementById("backToMain2");
     const d1 = document.getElementById("difficulty1");
     const d2 = document.getElementById("difficulty2");
     const d3 = document.getElementById("difficulty3");
     const d4 = document.getElementById("difficulty4");
     const diffDesc = document.getElementById("difficultyDesc");
+    const mapDesc = document.getElementById("mapDesc");
+    const mapmenu = document.getElementById("mapMenu");
+    const m1 = document.getElementById("map1");
+    const m2 = document.getElementById("map2");
     if (helpBtn) helpBtn.addEventListener("click", () => {
         alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper.\nC to answer a math question to regain sanity\n\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
     });
@@ -1543,14 +1623,47 @@ document.addEventListener("DOMContentLoaded", () => {
         if (diffMenu) diffMenu.style.display = "flex";
     });
     if (backBtn) backBtn.addEventListener("click", () => {
-        if (diffMenu) diffMenu.style.display = "none";
-        if (mainMenu) mainMenu.style.display = "flex";
+     
+       
+            if (diffMenu) diffMenu.style.display = "none";
+            if (mainMenu) mainMenu.style.display = "flex";
+
+        
     });
+
+     if (backBtn2) backBtn2.addEventListener("click", () => {
+     
+       
+            if (mapmenu) mapmenu.style.display = "none";
+            if (mainMenu) mainMenu.style.display = "flex";
+
+        
+    });
+
+    difficulty = 0;
     function chooseDifficulty(level) {
         difficultyLevel = level;
         difficulty = level; // keep both in sync for existing formulas
+        diffMenu.style.display = "none";
+        mapmenu.style.display = "flex";
+        // Randomly choose a map for now
+        //const map = Math.random() < 0.5 ? 1 : 2;
+        //chooseMap(map);
+        if (m1) m1.addEventListener("click", () => chooseMap(1));
+        if (m2) m2.addEventListener("click", () => chooseMap(2));
+        //startGameFromMenu();
+    }
+
+    function chooseMap(map) {
+        if (map == 1) {
+            lovedayRoom();
+        } else if (map == 2) {
+            roboticsRoom();
+        }
         startGameFromMenu();
     }
+
+
     function reallyChooseThat() {
         if (confirm("Are you sure you want to choose this difficulty? It's not even remotely fair!")) {
             chooseDifficulty(4);
@@ -1566,6 +1679,13 @@ document.addEventListener("DOMContentLoaded", () => {
         diffDesc.textContent = msg;
         diffDesc.style.display = msg ? "block" : "none";
     }
+
+    function setMDesc(msg) {
+        if (!mapDesc) return;
+        mapDesc.textContent = msg;
+        mapDesc.style.display = msg ? "block" : "none";
+    }
+
     if (d1) d1.addEventListener("mouseenter", () => setDesc("A nice and easy baby puzzle. Enemies are slow and deal less damage. Enemies spawn less often. Are you new to this math stuff or something? Sanity is never reduced. Score Multiplier: x0.25"));
     if (d2) d2.addEventListener("mouseenter", () => setDesc("A balanced practice exam. The enemies are normal speed and deal normal damage. Sanity is reduced at a normal rate. Recommended for average players. Score Multiplier: x1"));
     if (d3) d3.addEventListener("mouseenter", () => setDesc("Tough test. Faster and more agile enemies, heavier damage. Mistakes are not recommended. Enemies spawn more often. Sanity is reduced faster. Score Multiplier: x1.75"));
@@ -1575,14 +1695,32 @@ document.addEventListener("DOMContentLoaded", () => {
     if (d2) d2.addEventListener("mouseleave", clearDesc);
     if (d3) d3.addEventListener("mouseleave", clearDesc);
     if (d4) d4.addEventListener("mouseleave", clearDesc);
+
+
+    if (m1) m1.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy. Description: Ah, Mr. Loveday's room, a nice open haven for Shanvanth. Now it has become a warzone. Where is Mr. Loveday?"));
+    if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard. Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
+    const clearmapDesc = () => setMDesc("");
+    if (m1) m1.addEventListener("mouseleave", clearmapDesc);
+    if (m2) m2.addEventListener("mouseleave", clearmapDesc);
 });
 
 // Gate the loop to wait for menu
 const originalUpdate = update;
-update = function(timestamp) {
+    update = function(timestamp) {
     if (!gameStarted) {
         requestAnimationFrame(update);
         return;
     }
     originalUpdate(timestamp);
 };
+
+    // Expose a very small API intentionally: only what's needed externally
+    window.ShansLastStand = {
+        showMainMenu: showMainMenu,
+        showGameUI: showGameUI
+    };
+
+    // Prevent accidental/hostile overwrite from console
+    try { Object.freeze(window.ShansLastStand); } catch (e) {}
+
+})();
