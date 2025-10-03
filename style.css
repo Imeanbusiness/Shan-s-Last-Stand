@@ -1,11 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Pixelify+Sans:wght@400..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&display=swap');
 
+
 html {
-    overflow: hidden;
-    font-family: 'Orbitron', sans-serif;
-    font-size: 20px;
+  /* Allow scrolling when the viewport is smaller than the fixed game area
+     so the gameArea doesn't get squashed to fit. */
+  overflow: auto;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 20px;
 }
+
+/* Hide scrollbars visually but keep scrolling functionality where supported */
+html, body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
+
+/* Hide scrollbars visually but keep scrolling functionality where supported */
+html, body {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 
 
 body {
@@ -18,6 +35,9 @@ body {
   margin: 0;
   background-image: url("Byrne.jpg");
   background-size: cover;
+  /* Allow the page to scroll if the viewport is smaller than the fixed
+     game area so the game doesn't get visually compressed. */
+  overflow: auto;
 
 }
 
@@ -30,6 +50,18 @@ body {
   top: -10px;
   background-image: url("LovedayClass.png");
   background-size: cover
+}
+
+/* Keep the game area fixed at 650x650 and prevent flexbox from shrinking it
+   when the viewport is too small. Allow internal clipping if necessary. */
+#gameArea {
+  box-sizing: border-box;
+  min-width: 650px;
+  min-height: 650px;
+  max-width: 650px;
+  max-height: 650px;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 #player {
@@ -49,12 +81,20 @@ body {
   background: white;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: 50px ;
+  grid-template-rows: 50px;
   justify-content: center;
   text-align: center;
   background-color: darkgray;
-  gap: 1em; /* Spacing between grid items */
+  gap: 8px; 
   font-size: 14px;
+  box-sizing: border-box;
+  padding: 4px; 
+  min-width: 650px;
+  min-height: 100px;
+  max-width: 650px;
+  max-height: 100px;
+  flex-shrink: 0; 
+  overflow: hidden;
 
 }
 
@@ -142,19 +182,19 @@ body {
 }
 
 .HudTitle {
-    margin: 10px;
-    align-items: left;
-    grid-row: 1;
-    color: red;
-    font-size: 14px;
+  margin: 4px; /* smaller margin to preserve HUD space */
+  align-items: left;
+  grid-row: 1;
+  color: red;
+  font-size: 15px;
 }
 
 .HudVar {
-    margin: 10px;
-    align-items: left;
-    grid-row: 2;
-    color: red;
-    font-size: 12px;
+  margin: 4px; /* smaller margin to preserve HUD space */
+  align-items: left;
+  grid-row: 2;
+  color: red;
+  font-size: 10px;
 }
 
 .element::-webkit-scrollbar {
