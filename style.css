@@ -3,24 +3,22 @@
 
 
 html {
-  /* Allow scrolling when the viewport is smaller than the fixed game area
-     so the gameArea doesn't get squashed to fit. */
   overflow: auto;
   font-family: 'Orbitron', sans-serif;
   font-size: 20px;
 }
 
-/* Hide scrollbars visually but keep scrolling functionality where supported */
+
 html, body {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 
-/* Hide scrollbars visually but keep scrolling functionality where supported */
+
 html, body {
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; 
+  scrollbar-width: none; 
 }
 html::-webkit-scrollbar, body::-webkit-scrollbar { display: none; }
 
@@ -35,8 +33,7 @@ body {
   margin: 0;
   background-image: url("Byrne.jpg");
   background-size: cover;
-  /* Allow the page to scroll if the viewport is smaller than the fixed
-     game area so the game doesn't get visually compressed. */
+
   overflow: auto;
 
 }
@@ -62,6 +59,35 @@ body {
   max-height: 650px;
   flex-shrink: 0;
   overflow: hidden;
+}
+
+/* Messages container inside the game area: center-top, stacked vertically */
+#GameMessages {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: center;
+  pointer-events: none; /* don't block interactions */
+  width: 90%;
+  max-width: 620px;
+  z-index: 9999;
+}
+
+.gameMessage {
+  pointer-events: auto; /* individual messages won't block the game but allow selection if needed */
+  background: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 6px 10px;
+  border: 2px solid black;
+  border-radius: 6px;
+  font-size: 14px;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #player {

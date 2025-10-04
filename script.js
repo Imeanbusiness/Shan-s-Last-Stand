@@ -1,9 +1,31 @@
 (function(){
     'use strict';
-
+    //game
     // DOM refs
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
+
+    // helper to determine whether the game area is currently visible/active
+    const isGameActive = () => {
+        try {
+            return gameArea && window.getComputedStyle(gameArea).display !== 'none';
+        } catch (e) {
+            return false;
+        }
+    };
+
+    // central messages container (stacked, centered at top of game area)
+    const messagesContainer = (() => {
+        let m = document.getElementById('GameMessages');
+        if (!m && gameArea) {
+            m = document.createElement('div');
+            m.id = 'GameMessages';
+            // visual layout handled by CSS; keep pointer-events none so it won't block clicks
+            m.style.pointerEvents = 'none';
+            gameArea.appendChild(m);
+        }
+        return m;
+    })();
 
     // Config constants
     const ShotgunCooldown = 1100; // milliseconds
@@ -31,6 +53,7 @@
     let dashtimer = 90;
     let Hmessagetimer = 0;
     let SBmessagetimer = 0;
+    let WeaponMessageTimer = 0;
 
     // Audio
     const ouch = new Audio('Ouch.mp3'); // Replace with your sound file path
@@ -173,8 +196,10 @@ const keysPressed = {};
 let enemies = [];
 
 // Track key press/release
-document.addEventListener("keydown", e => {keysPressed[e.key.toLowerCase()] = true
-   if (e.key === "Escape") {
+document.addEventListener("keydown", e => {
+    keysPressed[e.key.toLowerCase()] = true;
+    // Only allow pausing with Escape when the game is active/visible
+    if (e.key === "Escape" && isGameActive()) {
         alert("Game Paused. Press OK to resume.");
         for (let key in keysPressed) {
             keysPressed[key] = false;
@@ -185,24 +210,29 @@ document.addEventListener("keydown", e => {keysPressed[e.key.toLowerCase()] = tr
 
             const sbMsg = document.getElementById("SBMessage");
             if (sbMsg) sbMsg.remove();
+
+            const wpMsg = document.getElementById("WeaponMessage");
+            if (wpMsg) sbMsg.remove();
         } catch (e) {
 
         }
-}
+    }
 
 });
-document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = false
-    if (e.key.toLowerCase()=="c"  && !MathQuest) {
+document.addEventListener("keyup", e => {
+    keysPressed[e.key.toLowerCase()] = false
+    // Only allow the 'c' math prompt when game is active/visible
+    if (e.key.toLowerCase()=="c"  && !MathQuest && isGameActive()) {
         MathQuest = true;
         sanity-=10;
         number1 = Math.floor(Math.random()*1000)
         number2 = Math.floor(Math.random()*100)
         number3 = Math.floor(Math.random()*50)
-        chance = Math.floor(Math.random()*4)
+        chance = Math.floor(Math.random()*5)
         if (chance == 1) {
             ans = prompt("What is "+number1+" + "+number2+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
             if (ans == number1+number2) {
-                sanity += 20;
+                sanity += 25;
                 alert("Correct! You feel a bit more sane.")
             } else {
                 alert("Wrong Answer! Psycho!")
@@ -210,7 +240,7 @@ document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = fals
         } else if (chance == 2) {
             ans = prompt("What is "+number1+" - "+number3+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
             if (ans == number1-number3) {
-                sanity += 20;
+                sanity += 25;
                 alert("Correct! You feel a bit more sane.")
             } else {
                 alert("Wrong Answer! Psycho!")
@@ -218,7 +248,7 @@ document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = fals
         } else if (chance == 0) {
             ans = prompt("What is "+number3+" * "+number2+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
             if (ans == number3*number2) {
-                sanity += 20;
+                sanity += 25;
                 alert("Correct! You feel a bit more sane.")
             } else {
                 alert("Wrong Answer! Psycho!")
@@ -226,7 +256,7 @@ document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = fals
         } else if (chance == 3) {
             ans = prompt("What is "+number1+" / "+number3+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
             if (ans == Math.floor(number1 / number3)) {
-                sanity += 20;
+                sanity += 25;
                 alert("Correct! You feel a bit more sane.")
             } else {
                 alert("Wrong Answer! Psycho!")
@@ -250,6 +280,9 @@ document.addEventListener("keyup", e => {keysPressed[e.key.toLowerCase()] = fals
 
             const sbMsg = document.getElementById("SBMessage");
             if (sbMsg) sbMsg.remove();
+
+            const wpMsg = document.getElementById("WeaponMessage");
+            if (wpMsg) sbMsg.remove();
         } catch (e) {
 
         }
@@ -719,34 +752,42 @@ function update(timestamp) {
 
     
       sanityTimer++;
-      if (difficulty == 4) {
-        if (sanityTimer >= 75) {
+      if (difficulty == 1) {
+        if (sanityTimer >= 90) {
             sanityTimer = 0;
             if (sanity > 0) {
-                sanity -= 1;
-            } else {
-                sanity = 0;
-            }
-        }
-      } else if (difficulty == 3) {
-        if (sanityTimer >= 100) {
-            sanityTimer = 0;
-            if (sanity > 0) {
-                sanity -= 1;
+                sanity++;
             } else {
                 sanity = 0;
             }
         }
       } else if (difficulty == 2) {
+        if (sanityTimer >= 120) {
+            sanityTimer = 0;
+            if (sanity > 0) {
+                sanity++;
+            } else {
+                sanity = 0;
+            }
+        }
+      } else if (difficulty == 3) {
         if (sanityTimer >= 150) {
             sanityTimer = 0;
             if (sanity > 0) {
-                sanity -= 1;
+                sanity++;
             } else {
                 sanity = 0;
             }
         }
       }
+      if (sanity > 100) {
+        sanity = 100;
+      }
+
+      if (sanity <= 0) {
+        sanity = 0;
+      }
+    
 
 
       if (x <50) {
@@ -789,6 +830,14 @@ function update(timestamp) {
             }
         } catch (e) {}
         try {
+            const sbMsg = document.getElementById("WeaponMessage");
+            if (sbMsg) {
+                WeaponMessageTimer++;
+            } else {
+                WeaponMessageTimer = 0;
+            }
+        } catch (e) {}
+        try {
             const healthMsg = document.getElementById("HealthMessage");
             if (healthMsg) {
                 Hmessagetimer++;
@@ -801,6 +850,15 @@ function update(timestamp) {
             try {
     
                 const sbMsg = document.getElementById("SBMessage");
+                if (sbMsg) sbMsg.remove();
+            } catch (e) {
+    
+            }
+        }
+        if (WeaponMessageTimer >= 60) {
+            try {
+    
+                const sbMsg = document.getElementById("WeaponMessage");
                 if (sbMsg) sbMsg.remove();
             } catch (e) {
     
@@ -1161,21 +1219,14 @@ function update(timestamp) {
                 healthCount = Math.max(healthCount - 1, 0);
                 // Remove any existing message before creating a new one
                 try { const existing = document.getElementById("HealthMessage"); if (existing) existing.remove(); } catch (e) {}
-                newMessage = document.createElement("p");
-                newMessage.style.position = "absolute";
-                newMessage.id = "HealthMessage"
-
-                newMessage.style.transform = `translate(-50%, -50%)`;
-                newMessage.style.top = "5%";
-                newMessage.style.left = "52%";
-                newMessage.style.width = "100%"
-                gameArea.appendChild(newMessage)
-                document.getElementById("HealthMessage").innerHTML = "Picked up a healing Shaunulator"
+                newMessage = document.createElement("div");
+                newMessage.id = "HealthMessage";
+                newMessage.className = 'gameMessage';
+                newMessage.innerHTML = "Picked up a healing Shaunulator";
+                if (messagesContainer) messagesContainer.appendChild(newMessage);
                 Hmessagetimer = 0;
                 if (playerhp < 40) {
-                    newMessage.style.top = "5%";
-                    newMessage.style.left = "52%";
-                    document.getElementById("HealthMessage").innerHTML = "Picked up a healing Shaunulator that you really need!"
+                    newMessage.innerHTML = "Picked up a healing Shaunulator that you really need!"
                 }
                 
 
@@ -1193,15 +1244,12 @@ function update(timestamp) {
                 scoreBoostCount = Math.max(scoreBoostCount - 1, 0);
                 // Remove any existing message before creating a new one
                 try { const existing = document.getElementById("SBMessage"); if (existing) existing.remove(); } catch (e) {}
-                newMessage = document.createElement("p");
-                newMessage.style.position = "absolute";
-                newMessage.id = "SBMessage"
+                newMessage = document.createElement("div");
+                newMessage.id = "SBMessage";
+                newMessage.className = 'gameMessage';
+                newMessage.innerHTML = "You got the score boost!";
                 SBmessagetimer = 0;
-                newMessage.style.transform = `translate(-50%, -50%)`;
-                newMessage.style.top = "2%";
-                newMessage.style.left = "20%";
-                gameArea.appendChild(newMessage)
-                document.getElementById("SBMessage").innerHTML = "You got the score boost!"
+                if (messagesContainer) messagesContainer.appendChild(newMessage);
                 
 
                 setTimeout(() => {
@@ -1283,9 +1331,16 @@ function update(timestamp) {
     } catch (e) {}
     //damageEnemies
 
+
+
+
     if (attack && FirstAttack) {
         FirstAttack = false;
-        if (CurrWeap == 1) {
+        if (CurrWeap == 1 && sanity >= Math.floor(difficulty/2)+1) {
+            sanity -= Math.floor(difficulty/2)+1;
+                if (sanity < 0) {
+                    sanity = 0;
+                }
             const el = document.createElement("div");
             el.style.position = "absolute";
             el.style.transform = `translate(-50%, -50%) rotate(${directionAnglesShots[direction]+270}deg)`;
@@ -1328,7 +1383,8 @@ function update(timestamp) {
                     const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
                     const blocked = lineBlockedByObstacles(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
                     if (!blocked) {
-                        const dmg = (1100*sanity/100)+ (score/100) * (sanity/100);
+                       
+                        const dmg = 500+(500*sanity/100)+ (score/100) * (sanity/100);
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
                         if (enemy.enemyHP <= 0) {
@@ -1353,7 +1409,11 @@ function update(timestamp) {
             });
             if (score >= Wave*2500) { Wave++; }
             setTimeout(() => { el.remove(); }, 50);
-        } else if (CurrWeap == 2) {
+        } else if (CurrWeap == 2 && sanity >= Math.floor(difficulty/2)+1) {
+            sanity -= Math.floor(difficulty/2)+1;
+            if (sanity < 0) {
+                sanity = 0;
+            }
             // Spawn a projectile 20x3 that flies until collision
             const projEl = document.createElement("div");
             projEl.style.position = "absolute";
@@ -1371,6 +1431,16 @@ function update(timestamp) {
             projEl.style.transform = `rotate(${directionAnglesShots[direction]+90}deg)`;
             gameArea.appendChild(projEl);
             projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
+        } else {
+            attack = false; // cancel attack if not enough sanity
+                try { const existing = document.getElementById("WeaponMessage"); if (existing) existing.remove(); } catch (e) {}
+                newMessage = document.createElement("div");
+                newMessage.id = "WeaponMessage";
+                newMessage.className = 'gameMessage';
+                newMessage.innerHTML = "Not enough sanity to attack! Press C to regain!";
+                SBmessagetimer = 0;
+                if (messagesContainer) messagesContainer.appendChild(newMessage);
+            //SBMessage
         }
     }
 
@@ -1379,7 +1449,7 @@ function update(timestamp) {
         const areaWidth = 650;
         const areaHeight = 650;
         const calcDamage = (enemy) => {
-            enemy.enemyHP -= (800 * sanity / 100) + (score / 200) * (sanity / 100);
+            enemy.enemyHP -= 400+(400 * sanity / 100) + (score / 200) * (sanity / 100);
         };
         projectiles = projectiles.filter((p) => {
             p.x += p.dx * projectileSpeed;
@@ -1686,10 +1756,10 @@ document.addEventListener("DOMContentLoaded", () => {
         mapDesc.style.display = msg ? "block" : "none";
     }
 
-    if (d1) d1.addEventListener("mouseenter", () => setDesc("A nice and easy baby puzzle. Enemies are slow and deal less damage. Enemies spawn less often. Are you new to this math stuff or something? Sanity is never reduced. Score Multiplier: x0.25"));
-    if (d2) d2.addEventListener("mouseenter", () => setDesc("A balanced practice exam. The enemies are normal speed and deal normal damage. Sanity is reduced at a normal rate. Recommended for average players. Score Multiplier: x1"));
-    if (d3) d3.addEventListener("mouseenter", () => setDesc("Tough test. Faster and more agile enemies, heavier damage. Mistakes are not recommended. Enemies spawn more often. Sanity is reduced faster. Score Multiplier: x1.75"));
-    if (d4) d4.addEventListener("mouseenter", () => setDesc("Unfair final. Brutal stats. You were warned. Sanity is reduced faster. Enemies are lighting fast and deal insane damage. Enemies swarm you. Mistakes are not allowed. Only a master of calc can last even 20 seconds. Score Multiplier: x4"));
+    if (d1) d1.addEventListener("mouseenter", () => setDesc("A nice and easy baby puzzle. Enemies are slow and deal less damage. Enemies spawn less often. Are you new to this math stuff or something? Sanity regain sanity faster. Weapons cost less sanity to fire Score Multiplier: x0.25"));
+    if (d2) d2.addEventListener("mouseenter", () => setDesc("A balanced practice exam. The enemies are normal speed and deal normal damage. Sanity is regained at a normal rate. Firing weapons takes a normal amount of sanity. Recommended for average players. Score Multiplier: x1"));
+    if (d3) d3.addEventListener("mouseenter", () => setDesc("Tough test. Faster and more agile enemies, heavier damage. Mistakes are not recommended. Enemies spawn more often. Sanity is regained slower. Firing weapons takes a normal amount of sanity. Score Multiplier: x1.75"));
+    if (d4) d4.addEventListener("mouseenter", () => setDesc("Unfair final. Brutal stats. You were warned. Sanity is never auto regained. Weapons cost more sanity. Enemies are lighting fast and deal insane damage. Enemies swarm you. Mistakes are not allowed. Only a master of calc can last even 20 seconds. Score Multiplier: x4"));
     const clearDesc = () => setDesc("");
     if (d1) d1.addEventListener("mouseleave", clearDesc);
     if (d2) d2.addEventListener("mouseleave", clearDesc);
