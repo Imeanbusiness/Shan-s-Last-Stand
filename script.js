@@ -47,6 +47,7 @@
     let CurrWeap = 1;
     let dashCharge = false;
     const Filename = "ShansStand/";
+    let timerd = 0;
 
     // Player control state
     let dashing = false;
@@ -54,6 +55,10 @@
     let Hmessagetimer = 0;
     let SBmessagetimer = 0;
     let WeaponMessageTimer = 0;
+
+
+
+    let RoomType = 0;
 
     // Audio
     const ouch = new Audio('Ouch.mp3'); // Replace with your sound file path
@@ -687,6 +692,49 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
 }
 
 // Game loop
+
+//function to create rooms
+
+function startRoom(x, timerd) {
+    if (timerd == 0) {
+        switch (x) {
+            case 1: lovedayRoom();
+                break;
+            case 2: roboticsRoom();
+                break;
+        }
+        startGameFromMenu();
+    } else {
+        //use to set enemy spawns per level
+        if (x == 1) {
+            if (timerd%30 == 0) {
+                const spawn = getValidSpawnRect(50, 50);
+                let ex = spawn.x; let ey = spawn.y;
+                enemies.push(new Charger(ex, ey, 3*difficulty/3, (350*(0.9+Wave/10)**2)*difficulty/2, 4*difficulty/2, "Dom.png", 50, 50));
+                enemyCount++;
+                chargerCount++;
+                spawntime = 0;
+            }
+        } else if (x == 2) {
+            if (timerd%30 == 0) {
+                const spawn = getValidSpawnRect(50, 50);
+                let ex = spawn.x; let ey = spawn.y;
+                enemies.push(new Charger(ex, ey, 0.75*difficulty/3, (700*(0.9+Wave/10)**2)*difficulty/2, 6*difficulty/2, "Zuk.png", 70, 70));
+                tankCount++;
+                enemyCount++;
+                spawntime = 0;
+            }
+        }
+    }
+
+
+}
+
+
+
+
+
+
 function lovedayRoom() {
     gameArea.style.backgroundImage = "url('LovedayClass.png')"
     addObstacle(0, 0, 40, 120, { color: "#947A54" });   
@@ -751,7 +799,7 @@ function update(timestamp) {
 
       let dx = 0, dy = 0;
 
-    
+        
       sanityTimer++;
       if (difficulty == 1) {
         if (sanityTimer >= 90) {
@@ -788,7 +836,9 @@ function update(timestamp) {
       if (sanity <= 0) {
         sanity = 0;
       }
-    
+
+      timerd++;
+      startRoom(RoomType, timerd);
 
 
       if (x <50) {
@@ -1558,6 +1608,7 @@ function update(timestamp) {
         showerCount = 0;
         scoreBoostCount = 0;
         tankCount = 0;
+        timerd = 0;
 
         // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
         try {
@@ -1667,6 +1718,7 @@ function startBoostOverlay(durationMs) {
 }
 
 function startGameFromMenu() {
+    timerd = 0;
     if (gameStarted) return;
     gameStarted = true;
     showGameUI();
@@ -1738,6 +1790,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function chooseMap(map) {
+        RoomType = map;
         if (map == 1) {
             lovedayRoom();
         } else if (map == 2) {
