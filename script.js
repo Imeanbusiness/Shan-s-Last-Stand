@@ -64,6 +64,7 @@
     const domDeath = new Audio("DomDeath.mp3");
     const ZukDeath = new Audio("ZukDeath.mp3");
     const dashCharged = new Audio("DashCharge.mp3");
+    
 
     // Other globals that were previously implicitly global
     let MathQuest = false;
@@ -1417,10 +1418,22 @@ function update(timestamp) {
             // Spawn a projectile 20x3 that flies until collision
             const projEl = document.createElement("div");
             projEl.style.position = "absolute";
-            projEl.style.width = "20px";
-            projEl.style.height = "3px";
-            projEl.style.background = "black";
+            // make the projectile slightly bigger so background images are visible
+            projEl.style.width = "28px";
+            projEl.style.height = "8px";
+            //projEl.style.background = "black";
             projEl.style.borderRadius = "2px";
+            // Use an existing projectile-like asset; 'SnipProj.png' wasn't present in the repo
+            // so use ShotgunShot.png as a visible fallback. If you add a small projectile
+            // sprite, replace the URL here.
+            projEl.style.backgroundImage = "url('SP.png')";
+            // correctly set background sizing/position so the image is visible
+            projEl.style.backgroundSize = "cover";
+            projEl.style.backgroundRepeat = "no-repeat";
+            projEl.style.backgroundPosition = "center";
+            // fallback color if image fails to load
+            /*projEl.style.backgroundColor = "black";
+            projEl.style.boxShadow = "0 0 6px rgba(255,255,255,0.15)";*/
             CalcgunSound.play();
             // start slightly in front of player
             const dirVec = directionVectors[direction];
