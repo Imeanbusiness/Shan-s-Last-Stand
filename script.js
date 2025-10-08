@@ -30,6 +30,7 @@
     // Config constants
     const ShotgunCooldown = 1100; // milliseconds
     const CalcgunCooldown = 1500;
+    const MCCooldown = 300;
     const iFrames = 1000;
     const BaseSpeed = 5.5;
 
@@ -69,6 +70,10 @@
     const domDeath = new Audio("DomDeath.mp3");
     const ZukDeath = new Audio("ZukDeath.mp3");
     const dashCharged = new Audio("DashCharge.mp3");
+    const MCSwoosh = new Audio("MCSwoosh.mp3");
+
+    // Enemy projectile list
+    let enemyProjectiles = [];
     
 
     // Other globals that were previously implicitly global
@@ -228,7 +233,7 @@ document.addEventListener("keydown", e => {
 document.addEventListener("keyup", e => {
     keysPressed[e.key.toLowerCase()] = false
     // Only allow the 'c' math prompt when game is active/visible
-    if (e.key.toLowerCase()=="c"  && !MathQuest && isGameActive()) {
+    /*if (e.key.toLowerCase()=="c"  && !MathQuest && isGameActive()) {
         MathQuest = true;
         sanity-=10;
         number1 = Math.floor(Math.random()*1000)
@@ -299,7 +304,7 @@ document.addEventListener("keyup", e => {
         MathQuest = false;
         }, puzzlecooldown);
 
-    }
+    }*/
     if (e.key.toLowerCase()=="h") { 
         alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper.\nC to answer a math question to regain sanity\n\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
         for (let key in keysPressed) {
@@ -364,6 +369,100 @@ class Charger {
         let angleDeg = angleRad * (180 / Math.PI); // convert to degrees
         this.el.style.transform = `rotate(${angleDeg+90+180}deg)`;
         }
+    }
+}
+
+// Ranged variant: stops approaching when within 100px and fires projectiles at the player
+class RangedCharger {
+    constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
+        this.x = x;
+        this.y = y;
+        this.speed = speed;
+        this.enemyHP = enemyHP;
+        this.fileName = fileName || 'Dom.png';
+        this.damage = damage;
+        this.width = width;
+        this.height = height;
+    this.fireCooldown = 0; // frames until next shot
+    this.fireInterval = 180; // frames between shots (~3s)
+        // Create DOM
+        this.el = document.createElement('div');
+        this.el.style.position = 'absolute';
+        this.el.style.left = `${x}px`;
+        this.el.style.top = `${y}px`;
+        this.el.style.height = height + 'px';
+        this.el.style.width = width + 'px';
+        this.el.id = 'enemy' + enemyCount;
+        this.el.style.backgroundImage = `url('${this.fileName}')`;
+        this.el.style.backgroundSize = 'cover';
+        this.hpText = document.createElement('div');
+        this.hpText.style.position = 'absolute';
+        this.hpText.style.top = '-15px';
+        this.hpText.style.left = '50%';
+        this.hpText.style.transform = 'translateX(-50%)';
+        this.hpText.style.color = 'red';
+        this.hpText.style.fontSize = '14px';
+        this.hpText.style.fontWeight = 'bold';
+        this.hpText.style.textAlign = 'center';
+        this.hpText.innerText = this.enemyHP;
+        this.el.appendChild(this.hpText);
+        gameArea.appendChild(this.el);
+    }
+
+    moveToward(targetX, targetY) {
+        // compute center distance
+        const centerX = this.x + (this.width ? this.width / 2 : 0);
+        const centerY = this.y + (this.height ? this.height / 2 : 0);
+        const dx = targetX - centerX;
+        const dy = targetY - centerY;
+        const dist = Math.hypot(dx, dy);
+        
+        if (dist > 110) {
+            // move toward player
+            this.x += (dx / dist) * this.speed;
+            this.y += (dy / dist) * this.speed;
+            this.el.style.left = `${this.x}px`;
+            this.el.style.top = `${this.y}px`;
+            // Update rotation as in Charger
+            let angleRad = Math.atan2(dy, dx);
+            let angleDeg = angleRad * (180 / Math.PI);
+            this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
+        } else {
+            // stop moving and attempt to fire
+            if (this.fireCooldown <= 0) {
+                this.fireCooldown = this.fireInterval;
+                this.fireAt(targetX, targetY);
+            }
+        }
+        if (this.fireCooldown > 0) this.fireCooldown--;
+        // Update HP text
+        this.hpText.innerText = Math.ceil(this.enemyHP);
+    }
+
+    fireAt(targetX, targetY) {
+        // create a projectile element aimed at the target
+        const proj = document.createElement('div');
+        proj.style.position = 'absolute';
+        proj.style.width = '15px';
+        proj.style.height = '15px';
+        proj.style.borderRadius = '50%';
+        proj.style.background = 'orange';
+        // start at center of enemy
+        const startX = this.x + (this.width ? this.width / 2 : 0);
+        const startY = this.y + (this.height ? this.height / 2 : 0);
+        proj.style.left = `${startX}px`;
+        proj.style.top = `${startY}px`;
+        gameArea.appendChild(proj);
+        // compute velocity
+        const dx = targetX - startX;
+        const dy = targetY - startY;
+        const dist = Math.hypot(dx, dy) || 1;
+        const speed = 9; // enemy projectile speed
+        const vx = (dx / dist) * speed;
+        const vy = (dy / dist) * speed;
+        // projectile carries damage equal to this.damage
+            enemyProjectiles.push({ x: startX, y: startY, dx: vx, dy: vy, el: proj, damage: this.damage });
+            try { CalcgunSound.play(); } catch (e) {}
     }
 }
 
@@ -707,27 +806,235 @@ function startRoom(x, timerd) {
     } else {
         //use to set enemy spawns per level
         if (x == 1) {
-            if (timerd%30 == 0) {
-                const spawn = getValidSpawnRect(50, 50);
-                let ex = spawn.x; let ey = spawn.y;
-                enemies.push(new Charger(ex, ey, 3*difficulty/3, (350*(0.9+Wave/10)**2)*difficulty/2, 4*difficulty/2, "Dom.png", 50, 50));
-                enemyCount++;
-                chargerCount++;
+            if (timerd%90 == 0) {
+                    const spawn = getValidSpawnRect(50, 50);
+                    if (spawn) {
+                        // schedule spawn with portal
+                        EnemySpawnCampaign('dom');
+                        spawntime = 0;
+                    } else {
+                        // No valid spawn found (likely crowded with obstacles); skip this spawn attempt
+                        console.warn('No valid spawn found for lovedayRoom spawner; skipping spawn this tick.');
+                    }
+                }
+            if (timerd%300 == 0) {
+                EnemySpawnCampaign('zuk');
+                spawntime = 0;
+            }
+            if (timerd%180 == 0) {
+                EnemySpawnCampaign('ranged');
                 spawntime = 0;
             }
         } else if (x == 2) {
-            if (timerd%30 == 0) {
-                const spawn = getValidSpawnRect(50, 50);
-                let ex = spawn.x; let ey = spawn.y;
-                enemies.push(new Charger(ex, ey, 0.75*difficulty/3, (700*(0.9+Wave/10)**2)*difficulty/2, 6*difficulty/2, "Zuk.png", 70, 70));
-                tankCount++;
-                enemyCount++;
-                spawntime = 0;
-            }
+            if (timerd%250 == 0) {
+                    const spawn = getValidSpawnRect(50, 50);
+                    if (spawn) {
+                        EnemySpawnCampaign('zuk');
+                        spawntime = 0;
+                    } else {
+                        // No valid spawn found (likely crowded with obstacles); skip this spawn attempt
+                        console.warn('No valid spawn found for roboticsRoom spawner; skipping spawn this tick.');
+                    }
+                }
         }
     }
 
+    // Update enemy-fired projectiles
+    if (enemyProjectiles.length > 0) {
+        const areaWidth = 650;
+        const areaHeight = 650;
+        enemyProjectiles = enemyProjectiles.filter((p) => {
+            p.x += p.dx;
+            p.y += p.dy;
+            p.el.style.left = `${p.x}px`;
+            p.el.style.top = `${p.y}px`;
+            // border check
+            if (p.x < 0 || p.x > areaWidth || p.y < 0 || p.y > areaHeight) {
+                p.el.remove();
+                return false;
+            }
+            // obstacle collision
+            for (let k = 0; k < obstacles.length; k++) {
+                const o = obstacles[k];
+                if (!o.blocksProjectiles) continue;
+                const projRect = p.el.getBoundingClientRect();
+                const obsRect = o.el.getBoundingClientRect();
+                const overlapObs = !(projRect.right < obsRect.left || projRect.left > obsRect.right || projRect.bottom < obsRect.top || projRect.top > obsRect.bottom);
+                if (overlapObs) {
+                    p.el.remove();
+                    return false;
+                }
+            }
+            // collision with player
+            try {
+                const playerRect = player.getBoundingClientRect();
+                const projRect = p.el.getBoundingClientRect();
+                const hit = !(projRect.right < playerRect.left || projRect.left > playerRect.right || projRect.bottom < playerRect.top || projRect.top > playerRect.bottom);
+                if (hit && !invinc) {
+                    playerhp -= Math.floor(p.damage + Math.floor(Math.random() * 5));
+                    if (playerhp < 0) playerhp = 0;
+                    ouch.play();
+                    setFlash('rgba(255,0,0,0.25)', 120);
+                    invinc = true;
+                    setTimeout(() => { invinc = false; }, iFrames);
+                    p.el.remove();
+                    return false;
+                }
+            } catch (e) {}
+            return true;
+        });
+    }
 
+}
+
+
+// Centralized enemy death handler. Does DOM removal, scoring, counters and a 5% chance to drop a heal pickup.
+function handleEnemyDeath(enemy) {
+    try { enemy.el.remove(); } catch (e) {}
+    // Base score
+    score += 250 * Mult;
+    // Extra handling based on type
+    if (enemy.fileName == "Zuk.png") {
+        score += 250 * Mult;
+        tankCount = Math.max(0, tankCount - 1);
+        try { ZukDeath.play(); } catch (e) {}
+    } else if (enemy.fileName == "Shower.jpg") {
+        score += 750 * Mult;
+        showerCount = Math.max(0, showerCount - 1);
+    } else {
+        try { domDeath.play(); } catch (e) {}
+        chargerCount = Math.max(0, chargerCount - 1);
+    }
+
+    // 5% chance to drop a health pickup at the enemy's location. Defer to avoid mutating arrays mid-iteration.
+    if (Math.random() < 0.05) {
+        const hx = enemy.x || 0;
+        const hy = enemy.y || 0;
+        setTimeout(() => {
+            try {
+                enemies.push(new HealPickup(hx, hy));
+                healthCount = Math.max(0, healthCount + 1);
+                enemyCount++;
+            } catch (e) {}
+        }, 0);
+    }
+}
+
+// Enemy spawn with portal animation and delay (fade-in then fade-out over ~600ms total)
+function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
+    // New signature: EnemySpawnCampaign(type, delayMs = 600)
+    // `type` is a string selector: 'dom','ranged','zuk','shower','heal','score'
+    // Map the type into the concrete parameters used to create the entity
+    let damage = 0;
+    let enemyHP = 0;
+    let speed = 0;
+    let fileName = '';
+    let width = 50;
+    let height = 50;
+    const t = (type && typeof type === 'string') ? type.toString().toLowerCase() : null;
+    if (!t) {
+        console.warn('EnemySpawnCampaign: expected string type as first argument; got', type);
+        return false;
+    }
+    switch (t) {
+        case 'dom':
+            damage = 4 * difficulty / 2;
+            enemyHP = Math.floor((350 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            speed = Math.floor(3 * difficulty / 3);
+            fileName = 'Dom.png'; width = 50; height = 50; break;
+        case 'ranged':
+            damage = Math.floor(4 * difficulty / 2);
+            enemyHP = Math.floor((350 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            speed = 3 * difficulty / 3;
+            fileName = 'RangedDom'; width = 50; height = 50; break;
+        case 'zuk':
+            damage = Math.floor(6 * difficulty / 2);
+            enemyHP = Math.floor((700 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            speed = 0.75 * difficulty / 3;
+            fileName = 'Zuk.png'; width = 70; height = 70; break;
+        case 'shower':
+            damage = Math.floor(16 * difficulty / 2);
+            enemyHP = Math.floor((3000 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            speed = 0.2 * difficulty / 3;
+            fileName = 'Shower.jpg'; width = 85; height = 85; break;
+        case 'heal':
+        case 'healpickup':
+            damage = 0; enemyHP = 0; speed = 0; fileName = 'HealPickup'; width = 45; height = 45; break;
+        case 'score':
+        case 'scoreboost':
+            damage = 0; enemyHP = 0; speed = 0; fileName = 'ScoreBoost'; width = 45; height = 45; break;
+        default:
+            console.warn('EnemySpawnCampaign: unknown enemy type', damage);
+            return false;
+    }
+    let ex;
+    let ey;
+    if (enx == -1 || eny == -1) {
+        const spawn = getValidSpawnRect(width, height);
+        if (!spawn) {
+            console.warn('EnemySpawnCampaign: no valid spawn found for', fileName, 'skipping spawn.');
+            return false;
+        }
+        ex = spawn.x;
+        ey = spawn.y;
+        
+    } else {
+        ex = enx;
+        ey = eny;
+    }
+
+    // Create a portal visual at the spawn point
+    const portal = document.createElement('div');
+    portal.style.position = 'absolute';
+    portal.style.left = `${ex}px`;
+    portal.style.top = `${ey}px`;
+    portal.style.transform = 'translate(-50%, -50%)';
+    const pSize = Math.max(40, Math.min(120, Math.max(width, height)));
+    portal.style.width = `${pSize}px`;
+    portal.style.height = `${pSize}px`;
+    portal.style.borderRadius = '50%';
+    portal.style.backgroundImage = "url('Portal.webp')";
+    portal.style.backgroundSize = 'cover';
+    portal.style.opacity = '0';
+    portal.style.transition = 'opacity 300ms ease-in-out';
+    portal.style.pointerEvents = 'none';
+    gameArea.appendChild(portal);
+
+    // Fade in then fade out, spawn when fade-out completes
+    setTimeout(() => { portal.style.opacity = '1'; }, 10);
+    // fade out after half the delay
+    setTimeout(() => { portal.style.opacity = '0'; }, 10 + Math.max(0, delayMs / 2));
+    setTimeout(() => {
+        try { portal.remove(); } catch (e) {}
+        // Create the entity
+        if (fileName === 'HealPickup') {
+            enemies.push(new HealPickup(ex, ey));
+            healthCount++;
+            enemyCount++;
+        } else if (fileName === 'ScoreBoost') {
+            enemies.push(new ScoreBoost(ex, ey));
+            scoreBoostCount = Math.max(0, scoreBoostCount + 1);
+            enemyCount++;
+        } else {
+            // Special-case: Ranged variant that looks like Dom.png
+            if (fileName === 'RangedDom') {
+                enemies.push(new RangedCharger(ex, ey, speed, enemyHP, damage, 'Ranged.jpg', width, height));
+            } else {
+                enemies.push(new Charger(ex, ey, speed, enemyHP, damage, fileName, width, height));
+            }
+            // classify counters
+            if (fileName == 'Zuk.png') {
+                tankCount = Math.max(0, tankCount + 1);
+            } else if (fileName == 'Shower.jpg') {
+                showerCount = Math.max(0, showerCount + 1);
+            } else {
+                chargerCount = Math.max(0, chargerCount + 1);
+            }
+            enemyCount++;
+        }
+    }, 10 + delayMs + 10);
+
+    return true;
 }
 
 
@@ -760,6 +1067,8 @@ function lovedayRoom() {
     addObstacle(320, 225, 10, 300, { color: "white" });
 
 }
+
+//"player"
 function roboticsRoom() {
     gameArea.style.backgroundImage = "url('Robotikroom.png')"
      addObstacle(0, 50, 50, 550, { color: "#F8DFA1" }); 
@@ -864,6 +1173,10 @@ function update(timestamp) {
             Mult = true;
         }
 
+
+        if (CurrWeap == 0 && !attack) {
+            player.src = "PlayerMC.png"
+        }
         if (CurrWeap == 1 && !attack) {
             player.src = "Player.png"
         }
@@ -941,11 +1254,22 @@ function update(timestamp) {
             Atdelay = 5;
             attackingDelay = 20000;
             }
+
+        if (keysPressed["c"] && CurrWeap != 0) {
+            CurrWeap = 0;
+            attack = false; // cancel any current firing
+            // reset cooldowns; only apply load time for calc gun (5 frames)
+            Atdelay = 25;
+            attackingDelay = 20000;
+            }
                 
         Atdelay--
         attackingDelay++
         
         
+        if (attack && attackingDelay >= MCCooldown/1000 * 60 && CurrWeap == 0) {
+            attack = false 
+        }
         if (attack && attackingDelay >= ShotgunCooldown/1000 * 60 && CurrWeap == 1) {
             attack = false 
         }
@@ -1118,7 +1442,9 @@ function update(timestamp) {
     player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
 
     if (attack) {
-        if (CurrWeap == 1) {
+        if (CurrWeap == 0) {
+            player.src = "PlayerAttackingMC.png";
+        } else if (CurrWeap == 1) {
             player.src = "PlayerAttacking.png";
         } else if (CurrWeap == 2) {
             player.src = "PlayerAttacking2.png";
@@ -1127,61 +1453,38 @@ function update(timestamp) {
     }
 
     // --- Charger Spawning ---
-    if (spawntime > 50) {
+    /*if (spawntime > 50) {
         spawnEnemy = Math.random()*100*(2/difficulty)
 
         if (spawnEnemy < 1 && chargerCount<7) { // ~1% chance per frame
-          const spawn = getValidSpawnRect(50, 50);
-          if (spawn) {
-            let ex = spawn.x; let ey = spawn.y;
-            enemies.push(new Charger(ex, ey, 3*difficulty/3, (350*(0.9+Wave/10)**2)*difficulty/2, 4*difficulty/2, "Dom.png", 50, 50));
-            enemyCount++;
-            chargerCount++;
-            spawntime = 0;
-          }
+                    // Attempt to schedule a Charger spawn with portal
+                    if (EnemySpawnCampaign('dom')) {
+                        spawntime = 0;
+                    }
         }
         if (spawnEnemy <1.3 && spawnEnemy > 1 && healthCount<2 && elapsed > 600) { // ~1% chance per frame
-          const spawn = getValidSpawnRect(45, 45);
-          if (spawn) {
-            let ex = spawn.x; let ey = spawn.y;
-            enemies.push(new HealPickup(ex, ey));
-            healthCount++;
-            enemyCount++;
-            spawntime = 0;
-          }
+                    // Schedule a heal pickup spawn via portal visual
+                    if (EnemySpawnCampaign('heal')) {
+                        spawntime = 0;
+                    }
         }
         if (spawnEnemy < 1.6 && spawnEnemy > 1.3 && tankCount<3 && Wave>1) { // ~1% chance per frame
-          const spawn = getValidSpawnRect(70, 70);
-          if (spawn) {
-            let ex = spawn.x; let ey = spawn.y;
-            enemies.push(new Charger(ex, ey, 0.75*difficulty/3, (700*(0.9+Wave/10)**2)*difficulty/2, 6*difficulty/2, "Zuk.png", 70, 70));
-            tankCount++;
-            enemyCount++;
-            spawntime = 0;
-          }
+                    if (EnemySpawnCampaign('zuk')) {
+                        spawntime = 0;
+                    }
         }
         if (spawnEnemy <2 && spawnEnemy > 1.9 && showerCount<2 && Wave>2) { // ~1% chance per frame
-          const spawn = getValidSpawnRect(85, 85);
-          if (spawn) {
-            let ex = spawn.x; let ey = spawn.y;
-            enemies.push(new Charger(ex, ey, 0.2*difficulty/3, (3000*(0.9+Wave/10)**2)*difficulty/2, 16*difficulty/2, "Shower.jpg", 85, 85));
-            showerCount++;
-            enemyCount++;
-            spawntime = 0;
-          }
+                    if (EnemySpawnCampaign('shower')) {
+                        spawntime = 0;
+                    }
         }
         if (spawnEnemy < 2.1 && spawnEnemy > 2 && scoreBoostCount<1) { // ~1% chance per frame
-          const spawn = getValidSpawnRect(45, 45);
-          if (spawn) {
-            let ex = spawn.x; let ey = spawn.y;
-            enemies.push(new ScoreBoost(ex, ey));
-            scoreBoostCount++;
-            enemyCount++;
-            spawntime = 0;
-          }
+                    if (EnemySpawnCampaign('score')) {
+                        spawntime = 0;
+                    }
         }
 
-    }
+    }*/
     if (playerhp >= 100) {
         playerhp = 100
     }
@@ -1223,7 +1526,7 @@ function update(timestamp) {
     }
     // Only move enemies that are not colliding
    enemies.forEach((enemy, idx) => {
-        if (!colliding[idx] && (enemy instanceof Charger || enemy instanceof Tank)) {
+       if (!colliding[idx] && (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank)) {
             const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
             const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
             let targetX = x;
@@ -1313,7 +1616,7 @@ function update(timestamp) {
                 
 
                 
-            }  else if (enemy instanceof Charger) {
+            }  else if (enemy instanceof Charger || enemy instanceof RangedCharger) {
                 if (!invinc) {
                     playerhp -= Math.floor((enemy.damage + Math.floor(Math.random() * 5)) * (0.9 + Wave / 10) ** 2);
                     if (playerhp < 0) {
@@ -1373,7 +1676,12 @@ function update(timestamp) {
     document.getElementById("sanity").innerText =  sanity+" %";
     // Weapon name
     try {
-        document.getElementById("weapon").innerText = CurrWeap == 1 ? "Shauntgun" : "Shauniper";
+        switch (CurrWeap) {
+            case 0: document.getElementById("weapon").innerText = "M. Pencil"; break;
+            case 1: document.getElementById("weapon").innerText = "Shauntgun"; break;
+            case 2: document.getElementById("weapon").innerText = "Shauniper"; break;
+        }
+        //document.getElementById("weapon").innerText = CurrWeap == 1 ? "Shauntgun" : "Shauniper";
     } catch (e) {}
     // Dash recharge percent (0-100)
     try {
@@ -1387,7 +1695,7 @@ function update(timestamp) {
 
     if (attack && FirstAttack) {
         FirstAttack = false;
-        if (CurrWeap == 1 && sanity >= Math.floor(difficulty/2)+1) {
+    if (CurrWeap == 1 && sanity >= Math.floor(difficulty/2)+1) {    
             sanity -= Math.floor(difficulty/2)+1;
                 if (sanity < 0) {
                     sanity = 0;
@@ -1439,19 +1747,7 @@ function update(timestamp) {
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
                         if (enemy.enemyHP <= 0) {
-                            enemy.el.remove();
-                            score += 250*Mult;
-                            if (enemy.fileName == "Zuk.png") {
-                                score += 250*Mult;
-                                tankCount -= 1;
-                                ZukDeath.play();
-                            } else if (enemy.fileName == "Shower.jpg") {
-                                score += 750*Mult;
-                                showerCount -= 1;
-                            } else {
-                                domDeath.play();
-                                chargerCount--
-                            }
+                            handleEnemyDeath(enemy);
                             return false;
                         }
                     }
@@ -1460,6 +1756,63 @@ function update(timestamp) {
             });
             if (score >= Wave*2500) { Wave++; }
             setTimeout(() => { el.remove(); }, 50);
+        } else if (CurrWeap == 0) {
+            // Melee AoE: create a temporary black circle (50px radius) below the player
+            const radius = 65;
+            const dia = radius * 2;
+            const aoe = document.createElement('div');
+            aoe.style.position = 'absolute';
+            aoe.style.width = dia + 'px';
+            aoe.style.height = dia + 'px';
+            aoe.style.borderRadius = '50%';
+            // place slightly below player center so it appears under feet
+            const centerX = x;
+            const centerY = y;
+            aoe.style.left = `${centerX}px`;
+            aoe.style.top = `${centerY}px`;
+            aoe.style.transform = 'translate(-50%, -50%)';
+            //aoe.style.background = 'transparent';
+            aoe.style.background = 'transparent';
+            aoe.style.opacity = '0.95';
+            aoe.style.zIndex = 9998;
+            gameArea.appendChild(aoe);
+            MCSwoosh.play();
+            // Remove any enemies whose centers lie within radius and are not blocked by obstacles
+            let killed = false;
+            enemies = enemies.filter((enemy) => {
+                const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
+                const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
+                const dist = Math.hypot(enemyCenterX - centerX, enemyCenterY - centerY);
+                const enemyHalf = enemy.width ? Math.max(enemy.width, enemy.height)/2 : 20;
+                if (dist <= radius + enemyHalf) {
+                    const blocked = lineBlockedByObstacles(centerX, centerY, enemyCenterX, enemyCenterY);
+                    if (!blocked && !killed) {
+                        // apply AoE damage
+                        const dmg = 100 + (1500 * ((100 - sanity) / 100) * ((100 - sanity) / 100));
+                        const dealt = applyDamage(enemy, dmg);
+                        showLastDamageAbovePlayer(dealt);
+                        // If enemy died, remove it and mark a kill (only one kill per AoE)
+                        killed = true;
+                        if (enemy.enemyHP <= 0) {
+                            handleEnemyDeath(enemy);
+                            sanity = Math.min(100, sanity + 4);
+                            return false;
+                        } else {
+                            // Enemy wounded but still alive — update hp display and keep it in the list
+                            try {
+                                if (enemy.hpText) enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+                            } catch (e) {}
+                            // don't set killed; allow further AoE hits to affect others
+                            return true; // keep this enemy in the array
+                        }
+                    }
+                }
+                return true;
+            });
+
+            if (score >= Wave*2500) { Wave++; }
+            //ShotgunSound.play();
+            setTimeout(() => { aoe.remove(); }, 50);
         } else if (CurrWeap == 2 && sanity >= Math.floor(difficulty/2)+1) {
             sanity -= Math.floor(difficulty/2)+1;
             if (sanity < 0) {
@@ -1540,7 +1893,7 @@ function update(timestamp) {
             const projRect = p.el.getBoundingClientRect();
             for (let i = 0; i < enemies.length; i++) {
                 const enemy = enemies[i];
-                if (!(enemy instanceof Charger || enemy instanceof Tank)) continue;
+                if (!(enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank)) continue;
                 const enemyRect = enemy.el.getBoundingClientRect();
                 const overlap = !(projRect.right < enemyRect.left || projRect.left > enemyRect.right || projRect.bottom < enemyRect.top || projRect.top > enemyRect.bottom);
                 if (overlap) {
@@ -1549,19 +1902,7 @@ function update(timestamp) {
                     const dealt = Math.max(0, before - enemy.enemyHP);
                     showLastDamageAbovePlayer(dealt);
                     if (enemy.enemyHP <= 0) {
-                        enemy.el.remove();
-                        score += 250*Mult;
-                        if (enemy.fileName == "Zuk.png") {
-                            score += 250*Mult;
-                            tankCount -= 1;
-                            ZukDeath.play();
-                        } else if (enemy.fileName == "Shower.jpg") {
-                            score += 1250*Mult;
-                            showerCount -= 1;
-                        } else {
-                            domDeath.play();
-                            chargerCount--
-                        }
+                        handleEnemyDeath(enemy);
                         enemies.splice(i, 1);
                         if (score >= Wave*2500) { Wave++; }
                     }
@@ -1574,7 +1915,7 @@ function update(timestamp) {
     }
              
     enemies.forEach(enemy => {
-    if (enemy instanceof Charger || enemy instanceof Tank) {
+    if (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank) {
         enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
     }
 });
