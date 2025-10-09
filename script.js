@@ -2403,12 +2403,12 @@ async function startGameFromMenu() {
         document.getElementById("WaveTitle").innerHTML = "Level";
 
         // Play cutscenes sequentially
-        startCutscene("ShanPFP.png", 3000, "Huh?", "LovedayBack.jpg");
+        startCutscene("///heth", 3000, "Huh?", "LovedayBack.jpg");
         await sleep(3000);
 
 
 
-        startCutscene("ShanPFP.png", 3000, "dwdwdd", "LovedayBack.jpg");
+        startCutscene("///heth", 3000, "dwdwdd", "LovedayBack.jpg");
         await sleep(3000);
         // Initialize the first room
         lovedayRoom();
@@ -2419,12 +2419,12 @@ async function startGameFromMenu() {
         document.getElementById("WaveTitle").innerHTML = "Level";
 
         // Play cutscenes sequentially
-        startCutscene("ShanPFP.png", 3000, "Huhhhhh?", "LovedayBack.jpg");
+        startCutscene("///heth", 3000, "Huhhhhh?", "LovedayBack.jpg");
         await sleep(3000);
 
 
 
-        startCutscene("ShanPFP.png", 3000, "wdaddqd", "LovedayBack.jpg");
+        startCutscene("///heth", 3000, "wdaddqd", "LovedayBack.jpg");
         await sleep(3000);
         // Additional logic for the next campaign level can go here
         roboticsRoom();
