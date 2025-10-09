@@ -2408,7 +2408,7 @@ async function startGameFromMenu() {
 
 
 
-        startCutscene("ShanPFP.png", 3000, "I'm gay.", "LovedayBack.jpg");
+        startCutscene("ShanPFP.png", 3000, "dwdwdd", "LovedayBack.jpg");
         await sleep(3000);
         // Initialize the first room
         lovedayRoom();
@@ -2424,7 +2424,7 @@ async function startGameFromMenu() {
 
 
 
-        startCutscene("ShanPFP.png", 3000, "I'm gay.", "LovedayBack.jpg");
+        startCutscene("ShanPFP.png", 3000, "wdaddqd", "LovedayBack.jpg");
         await sleep(3000);
         // Additional logic for the next campaign level can go here
         roboticsRoom();
@@ -2581,4 +2581,4 @@ const originalUpdate = update;
     try { Object.freeze(window.ShansLastStand); } catch (e) {}
 
 })();
-//await
+//cutsc
