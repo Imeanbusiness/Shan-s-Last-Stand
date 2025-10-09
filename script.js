@@ -47,6 +47,7 @@
     let shanstate = 2;
     let CurrWeap = 1;
     let dashCharge = false;
+    let transitioning = false;
     const Filename = "ShansStand/";
     let timerd = 0;
 
@@ -90,6 +91,7 @@
     let number1 = 0, number2 = 0, number3 = 0, chance = 0, ans = null;
     let newMessage = null;
     let time = 0;
+    let level = 1;
 
 
 function showDamage(x, y, damage) {
@@ -152,6 +154,11 @@ let Wave = 1;
 let invinc = false;
 let score = 0;
 let playerhp =  100;
+
+let camplevel = 1;
+let currCamplevel = 1;
+let CampEnemyCount = -1;
+
 //forEach
 let x = 280;
 let y = 280;
@@ -796,7 +803,12 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
 
 function startRoom(x, timerd) {
     if (timerd == 0) {
+        document.getElementById("ScoreTitle").innerHTML = "Score";
+        document.getElementById("WaveTitle").innerHTML = "Wave";
         switch (x) {
+            case 0: lovedayRoom();
+            
+                break;
             case 1: lovedayRoom();
                 break;
             case 2: roboticsRoom();
@@ -805,7 +817,8 @@ function startRoom(x, timerd) {
         startGameFromMenu();
     } else {
         //use to set enemy spawns per level
-        if (x == 1) {
+        
+        if (x == 0) {
             if (timerd%90 == 0) {
                     const spawn = getValidSpawnRect(50, 50);
                     if (spawn) {
@@ -825,7 +838,7 @@ function startRoom(x, timerd) {
                 EnemySpawnCampaign('ranged');
                 spawntime = 0;
             }
-        } else if (x == 2) {
+        } /*else if (x == 2) {
             if (timerd%250 == 0) {
                     const spawn = getValidSpawnRect(50, 50);
                     if (spawn) {
@@ -837,7 +850,9 @@ function startRoom(x, timerd) {
                     }
                 }
         }
+                */
     }
+
 
     // Update enemy-fired projectiles
     if (enemyProjectiles.length > 0) {
@@ -886,6 +901,150 @@ function startRoom(x, timerd) {
     }
 
 }
+//click
+
+function startCutscene(image, durationMs, text, bg) {
+    // image: string or array of character-image urls
+    // durationMs: ms per slide (total duration for single image)
+    // text: string or array (if array, matched to images)
+    // bg: optional background image url or background-position keyword ('left','right','center')
+    try {
+        // normalize inputs
+        const slides = Array.isArray(image) ? image.slice() : [image];
+        const texts = Array.isArray(text) ? text.slice() : slides.map(() => (text || ""));
+        const delay = Math.max(200, Number(durationMs) || 2000);
+
+        // remove any existing cutscene overlay
+        const existing = document.getElementById('cutsceneOverlay');
+        if (existing) existing.remove();
+
+        // container that covers the viewport
+        const overlay = document.createElement('div');
+        overlay.id = 'cutsceneOverlay';
+        overlay.style.position = 'fixed';
+        overlay.style.left = '0';
+        overlay.style.top = '0';
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.zIndex = '10000';
+        overlay.style.display = 'flex';
+        overlay.style.alignItems = 'flex-end';
+        overlay.style.justifyContent = 'center';
+        overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
+        overlay.style.pointerEvents = 'auto';
+        overlay.style.overflow = 'hidden';
+
+        // background handling: if bg looks like an image path, use it as background; otherwise use as position
+        if (bg) {
+            const bgStr = String(bg);
+            if (/\.(png|jpg|jpeg|webp|gif)$/i.test(bgStr) || bgStr.indexOf('url(') !== -1) {
+                overlay.style.backgroundImage = `url('${bgStr}')`;
+                overlay.style.backgroundSize = 'cover';
+                overlay.style.backgroundPosition = 'center';
+            } else {
+                overlay.style.backgroundSize = 'cover';
+                overlay.style.backgroundPosition = bgStr || 'center';
+            }
+        } else {
+            overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
+        }
+
+        // character image element (bottom-left by default)
+        const charEl = document.createElement('img');
+        charEl.id = 'cutsceneChar';
+        charEl.style.position = 'absolute';
+        charEl.style.bottom = '8%';
+        charEl.style.left = '4%';
+        charEl.style.maxHeight = '60%';
+        charEl.style.maxWidth = '35%';
+        charEl.style.objectFit = 'contain';
+        charEl.style.transition = 'opacity 300ms ease';
+        charEl.style.opacity = '0';
+        charEl.style.pointerEvents = 'none';
+        overlay.appendChild(charEl);
+
+        // text box at bottom center
+        const textBox = document.createElement('div');
+        textBox.id = 'cutsceneText';
+        textBox.style.position = 'absolute';
+        textBox.style.left = '50%';
+        textBox.style.bottom = '4%';
+        textBox.style.transform = 'translateX(-50%)';
+        textBox.style.maxWidth = '90%';
+        textBox.style.width = '900px';
+        textBox.style.background = 'rgba(0,0,0,0.7)';
+        textBox.style.color = 'white';
+        textBox.style.padding = '14px 18px';
+        textBox.style.borderRadius = '8px';
+        textBox.style.fontSize = '18px';
+        textBox.style.lineHeight = '1.3';
+        textBox.style.textAlign = 'center';
+        textBox.style.boxShadow = '0 6px 20px rgba(0,0,0,0.6)';
+        textBox.style.pointerEvents = 'none';
+        overlay.appendChild(textBox);
+
+        // clicking overlay skips the cutscene
+        /*overlay.addEventListener('click', () => {
+            try { overlay.remove(); } catch (e) {}
+        });*/
+
+        document.body.appendChild(overlay);
+
+        let idx = 0;
+        let removed = false;
+
+        const showSlide = i => {
+            if (removed) return;
+            const img = slides[i];
+            const t = texts[i] || "";
+            // fade out, change, fade in
+            charEl.style.opacity = '0';
+            setTimeout(() => {
+                if (img) {
+                    charEl.src = img;
+                    charEl.style.display = 'block';
+                } else {
+                    charEl.style.display = 'none';
+                }
+                textBox.innerText = t;
+                charEl.style.opacity = '1';
+            }, 250);
+        };
+
+        // schedule sequence
+        const timers = [];
+        const total = slides.length;
+        for (let i = 0; i < total; i++) {
+            const when = i * delay;
+            timers.push(setTimeout(() => {
+                showSlide(i);
+            }, when));
+        }
+        // final remove after last slide
+        timers.push(setTimeout(() => {
+            try { overlay.remove(); } catch (e) {}
+            removed = true;
+        }, total * delay));
+
+        // return an object allowing manual control if caller wants it
+        return {
+            stop: () => {
+                timers.forEach(t => clearTimeout(t));
+                try { overlay.remove(); } catch (e) {}
+                removed = true;
+            }
+        };
+    } catch (err) {
+        console.warn('startCutscene error', err);
+        return null;
+    }
+}
+// ...existing code...
+
+
+
+
+
 
 
 // Centralized enemy death handler. Does DOM removal, scoring, counters and a 5% chance to drop a heal pickup.
@@ -936,6 +1095,11 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
         console.warn('EnemySpawnCampaign: expected string type as first argument; got', type);
         return false;
     }
+
+
+    console.log(CampEnemyCount);
+
+
     switch (t) {
         case 'dom':
             damage = 4 * difficulty / 2;
@@ -1040,7 +1204,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
 
 
 
-
+//CampEnemyCount
 
 function lovedayRoom() {
     gameArea.style.backgroundImage = "url('LovedayClass.png')"
@@ -1067,7 +1231,6 @@ function lovedayRoom() {
     addObstacle(320, 225, 10, 300, { color: "white" });
 
 }
-
 //"player"
 function roboticsRoom() {
     gameArea.style.backgroundImage = "url('Robotikroom.png')"
@@ -1097,9 +1260,17 @@ const fps = 60;
 const frameDuration = 1000 / fps;
 scoreBoostCount = 0;
 attackingDelay = 0
-
+//CampEnemy
 function update(timestamp) {
   try {
+
+
+    if (!gameStarted) {
+            requestAnimationFrame(update);
+            return; // Exit early if the game hasn't started
+    }
+
+
     if (!timestamp) timestamp = performance.now();
     const delta = timestamp - lastFrameTime;
 
@@ -1453,7 +1624,7 @@ function update(timestamp) {
     }
 
     // --- Charger Spawning ---
-    /*if (spawntime > 50) {
+    if (spawntime > 50 && RoomType != 0) {
         spawnEnemy = Math.random()*100*(2/difficulty)
 
         if (spawnEnemy < 1 && chargerCount<7) { // ~1% chance per frame
@@ -1484,9 +1655,9 @@ function update(timestamp) {
                     }
         }
 
-    }*/
-    if (playerhp >= 100) {
-        playerhp = 100
+    }
+    if (playerhp >= 80+level*20) {
+        playerhp = 80+level*20
     }
     elapsed++
     spawntime++
@@ -1638,6 +1809,39 @@ function update(timestamp) {
     });
 
 
+    try {
+        if (x >= nextlevelsquare.x && x <= nextlevelsquare.x + 100 && y <= nextlevelsquare.y && y >= nextlevelsquare.y - 100 && RoomType == 0) {
+            gameStarted = false;
+            currCamplevel++;
+            document.getElementById("nextLevel").remove();
+            nextlevelsquare = null;
+            x = 280;
+            y = 280;
+            direction = "n";
+            attack = false;
+            FirstAttack = false;
+            invinc = false;
+            enemies.forEach(enemy => enemy.el.remove());
+            enemies = [];
+            chargerCount = 0;
+            healthCount = 0;
+            enemyCount = 0;
+            showerCount = 0;
+            scoreBoostCount = 0;
+            tankCount = 0;
+            timerd = 0;
+            transitioning = true;
+            // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
+            try {
+                obstacles.forEach(o => { if (o && o.el) o.el.remove(); });
+            } catch (e) { }
+            obstacles = [];
+            showMainMenu();
+            startGameFromMenu();
+        }
+    } catch (e) {}
+
+
     // --- Enemy-Enemy Collision ---
     
     for (let i = 0; i < enemies.length; i++) {
@@ -1671,10 +1875,17 @@ function update(timestamp) {
     }
 
     document.getElementById("Score").innerText =  score;
-    document.getElementById("HP").innerText =  playerhp+" %";
+    if (RoomType == 0) {
+        document.getElementById("Score").innerText =  score+" / "+(Math.floor(level*2500*level/2));
+    }
+    document.getElementById("HP").innerText =  playerhp+" / "+(80+level*20);
     document.getElementById("wave").innerText =  Wave;
+    if (RoomType == 0) {
+        document.getElementById("wave").innerText =  level;
+ 
+    }
     document.getElementById("sanity").innerText =  sanity+" %";
-    // Weapon name
+    // Level
     try {
         switch (CurrWeap) {
             case 0: document.getElementById("weapon").innerText = "M. Pencil"; break;
@@ -1690,11 +1901,39 @@ function update(timestamp) {
     } catch (e) {}
     //damageEnemies
 
+    if (!transitioning && score >= Math.floor(level*2500*level/2) && RoomType == 0 && currCamplevel == camplevel) { 
+                    level++; 
+                    alert("Level up! You are now level "+level); 
+                    playerhp = 100+level*20; 
+                    for (let k in keysPressed) { keysPressed[k] = false; } 
+    }
 
+    try {
+        const shanEl = document.getElementById("ShanImage");
+        if (shanEl) {
+            // choose sprite by sanity as before
+            if (sanity <= 33) {
+                shanEl.src = "ShanDisappointed.webp";
+            } else if (sanity <= 66) {
+                shanEl.src = "NormalShan.webp";
+            } else {
+                shanEl.src = "HappyShan.webp";
+            }
 
+            // compute tint intensity from HP (0 = no tint, 1 = full tint)
+            const maxHp = 80 + level * 20;
+            const hpRatio = Math.max(0, Math.min(1, playerhp / maxHp));
+            const tint = Math.max(0, Math.min(1, 1 - hpRatio));
+
+            // smooth transition and visual effect: sepia + saturation + hue shift + inset red glow
+            shanEl.style.transition = "filter 150ms linear, box-shadow 150ms linear";
+            shanEl.style.filter = `sepia(${tint}) saturate(${1 + tint * 3}) hue-rotate(-20deg) brightness(${1 - tint * 0.15})`;
+            shanEl.style.boxShadow = `inset 0 0 ${10 + tint * 40}px rgba(255,0,0,${0.25 * tint})`;
+        }
+    } catch (e) {}
 
     if (attack && FirstAttack) {
-        FirstAttack = false;
+        FirstAttack = false;//level
     if (CurrWeap == 1 && sanity >= Math.floor(difficulty/2)+1) {    
             sanity -= Math.floor(difficulty/2)+1;
                 if (sanity < 0) {
@@ -1743,10 +1982,11 @@ function update(timestamp) {
                     const blocked = lineBlockedByObstacles(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
                     if (!blocked) {
                        
-                        const dmg = 500+(500*sanity/100)+ (score/100) * (sanity/100);
+                        const dmg = (500+(500*sanity/100)+ (score/100) * (sanity/100)) * (1+(0.1*(level-1)));
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
                         if (enemy.enemyHP <= 0) {
+                            CampEnemyCount--;
                             handleEnemyDeath(enemy);
                             return false;
                         }
@@ -1754,7 +1994,9 @@ function update(timestamp) {
                 }
                 return true;
             });
-            if (score >= Wave*2500) { Wave++; }
+            if (score >= Wave*2500 && RoomType != 0) { Wave++; }
+            
+
             setTimeout(() => { el.remove(); }, 50);
         } else if (CurrWeap == 0) {
             // Melee AoE: create a temporary black circle (50px radius) below the player
@@ -1788,12 +2030,13 @@ function update(timestamp) {
                     const blocked = lineBlockedByObstacles(centerX, centerY, enemyCenterX, enemyCenterY);
                     if (!blocked && !killed) {
                         // apply AoE damage
-                        const dmg = 100 + (1500 * ((100 - sanity) / 100) * ((100 - sanity) / 100));
+                        const dmg = (100 + (1500 * ((100 - sanity) / 100) * ((100 - sanity) / 100))) * (1+(0.1*(level-1)));
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
                         // If enemy died, remove it and mark a kill (only one kill per AoE)
                         killed = true;
                         if (enemy.enemyHP <= 0) {
+                            CampEnemyCount--;
                             handleEnemyDeath(enemy);
                             sanity = Math.min(100, sanity + 4);
                             return false;
@@ -1810,8 +2053,8 @@ function update(timestamp) {
                 return true;
             });
 
-            if (score >= Wave*2500) { Wave++; }
-            //ShotgunSound.play();
+            if (score >= Wave*2500 && RoomType != 0) { Wave++; }
+            
             setTimeout(() => { aoe.remove(); }, 50);
         } else if (CurrWeap == 2 && sanity >= Math.floor(difficulty/2)+1) {
             sanity -= Math.floor(difficulty/2)+1;
@@ -1860,12 +2103,12 @@ function update(timestamp) {
         }
     }
 
-    // Update and resolve weapon 2 projectiles
+    // Arena
     if (projectiles.length > 0) {
         const areaWidth = 650;
         const areaHeight = 650;
         const calcDamage = (enemy) => {
-            enemy.enemyHP -= 400+(400 * sanity / 100) + (score / 200) * (sanity / 100);
+            enemy.enemyHP -= (400+(400 * sanity / 100) + (score / 200) * (sanity / 100)) * (1+(0.1*(level-1)));
         };
         projectiles = projectiles.filter((p) => {
             p.x += p.dx * projectileSpeed;
@@ -1902,9 +2145,11 @@ function update(timestamp) {
                     const dealt = Math.max(0, before - enemy.enemyHP);
                     showLastDamageAbovePlayer(dealt);
                     if (enemy.enemyHP <= 0) {
+                        CampEnemyCount--;
                         handleEnemyDeath(enemy);
                         enemies.splice(i, 1);
-                        if (score >= Wave*2500) { Wave++; }
+                        if (score >= Wave*2500 && RoomType != 0) { Wave++; }
+                        
                     }
                     p.el.remove();
                     return false; // remove projectile on hit
@@ -1920,12 +2165,25 @@ function update(timestamp) {
     }
 });
     }
+
+
+     if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare && currCamplevel == camplevel) {
+        alert("Arena cleared. Proceed to the next area.");
+        camplevel++;
+        if (currCamplevel === 1) {
+            NextLevelSquare(550, 80);
+        }
+    }
+
+    console.log("CampEnemyCount:", CampEnemyCount, "camplevel:", camplevel, "currCamplevel:", currCamplevel);
+
+
     if (playerhp <= 0) {
         // Reset everything
         playerhp = 100;
         time = Math.floor(elapsed/60)
     
-    
+        level = 0;
         x = 280;
         y = 280;
         direction = "n";
@@ -1934,6 +2192,12 @@ function update(timestamp) {
         invinc = false;
         sanity = 50;
         sanityTimer = 0;
+        camplevel = 0;
+        currCamplevel = 0;
+        CampEnemyCount = -1;
+
+        nextlevelsquare = null;
+         lastlevelsquare = null;
         
 
 
@@ -1950,7 +2214,8 @@ function update(timestamp) {
         scoreBoostCount = 0;
         tankCount = 0;
         timerd = 0;
-
+        transitioning = false;
+        //if (score)
         // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
         try {
             obstacles.forEach(o => { if (o && o.el) o.el.remove(); });
@@ -1976,7 +2241,7 @@ function update(timestamp) {
         Wave =0;
         gameStarted = false;
         showMainMenu();
-    }
+    } //level up
 
     if (sanity <= 33) {
         document.getElementById("ShanImage").src = "ShanDisappointed.webp";
@@ -1991,7 +2256,7 @@ function update(timestamp) {
   }
   
 }
-
+//Wave++
 requestAnimationFrame(update);
 //score
 
@@ -2058,13 +2323,123 @@ function startBoostOverlay(durationMs) {
     }, durationMs);
 }
 
-function startGameFromMenu() {
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+
+
+class LevelSquare {
+    constructor(x, y) {
+        this.x = x;
+        this. y = y;
+    }
+}
+
+let nextlevelsquare = null;
+let lastlevelsquare = null;
+
+function NextLevelSquare(x, y) {
+    const el = document.createElement('div');
+    el.id = 'nextLevel';
+    el.textContent = "Next";
+    el.style.position = 'absolute';
+    el.style.width = '100px';
+    el.style.height = '100px';
+    el.style.lineHeight = '100px';
+    el.style.textAlign = 'center';
+    el.style.fontWeight = 'bold';
+    el.style.color = '#ffffff';
+    el.style.background = 'rgba(0,0,0,0.7)';
+    el.style.border = '2px solid #fff';
+    el.style.borderRadius = '6px';
+    el.style.transform = 'translate(-50%, -50%)';
+    el.style.zIndex = '10000';
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.userSelect = 'none';
+    nextlevelsquare = new LevelSquare(x, y);
+    
+    // allow manual positioning by dragging
+    gameArea.appendChild(el);
+}
+
+
+function LastLevelSquare(x, y) {
+    const el = document.createElement('div');
+    el.id = 'lastLevel';
+    el.textContent = "Back";
+    el.style.position = 'absolute';
+    el.style.width = '100px';
+    el.style.height = '100px';
+    el.style.lineHeight = '100px';
+    el.style.textAlign = 'center';
+    el.style.fontWeight = 'bold';
+    el.style.color = '#ffffff';
+    el.style.background = 'rgba(0,0,0,0.7)';
+    el.style.border = '2px solid #fff';
+    el.style.borderRadius = '6px';
+    el.style.transform = 'translate(-50%, -50%)';
+    el.style.zIndex = '10000';
+    el.style.left = `${x}px`;
+    el.style.top = `${y}px`;
+    el.style.userSelect = 'none';
+    lastlevelsquare = new LevelSquare(x, y);
+
+    // Append to the DOM
+    gameArea.appendChild(el);
+}
+//startGame
+
+
+async function startGameFromMenu() {
+    document.getElementById("ScoreTitle").innerHTML = "Score";
+    document.getElementById("WaveTitle").innerHTML = "Wave";
+    level = 1;
+    //RoomType = 0;
+    if (RoomType == 0 && camplevel == 1) {
+        console.log("Room Type:", RoomType);
+        document.getElementById("ScoreTitle").innerHTML = "XP";
+        document.getElementById("WaveTitle").innerHTML = "Level";
+
+        // Play cutscenes sequentially
+        startCutscene("ShanPFP.png", 3000, "Huh?", "LovedayBack.jpg");
+        await sleep(3000);
+
+
+
+        startCutscene("ShanPFP.png", 3000, "I'm gay.", "LovedayBack.jpg");
+        await sleep(3000);
+        // Initialize the first room
+        lovedayRoom();
+        CampEnemyCount = 5; // Set the number of enemies for the first level
+    } else if (RoomType === 0 && camplevel === 2) {
+        console.log("Room Type:", RoomType);
+        document.getElementById("ScoreTitle").innerHTML = "XP";
+        document.getElementById("WaveTitle").innerHTML = "Level";
+
+        // Play cutscenes sequentially
+        startCutscene("ShanPFP.png", 3000, "Huhhhhh?", "LovedayBack.jpg");
+        await sleep(3000);
+
+
+
+        startCutscene("ShanPFP.png", 3000, "I'm gay.", "LovedayBack.jpg");
+        await sleep(3000);
+        // Additional logic for the next campaign level can go here
+        roboticsRoom();
+        CampEnemyCount = 10; // Example: Set the number of enemies for the next level
+    }
+    transitioning = false;
+    showGameUI();
     timerd = 0;
+
     if (gameStarted) return;
     gameStarted = true;
-    showGameUI();
-
 }
+
+CampEnemyCount = 999999999999;
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const playBtn = document.getElementById("playButton");
@@ -2081,6 +2456,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const diffDesc = document.getElementById("difficultyDesc");
     const mapDesc = document.getElementById("mapDesc");
     const mapmenu = document.getElementById("mapMenu");
+    const m0 = document.getElementById("map0");
     const m1 = document.getElementById("map1");
     const m2 = document.getElementById("map2");
     if (helpBtn) helpBtn.addEventListener("click", () => {
@@ -2125,6 +2501,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Randomly choose a map for now
         //const map = Math.random() < 0.5 ? 1 : 2;
         //chooseMap(map);
+        if (m0) m0.addEventListener("click", () => chooseMap(0));
         if (m1) m1.addEventListener("click", () => chooseMap(1));
         if (m2) m2.addEventListener("click", () => chooseMap(2));
         //startGameFromMenu();
@@ -2137,7 +2514,9 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (map == 2) {
             roboticsRoom();
         }
+        camplevel = 1;
         startGameFromMenu();
+
     }
 
 
@@ -2173,10 +2552,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (d3) d3.addEventListener("mouseleave", clearDesc);
     if (d4) d4.addEventListener("mouseleave", clearDesc);
 
-
+    if (m0) m0.addEventListener("mouseenter", () => setMDesc("Description: The full expeirence of Shanvanth's Last Stand"));
     if (m1) m1.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy. Description: Ah, Mr. Loveday's room, a nice open haven for Shanvanth. Now it has become a warzone. Where is Mr. Loveday?"));
     if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard. Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
     const clearmapDesc = () => setMDesc("");
+    if (m0) m0.addEventListener("mouseleave", clearmapDesc);
     if (m1) m1.addEventListener("mouseleave", clearmapDesc);
     if (m2) m2.addEventListener("mouseleave", clearmapDesc);
 });
@@ -2201,3 +2581,4 @@ const originalUpdate = update;
     try { Object.freeze(window.ShansLastStand); } catch (e) {}
 
 })();
+//await
