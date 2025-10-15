@@ -1,6 +1,7 @@
 (function(){
     'use strict';
     //game
+    //fps
     // DOM refs
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
@@ -75,6 +76,11 @@
 
     // Enemy projectile list
     let enemyProjectiles = [];
+
+
+
+    let framespassed = 0;
+    let framhechecking = false;
     
 
     // Other globals that were previously implicitly global
@@ -572,7 +578,26 @@ class ScoreBoost {
   }
 }
 
-
+//fpsco
+async function FPSCount() {
+     document.getElementById("FPSCounter").style.display = "flex";
+     let frameCheckTime = 1
+    if (!framhechecking) {
+        framhechecking = true;
+        await sleep(1000/frameCheckTime);
+        framhechecking = false;
+        if (framespassed-1 <= 0) {
+            framespassed = 1;
+        }
+        document.getElementById("FPSCounter").innerHTML = "FPS: "+Math.max((0, (framespassed-1)*frameCheckTime))
+        console.log("FPS:"+(framespassed-1))
+        framespassed = 0;
+    } else {
+    }
+    
+}
+//show
+//curr
 // ---------------- Obstacle System ----------------
 // Simple axis-aligned rectangular obstacles within the game area
 let obstacles = [];
@@ -803,6 +828,8 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
 
 function startRoom(x, timerd) {
     if (timerd == 0) {
+        enemies.forEach(enemy => enemy.el.remove());
+        enemies = [];
         document.getElementById("ScoreTitle").innerHTML = "Score";
         document.getElementById("WaveTitle").innerHTML = "Wave";
         switch (x) {
@@ -819,24 +846,35 @@ function startRoom(x, timerd) {
         //use to set enemy spawns per level
         
         if (x == 0) {
-            if (timerd%90 == 0) {
-                    const spawn = getValidSpawnRect(50, 50);
-                    if (spawn) {
-                        // schedule spawn with portal
-                        EnemySpawnCampaign('dom');
-                        spawntime = 0;
-                    } else {
-                        // No valid spawn found (likely crowded with obstacles); skip this spawn attempt
-                        console.warn('No valid spawn found for lovedayRoom spawner; skipping spawn this tick.');
+            if (currCamplevel == 1) {
+                if (timerd == 150) {
+                       
+                            // schedule spawn with portal
+                            EnemySpawnCampaign('dom', 80, 400);
+                            spawntime = 0;
+    
                     }
+                if (timerd == 170) {
+                    const spawn = getValidSpawnRect(50, 50);
+                    EnemySpawnCampaign('dom', 150, 200);
+                    spawntime = 0;
                 }
-            if (timerd%300 == 0) {
-                EnemySpawnCampaign('zuk');
-                spawntime = 0;
-            }
-            if (timerd%180 == 0) {
-                EnemySpawnCampaign('ranged');
-                spawntime = 0;
+                if (timerd == 240) {
+                    const spawn = getValidSpawnRect(50, 50);
+                    EnemySpawnCampaign('dom', 500, 300);
+                    spawntime = 0;
+                }
+                if (timerd == 260) {
+                    const spawn = getValidSpawnRect(50, 50);
+                    EnemySpawnCampaign('dom', 200, 600);
+                    spawntime = 0;
+                }
+                if (timerd == 300) {
+                    const spawn = getValidSpawnRect(50, 50);
+                    EnemySpawnCampaign('dom', 250, 100);
+                    spawntime = 0;
+                }
+                
             }
         } /*else if (x == 2) {
             if (timerd%250 == 0) {
@@ -852,7 +890,6 @@ function startRoom(x, timerd) {
         }
                 */
     }
-
 
     // Update enemy-fired projectiles
     if (enemyProjectiles.length > 0) {
@@ -1254,7 +1291,7 @@ function roboticsRoom() {
     addObstacle(150, 600, 500, 50, { color: "#32527B" });
     
 }
-
+//Math.min
 let lastFrameTime = 0;
 const fps = 60;
 const frameDuration = 1000 / fps;
@@ -1456,6 +1493,8 @@ function update(timestamp) {
             attackingDelay = 0;
         }
     dashtimer++;
+    framespassed++;
+    FPSCount();
     
     if (dashtimer >= 4) {
         speed = BaseSpeed;
@@ -1901,7 +1940,7 @@ function update(timestamp) {
     } catch (e) {}
     //damageEnemies
 
-    if (!transitioning && score >= Math.floor(level*2500*level/2) && RoomType == 0 && currCamplevel == camplevel) { 
+    if (!transitioning && score >= Math.floor(level*2500*level/2) && RoomType == 0) { 
                     level++; 
                     alert("Level up! You are now level "+level); 
                     playerhp = 100+level*20; 
@@ -2167,15 +2206,15 @@ function update(timestamp) {
     }
 
 
-     if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare && currCamplevel == camplevel) {
+     if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare) {
         alert("Arena cleared. Proceed to the next area.");
         camplevel++;
         if (currCamplevel === 1) {
             NextLevelSquare(550, 80);
         }
     }
-
-    console.log("CampEnemyCount:", CampEnemyCount, "camplevel:", camplevel, "currCamplevel:", currCamplevel);
+//fps
+    //console.log("CampEnemyCount:", CampEnemyCount, "camplevel:", camplevel, "currCamplevel:", currCamplevel);
 
 
     if (playerhp <= 0) {
@@ -2183,7 +2222,7 @@ function update(timestamp) {
         playerhp = 100;
         time = Math.floor(elapsed/60)
     
-        level = 0;
+        level = 1;
         x = 280;
         y = 280;
         direction = "n";
@@ -2204,7 +2243,7 @@ function update(timestamp) {
         for (let key in keysPressed) {
             keysPressed[key] = false;
         }
-        // Remove all enemies from DOM
+        // start
         enemies.forEach(enemy => enemy.el.remove());
         enemies = [];
         chargerCount = 0;
@@ -2215,6 +2254,7 @@ function update(timestamp) {
         tankCount = 0;
         timerd = 0;
         transitioning = false;
+        framespassed = 0;
         //if (score)
         // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
         try {
@@ -2279,6 +2319,7 @@ function showGameUI() {
 }
 
 function showMainMenu() {
+    document.getElementById("FPSCounter").innerHTML = "FPS: 0"
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
     const area = document.getElementById("gameArea");
@@ -2288,7 +2329,7 @@ function showMainMenu() {
     if (area) area.style.display = "none";
     if (hud) hud.style.display = "none";
 }
-
+//fpsc
 // --------------- Screen Flash Helpers ---------------
 let boostOverlayActive = false;
 let boostOverlayTimeout = null;
@@ -2395,41 +2436,60 @@ function LastLevelSquare(x, y) {
 async function startGameFromMenu() {
     document.getElementById("ScoreTitle").innerHTML = "Score";
     document.getElementById("WaveTitle").innerHTML = "Wave";
-    level = 1;
     //RoomType = 0;
     if (RoomType == 0 && camplevel == 1) {
+        level = 1;
         console.log("Room Type:", RoomType);
         document.getElementById("ScoreTitle").innerHTML = "XP";
         document.getElementById("WaveTitle").innerHTML = "Level";
 
         // Play cutscenes sequentially
-        startCutscene("///heth", 3000, "Huh?", "LovedayBack.jpg");
+        startCutscene("ShanPFP.png", 3000, "Shanvanth: Must do calculus... ARGH", "LovedayBack.jpg");
         await sleep(3000);
-
-
-
-        startCutscene("///heth", 3000, "dwdwdd", "LovedayBack.jpg");
-        await sleep(3000);
+        startCutscene("DomPFP.png", 2000, "Dominic: Shaun... shut it. ", "LovedayBack.jpg");
+        await sleep(2000);
+        startCutscene("ShanPFP.png", 1000, "Shanvanth: I'm not.. I... ", "LovedayBack.jpg");
+        await sleep(1000);
+        startCutscene("", 5000, "Shanvanth: This calculus... It's too easy... I must go back to the future!", "BlackScreen.jpg");
+        await sleep(5000);
+        startCutscene("", 2500, "Dominic: Uh... Shanvanth what are you doing??", "BlackScreen.jpg");
+        await sleep(2500);
+        startCutscene("", 3500, "Shanvanth: WHY ARE THERE... SO MANY OF YOU... MUST KILL THEM ALL... ", "BlackScreen.jpg");
+        await sleep(3500);
+        startCutscene("", 4500, "Dominic: Shaun..?", "BlackScreen.jpg");
+        await sleep(4500);
+        console.log("Level:",level);
         // Initialize the first room
-        lovedayRoom();
+        currCamplevel = 1;
         CampEnemyCount = 5; // Set the number of enemies for the first level
     } else if (RoomType === 0 && camplevel === 2) {
         console.log("Room Type:", RoomType);
         document.getElementById("ScoreTitle").innerHTML = "XP";
         document.getElementById("WaveTitle").innerHTML = "Level";
-
+        console.log("Level:",level);
         // Play cutscenes sequentially
-        startCutscene("///heth", 3000, "Huhhhhh?", "LovedayBack.jpg");
+        startCutscene("ShanPFP.png", 3000, "Huhhhhh?", "LovedayBack.jpg");
         await sleep(3000);
 
 
 
-        startCutscene("///heth", 3000, "wdaddqd", "LovedayBack.jpg");
+        startCutscene("ShanPFP.png", 3000, "wdaddqd", "LovedayBack.jpg");
         await sleep(3000);
         // Additional logic for the next campaign level can go here
-        roboticsRoom();
         CampEnemyCount = 10; // Example: Set the number of enemies for the next level
     }
+    if (RoomType === 0) {
+        switch (currCamplevel) {
+            case 1: lovedayRoom();
+            break;
+            case 2: roboticsRoom();
+            break;
+            default: lovedayRoom();
+        }
+
+    }
+
+
     transitioning = false;
     showGameUI();
     timerd = 0;
@@ -2439,7 +2499,7 @@ async function startGameFromMenu() {
 }
 
 CampEnemyCount = 999999999999;
-
+//level = 1;
 
 document.addEventListener("DOMContentLoaded", () => {
     const playBtn = document.getElementById("playButton");
