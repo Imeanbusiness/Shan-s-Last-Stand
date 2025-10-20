@@ -73,6 +73,7 @@
     const ZukDeath = new Audio("ZukDeath.mp3");
     const dashCharged = new Audio("DashCharge.mp3");
     const MCSwoosh = new Audio("MCSwoosh.mp3");
+    const TheyDontStopComing = new Audio("TheyDontStopComing.mp3");
 
     // Enemy projectile list
     let enemyProjectiles = [];
@@ -153,7 +154,7 @@ window.addEventListener("click", () => {
     backgroundMusic.loop = true;   // 🔁 make it loop
     backgroundMusic.volume = 2;
 }, { once: true });
-
+//showGame
 //calc
 MathQuest = false;
 let Wave = 1;
@@ -537,6 +538,7 @@ Atdelay = 0;
 Mult = 1
 Boost = false
 scoreBoostCount = 0;
+//const
 
 class HealPickup {
     constructor(x, y) {
@@ -2316,6 +2318,10 @@ function showGameUI() {
     if (maps) maps.style.display = "none";
     if (area) area.style.display = "block";
     if (hud) hud.style.display = "grid";
+    backgroundMusic.pause();
+    backgroundMusic.currentTime = 0;
+    TheyDontStopComing.play()
+    TheyDontStopComing.loop = true;
 }
 
 function showMainMenu() {
@@ -2328,6 +2334,10 @@ function showMainMenu() {
     if (diff) diff.style.display = "none";
     if (area) area.style.display = "none";
     if (hud) hud.style.display = "none";
+    TheyDontStopComing.pause();
+    TheyDontStopComing.currentTime = 0;
+    backgroundMusic.play()
+    backgroundMusic.loop = true;
 }
 //fpsc
 // --------------- Screen Flash Helpers ---------------
