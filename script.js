@@ -385,7 +385,7 @@ class Charger {
         }
     }
 }
-
+//Cheng.jpg
 // Ranged variant: stops approaching when within 100px and fires projectiles at the player
 class RangedCharger {
     constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
@@ -393,7 +393,7 @@ class RangedCharger {
         this.y = y;
         this.speed = speed;
         this.enemyHP = enemyHP;
-        this.fileName = fileName || 'Dom.png';
+        this.fileName = fileName;
         this.damage = damage;
         this.width = width;
         this.height = height;
@@ -431,7 +431,7 @@ class RangedCharger {
         const dy = targetY - centerY;
         const dist = Math.hypot(dx, dy);
         
-        if (dist > 110) {
+        if (dist > 170) {
             // move toward player
             this.x += (dx / dist) * this.speed;
             this.y += (dy / dist) * this.speed;
@@ -459,8 +459,12 @@ class RangedCharger {
         proj.style.position = 'absolute';
         proj.style.width = '15px';
         proj.style.height = '15px';
-        proj.style.borderRadius = '50%';
-        proj.style.background = 'orange';
+        //proj.style.borderRadius = '50%';
+        //proj.style.background = "orange";
+        proj.style.backgroundImage = 'url("Wheels.png")';
+        proj.style.backgroundSize = "cover";
+        proj.style.backgroundRepeat = "no-repeat";
+        proj.style.backgroundPosition = "center";
         // start at center of enemy
         const startX = this.x + (this.width ? this.width / 2 : 0);
         const startY = this.y + (this.height ? this.height / 2 : 0);
@@ -471,7 +475,7 @@ class RangedCharger {
         const dx = targetX - startX;
         const dy = targetY - startY;
         const dist = Math.hypot(dx, dy) || 1;
-        const speed = 9; // enemy projectile speed
+        const speed = 11*difficulty/3; // enemy projectile speed
         const vx = (dx / dist) * speed;
         const vy = (dy / dist) * speed;
         // projectile carries damage equal to this.damage
@@ -1146,9 +1150,9 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
             speed = Math.floor(3 * difficulty / 3);
             fileName = 'Dom.png'; width = 50; height = 50; break;
         case 'ranged':
-            damage = Math.floor(4 * difficulty / 2);
-            enemyHP = Math.floor((350 * (0.9 + Wave/10) ** 2) * difficulty / 2);
-            speed = 3 * difficulty / 3;
+            damage = Math.floor(5 * difficulty / 2);
+            enemyHP = Math.floor((250 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            speed = 3.5 * difficulty / 3;
             fileName = 'RangedDom'; width = 50; height = 50; break;
         case 'zuk':
             damage = Math.floor(6 * difficulty / 2);
@@ -1221,7 +1225,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
         } else {
             // Special-case: Ranged variant that looks like Dom.png
             if (fileName === 'RangedDom') {
-                enemies.push(new RangedCharger(ex, ey, speed, enemyHP, damage, 'Ranged.jpg', width, height));
+                enemies.push(new RangedCharger(ex, ey, speed, enemyHP, damage, 'Cheng.png', width, height));
             } else {
                 enemies.push(new Charger(ex, ey, speed, enemyHP, damage, fileName, width, height));
             }
@@ -1667,20 +1671,25 @@ function update(timestamp) {
     // --- Charger Spawning ---
     if (spawntime > 50 && RoomType != 0) {
         spawnEnemy = Math.random()*100*(2/difficulty)
-
+        if (spawnEnemy < 3 && spawnEnemy > 2.4 && chargerCount<7) { // ~.6% chance per frame
+                    // Attempt to schedule a Charger spawn with portal
+                    if (EnemySpawnCampaign('ranged')) {
+                        spawntime = 0;
+                    }
+        }
         if (spawnEnemy < 1 && chargerCount<7) { // ~1% chance per frame
                     // Attempt to schedule a Charger spawn with portal
                     if (EnemySpawnCampaign('dom')) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy <1.3 && spawnEnemy > 1 && healthCount<2 && elapsed > 600) { // ~1% chance per frame
+        if (spawnEnemy <1.3 && spawnEnemy > 1 && healthCount<2 && elapsed > 600) { // ~.3% chance per frame
                     // Schedule a heal pickup spawn via portal visual
                     if (EnemySpawnCampaign('heal')) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy < 1.6 && spawnEnemy > 1.3 && tankCount<3 && Wave>1) { // ~1% chance per frame
+        if (spawnEnemy < 1.6 && spawnEnemy > 1.3 && tankCount<3 && Wave>1) { // ~.3% chance per frame
                     if (EnemySpawnCampaign('zuk')) {
                         spawntime = 0;
                     }
@@ -1695,7 +1704,7 @@ function update(timestamp) {
                         spawntime = 0;
                     }
         }
-
+//proj
     }
     if (playerhp >= 80+level*20) {
         playerhp = 80+level*20
