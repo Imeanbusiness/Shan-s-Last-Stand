@@ -398,7 +398,7 @@ class RangedCharger {
         this.width = width;
         this.height = height;
     this.fireCooldown = 0; // frames until next shot
-    this.fireInterval = 180; // frames between shots (~3s)
+    this.fireInterval = 90 / (difficulty/3); // frames between shots (~3s)
         // Create DOM
         this.el = document.createElement('div');
         this.el.style.position = 'absolute';
@@ -431,7 +431,7 @@ class RangedCharger {
         const dy = targetY - centerY;
         const dist = Math.hypot(dx, dy);
         
-        if (dist > 170) {
+        if (dist > 170 && this.fireCooldown <= (this.fireInterval - 15)) {
             // move toward player
             this.x += (dx / dist) * this.speed;
             this.y += (dy / dist) * this.speed;
@@ -442,11 +442,80 @@ class RangedCharger {
             let angleDeg = angleRad * (180 / Math.PI);
             this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
         } else {
+            let MoveChance = 0;
             // stop moving and attempt to fire
             if (this.fireCooldown <= 0) {
                 this.fireCooldown = this.fireInterval;
                 this.fireAt(targetX, targetY);
+                MoveChance = Math.random()
+                
             }
+            // Update rotation as in Charger
+            let angleRad = Math.atan2(dy, dx);
+            let angleDeg = angleRad * (180 / Math.PI);
+            let angleDash = angleDeg+135+180-220
+            if (this.fireCooldown >= (this.fireInterval - 15)) {
+                
+
+                if (angleDash >= 315 || angleDash <= 45) {
+                    if (MoveChance > 0.5) {
+                        this.x += (dx / dist) * 3 * this.speed;
+    
+                    } else {
+                        this.x += -1 * (dx / dist) * 3 * this.speed;
+                    }   
+                    this.y += (dy / dist) * 0.5 * this.speed;
+    
+                }
+    
+                if (angleDash > 45 && angleDash <= 135) {
+                    if (MoveChance > 0.5) {
+                        this.y += (dy / dist) * 3 * this.speed;
+    
+                    } else {
+                        this.y += -1 * (dy / dist) * 3 * this.speed;
+                    }   
+                    this.x += (dx / dist) * 0.5 * this.speed;
+    
+                }
+    
+                if (angleDash > 135 && angleDash <= 225) {
+                    if (MoveChance > 0.5) {
+                        this.x += (dx / dist) * 3 * this.speed;
+    
+                    } else {
+                        this.x += -1 * (dx / dist) * 3 * this.speed;
+                    }   
+                    this.y += (dy / dist) * 0.5 * this.speed;
+    
+                }
+    
+                if (angleDash > 225 && angleDash < 315) {
+                    if (MoveChance > 0.5) {
+                        this.y += (dy / dist) * 3 * this.speed;
+    
+                    } else {
+                        this.y += -1 * (dy / dist) * 3 * this.speed;
+                    }   
+                    this.x += (dx / dist) * 0.5 * this.speed;
+    
+                }
+    
+                this.el.style.left = `${this.x}px`;
+                this.el.style.top = `${this.y}px`;
+                this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
+                console.log(angleDash)
+            } else if ((dist > 120)) {
+                this.x += (dx / dist) * this.speed;
+                this.y += (dy / dist) * this.speed;
+                this.el.style.left = `${this.x}px`;
+                this.el.style.top = `${this.y}px`;
+                // Update rotation as in Charger
+                let angleRad = Math.atan2(dy, dx);
+                let angleDeg = angleRad * (180 / Math.PI);
+                this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
+            }
+
         }
         if (this.fireCooldown > 0) this.fireCooldown--;
         // Update HP text
