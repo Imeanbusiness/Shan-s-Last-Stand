@@ -31,10 +31,11 @@
     // Config constants
     const ShotgunCooldown = 1100; // milliseconds
     const CalcgunCooldown = 1500;
+    const RiflegunCooldown = 67;
     const MCCooldown = 300;
     const iFrames = 1000;
     const BaseSpeed = 5.5;
-
+    let Projweapon = "";
     // Game state (declared here so they're not globals on window)
     let sanity = 50;
     let sanityTimer = 0;
@@ -54,7 +55,7 @@
 
     // Player control state
     let dashing = false;
-    let dashtimer = 90;
+    let dashtimer = 45;
     let Hmessagetimer = 0;
     let SBmessagetimer = 0;
     let WeaponMessageTimer = 0;
@@ -74,6 +75,7 @@
     const dashCharged = new Audio("DashCharge.mp3");
     const MCSwoosh = new Audio("MCSwoosh.mp3");
     const TheyDontStopComing = new Audio("TheyDontStopComing.mp3");
+    const RifleSound = new Audio("RifleSound.mp3");
 
     // Enemy projectile list
     let enemyProjectiles = [];
@@ -514,6 +516,55 @@ class RangedCharger {
                 let angleRad = Math.atan2(dy, dx);
                 let angleDeg = angleRad * (180 / Math.PI);
                 this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
+            } else {
+                if (angleDash >= 315 || angleDash <= 45) {
+                    if (MoveChance > 0.5) {
+                        this.x += (dx / dist) * 1.5 * this.speed;
+    
+                    } else {
+                        this.x += -1 * (dx / dist) * 1.5 * this.speed;
+                    }   
+                    this.y += (dy / dist) * 0.8 * this.speed;
+    
+                }
+    
+                if (angleDash > 45 && angleDash <= 135) {
+                    if (MoveChance > 0.5) {
+                        this.y += (dy / dist) * 1.5 * this.speed;
+    
+                    } else {
+                        this.y += -1 * (dy / dist) * 1.5 * this.speed;
+                    }   
+                    this.x += (dx / dist) * 0.8 * this.speed;
+    
+                }
+    
+                if (angleDash > 135 && angleDash <= 225) {
+                    if (MoveChance > 0.5) {
+                        this.x += (dx / dist) * 1.5 * this.speed;
+    
+                    } else {
+                        this.x += -1 * (dx / dist) * 1.5 * this.speed;
+                    }   
+                    this.y += (dy / dist) * 0.8 * this.speed;
+    
+                }
+    
+                if (angleDash > 225 && angleDash < 315) {
+                    if (MoveChance > 0.5) {
+                        this.y += (dy / dist) * 1.5 * this.speed;
+    
+                    } else {
+                        this.y += -1 * (dy / dist) * 1.5 * this.speed;
+                    }   
+                    this.x += (dx / dist) * 0.8 * this.speed;
+    
+                }
+    
+                this.el.style.left = `${this.x}px`;
+                this.el.style.top = `${this.y}px`;
+                this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
+                console.log(angleDash)
             }
 
         }
@@ -1466,6 +1517,9 @@ function update(timestamp) {
         if (CurrWeap == 2 && !attack) {
             player.src = "Player2.png"
         }
+        if (CurrWeap == 3 && !attack) {
+            player.src = "Player3.png"
+        }
 
         // Increment message timers only while messages are present
         try {
@@ -1538,11 +1592,19 @@ function update(timestamp) {
             attackingDelay = 20000;
             }
 
+        if (keysPressed["3"] && CurrWeap != 3) {
+            CurrWeap = 3;
+            attack = false; // cancel any current firing
+            // reset cooldowns; only apply load time for calc gun (5 frames)
+            Atdelay = 30;
+            attackingDelay = 20000;
+            }
+
         if (keysPressed["c"] && CurrWeap != 0) {
             CurrWeap = 0;
             attack = false; // cancel any current firing
             // reset cooldowns; only apply load time for calc gun (5 frames)
-            Atdelay = 25;
+            Atdelay = 15;
             attackingDelay = 20000;
             }
                 
@@ -1557,6 +1619,9 @@ function update(timestamp) {
             attack = false 
         }
         if (attack && attackingDelay >= CalcgunCooldown/1000 * 60 && CurrWeap == 2) {
+            attack = false 
+        }
+        if (attack && attackingDelay >= RiflegunCooldown/1000 * 60 && CurrWeap == 3) {
             attack = false 
         }
 
@@ -1733,10 +1798,12 @@ function update(timestamp) {
             player.src = "PlayerAttacking.png";
         } else if (CurrWeap == 2) {
             player.src = "PlayerAttacking2.png";
+        } else if (CurrWeap == 3) {
+            player.src = "PlayerAttacking3.png";
         }
         player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
     }
-
+//rifle
     // --- Charger Spawning ---
     if (spawntime > 50 && RoomType != 0) {
         spawnEnemy = Math.random()*100*(2/difficulty)
@@ -2010,6 +2077,7 @@ function update(timestamp) {
             case 0: document.getElementById("weapon").innerText = "M. Pencil"; break;
             case 1: document.getElementById("weapon").innerText = "Shauntgun"; break;
             case 2: document.getElementById("weapon").innerText = "Shauniper"; break;
+            case 3: document.getElementById("weapon").innerText = "Assault Rajfle"; break;
         }
         //document.getElementById("weapon").innerText = CurrWeap == 1 ? "Shauntgun" : "Shauniper";
     } catch (e) {}
@@ -2053,6 +2121,7 @@ function update(timestamp) {
 
     if (attack && FirstAttack) {
         FirstAttack = false;//level
+        //Attacking
     if (CurrWeap == 1 && sanity >= Math.floor(difficulty/2)+1) {    
             sanity -= Math.floor(difficulty/2)+1;
                 if (sanity < 0) {
@@ -2175,8 +2244,8 @@ function update(timestamp) {
             if (score >= Wave*2500 && RoomType != 0) { Wave++; }
             
             setTimeout(() => { aoe.remove(); }, 50);
-        } else if (CurrWeap == 2 && sanity >= Math.floor(difficulty/2)+1) {
-            sanity -= Math.floor(difficulty/2)+1;
+        } else if (CurrWeap == 2 && sanity >= Math.floor(difficulty/2)+3) {
+            sanity -= Math.floor(difficulty/2)+3;
             if (sanity < 0) {
                 sanity = 0;
             }
@@ -2208,7 +2277,44 @@ function update(timestamp) {
             projEl.style.top = `${startY}px`;
             projEl.style.transform = `rotate(${directionAnglesShots[direction]+90}deg)`;
             gameArea.appendChild(projEl);
+            Projweapon = CurrWeap;
             projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
+        } else if (CurrWeap == 3 && sanity >= 1) {
+            sanity -= 1;
+            if (sanity < 0) {
+                sanity = 0;
+            }
+            // Spawn a projectile 20x3 that flies until collision
+            const projEl = document.createElement("div");
+            projEl.style.position = "absolute";
+            // make the projectile slightly bigger so background images are visible
+            projEl.style.width = "24px";
+            projEl.style.height = "4px";
+            //projEl.style.background = "black";
+            projEl.style.borderRadius = "2px";
+            // Use an existing projectile-like asset; 'SnipProj.png' wasn't present in the repo
+            // so use ShotgunShot.png as a visible fallback. If you add a small projectile
+            // sprite, replace the URL here.
+            projEl.style.background = "orange";
+            // correctly set background sizing/position so the image is visible
+            /*projEl.style.backgroundSize = "cover";
+            projEl.style.backgroundRepeat = "no-repeat";
+            projEl.style.backgroundPosition = "center";*/
+            // fallback color if image fails to load
+            /*projEl.style.backgroundColor = "black";
+            projEl.style.boxShadow = "0 0 6px rgba(255,255,255,0.15)";*/
+            RifleSound.play();
+            //shaun
+            // start slightly in front of player
+            const dirVec = directionVectors[direction];
+            const startX = x + dirVec.x * 35;
+            const startY = y + dirVec.y * 35;
+            projEl.style.left = `${startX}px`;
+            projEl.style.top = `${startY}px`;
+            projEl.style.transform = `rotate(${directionAnglesShots[direction]+90}deg)`;
+            gameArea.appendChild(projEl);
+            projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
+            Projweapon = CurrWeap;
         } else {
             attack = false; // cancel attack if not enough sanity
                 try { const existing = document.getElementById("WeaponMessage"); if (existing) existing.remove(); } catch (e) {}
@@ -2221,13 +2327,18 @@ function update(timestamp) {
             //SBMessage
         }
     }
-
+    //dash
     // Arena
     if (projectiles.length > 0) {
         const areaWidth = 650;
         const areaHeight = 650;
         const calcDamage = (enemy) => {
-            enemy.enemyHP -= (400+(400 * sanity / 100) + (score / 200) * (sanity / 100)) * (1+(0.1*(level-1)));
+            if (Projweapon == 2) {
+    
+                enemy.enemyHP -= (650+(650 * sanity / 100) + (score / 200) * (sanity / 100)) * (1+(0.1*(level-1)));
+            } else if (Projweapon == 3) {
+                enemy.enemyHP -= (200+(200 * sanity / 100) + (score / 2000) * (sanity / 100)) * (1+(0.1*(level-1)));
+            }
         };
         projectiles = projectiles.filter((p) => {
             p.x += p.dx * projectileSpeed;
