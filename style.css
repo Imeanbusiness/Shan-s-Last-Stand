@@ -35,6 +35,9 @@ body {
   background-size: cover;
 
   overflow: auto;
+  user-select: none;
+  /* Use a crosshair cursor or any other visible cursor */
+
 
 }
 
@@ -46,7 +49,8 @@ body {
   background: white;
   top: -10px;
   background-image: url("LovedayClass.png");
-  background-size: cover
+  background-size: cover;
+ 
 }
 
 /* Keep the game area fixed at 650x650 and prevent flexbox from shrinking it

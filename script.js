@@ -2,7 +2,7 @@
     'use strict';
     //game
     //fps
-    // DOM refs
+    //movechance
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
 
@@ -28,7 +28,80 @@
         return m;
     })();
 
-    // Config constants
+
+
+    let mouseX = 0;
+    let mouseY = 0;
+
+    const body = document.body;
+
+    
+    const crosshair = document.createElement("div");
+    
+    // Create visual crosshair
+    crosshair.style.position = "absolute";
+    crosshair.style.width = "10px";
+    crosshair.style.height = "10px";
+    crosshair.style.background = "transparent";
+    crosshair.style.border = "2px solid red";
+crosshair.style.borderRadius = "50%";
+crosshair.style.left = "50%";
+crosshair.style.top = "50%";
+crosshair.style.transform = "translate(-50%, -50%)";
+crosshair.style.pointerEvents = "none"; // Don't block clicks
+crosshair.style.display = "none";
+crosshair.style.zIndex = "9999";
+
+gameArea.appendChild(crosshair);
+
+// Request pointer lock on click
+gameArea.addEventListener("click", () => {
+    gameArea.requestPointerLock();
+});
+
+// Handle pointer lock changes
+document.addEventListener("pointerlockchange", () => {
+    if (document.pointerLockElement === gameArea) {
+        console.log("Pointer locked in game area.");
+        crosshair.style.display = "block"; // Show our fake cursor
+    } else {
+        console.log("Pointer unlocked.");
+        crosshair.style.display = "none"; // Hide it
+    }
+});
+
+// Track relative mouse movement when pointer is locked
+document.addEventListener("mousemove", (e) => {
+    if (document.pointerLockElement === gameArea) {
+        mouseX += e.movementX;
+        mouseY += e.movementY;
+        
+        mouseX = Math.max(0, Math.min(gameArea.offsetWidth, mouseX));
+        mouseY = Math.max(0, Math.min(gameArea.offsetHeight, mouseY));
+    }
+});
+//help
+gameArea.addEventListener("mousemove", (e) => {
+     if (!gameArea) return;
+    const rect = gameArea.body.getBoundingClientRect();
+    mouseX = e.clientX - rect.left; // Mouse X relative to the game area
+    mouseY = e.clientY - rect.top;  // Mouse Y relative to the game area
+    crosshair.style.transform = "translate(-50%, -50%)";
+    crosshair.style.left = mouseX+"px";
+    crosshair.style.top = mouseY+"px";
+});
+
+let mouseHeld = false;
+
+document.addEventListener("mousedown", () => {
+    mouseHeld = true;
+});
+
+document.addEventListener("mouseup", () => {
+    mouseHeld = false;
+});
+
+// Config constants
     const ShotgunCooldown = 1100; // milliseconds
     const CalcgunCooldown = 1500;
     const RiflegunCooldown = 67;
@@ -59,6 +132,8 @@
     let Hmessagetimer = 0;
     let SBmessagetimer = 0;
     let WeaponMessageTimer = 0;
+    let MoveChance = 0;
+    let MoveChanceTimer = 0;
 
 
 
@@ -75,6 +150,7 @@
     const dashCharged = new Audio("DashCharge.mp3");
     const MCSwoosh = new Audio("MCSwoosh.mp3");
     const TheyDontStopComing = new Audio("TheyDontStopComing.mp3");
+    const ATMOC = new Audio("ATMOC.mp3");
     const RifleSound = new Audio("RifleSound.mp3");
 
     // Enemy projectile list
@@ -144,7 +220,7 @@ window.onload = function() {
         let maxwave = localStorage.getItem(Filename+"Wave");
 
     }
-    alert("Welcome to the game!\nControls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nC to answer a math question to regain sanity\n\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
+    alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Assault Rajfle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
 
     backgroundMusic.play();
     backgroundMusic.loop = true;   // 🔁 make it loop
@@ -174,6 +250,7 @@ let y = 280;
 let speed = 5;
 let direction = "n";
 let lockdirection = "n";
+let movdirection = "n";
 const chargerSize = 60;
 let chargerCount = 0;
 attack = false;
@@ -226,7 +303,7 @@ let enemies = [];
 document.addEventListener("keydown", e => {
     keysPressed[e.key.toLowerCase()] = true;
     // Only allow pausing with Escape when the game is active/visible
-    if (e.key === "Escape" && isGameActive()) {
+    if (e.key === "p" && isGameActive()) {
         alert("Game Paused. Press OK to resume.");
         for (let key in keysPressed) {
             keysPressed[key] = false;
@@ -444,12 +521,12 @@ class RangedCharger {
             let angleDeg = angleRad * (180 / Math.PI);
             this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
         } else {
-            let MoveChance = 0;
+            //MoveChance = 0;
             // stop moving and attempt to fire
             if (this.fireCooldown <= 0) {
                 this.fireCooldown = this.fireInterval;
                 this.fireAt(targetX, targetY);
-                MoveChance = Math.random()
+                //MoveChance = Math.random()
                 
             }
             // Update rotation as in Charger
@@ -457,6 +534,8 @@ class RangedCharger {
             let angleDeg = angleRad * (180 / Math.PI);
             let angleDash = angleDeg+135+180-220
             if (this.fireCooldown >= (this.fireInterval - 15)) {
+
+                
                 
 
                 if (angleDash >= 315 || angleDash <= 45) {
@@ -1370,6 +1449,8 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
 //CampEnemyCount
 
 function lovedayRoom() {
+    TheyDontStopComing.play();
+    TheyDontStopComing.loop = true;
     gameArea.style.backgroundImage = "url('LovedayClass.png')"
     addObstacle(0, 0, 40, 120, { color: "#947A54" });   
     addObstacle(110, 80, 80, 40, { color: "#947A54" });   
@@ -1396,6 +1477,8 @@ function lovedayRoom() {
 }
 //"player"
 function roboticsRoom() {
+    ATMOC.play();
+    ATMOC.loop = true;
     gameArea.style.backgroundImage = "url('Robotikroom.png')"
      addObstacle(0, 50, 50, 550, { color: "#F8DFA1" }); 
     for (let i = 0; i < 9; i++) {
@@ -1497,7 +1580,9 @@ function update(timestamp) {
         y = 650
       }
 
-
+      crosshair.style.transform = "translate(-50%, -50%)";
+    crosshair.style.left = mouseX+"px";
+    crosshair.style.top = mouseY+"px";
 
         if (Boost==true && BoostTime <= 360) {
             Mult = 2
@@ -1574,7 +1659,14 @@ function update(timestamp) {
     
             }
         }
+    
 
+        MoveChanceTimer++ 
+        if (MoveChanceTimer>120) {
+            MoveChance = Math.random();
+            console.log("Reset!")
+            MoveChanceTimer = 0;
+        }
         
         if (keysPressed["1"] && CurrWeap != 1) {
             CurrWeap = 1;
@@ -1632,6 +1724,18 @@ function update(timestamp) {
             FirstAttack = true;
             attackingDelay = 0;
         }
+
+        if (mouseHeld && !attack && Atdelay <= 0) {
+                attack = true;
+                console.log("Mouse click attack!");
+                FirstAttack = true;
+                attackingDelay = 0;
+        }
+
+
+        
+
+
     dashtimer++;
     framespassed++;
     FPSCount();
@@ -1653,7 +1757,7 @@ function update(timestamp) {
         dashtimer = 0;
         dashCharge = false;
         
-        lockdirection = direction;
+        lockdirection = movdirection;
     }
 
     if (keysPressed["w"] || keysPressed["arrowup"]) {
@@ -1734,39 +1838,62 @@ function update(timestamp) {
 
     if (dx < 0) {
         if (dy < 0 ) {
-            direction = "nw";
-            console.log(direction)
+            movdirection = "nw";
+            console.log(movdirection)
         } else if (dy > 0) {
-            direction = "sw";
-            console.log(direction)
+            movdirection = "sw";
+            console.log(movdirection)
         } else {
-            direction = "w";
-            console.log(direction)
+            movdirection = "w";
+            console.log(movdirection)
         }
     } else if (dx > 0) {
         if (dy < 0 ) {
-            direction = "ne";
-            console.log(direction)
+            movdirection = "ne";
+            console.log(movdirection)
         } else if (dy > 0) {
-            direction = "se";
-            console.log(direction)
+            movdirection = "se";
+            console.log(movdirection)
         } else {
-            direction = "e";
-            console.log(direction)
+            movdirection = "e";
+            console.log(movdirection)
         }
     } else {
         if (dy < 0) {
-            direction = "n";
-            console.log(direction)
+            movdirection = "n";
+            console.log(movdirection)
         } else if (dy > 0) {
-            direction = "s";
-            console.log(direction)
+            movdirection = "s";
+            console.log(movdirection)
         }
     }
 
     x += dx;
     y += dy;
 
+    //dash
+
+    const angleRad = Math.atan2(mouseY - y, mouseX - x);
+    const angleDeg = angleRad * (180 / Math.PI)+90;
+    console.log("angle: "+angleDeg)
+    if (angleDeg >= 337.5 || angleDeg < 22.5) {
+        direction = "n"
+    } else if (angleDeg >= 22.5 && angleDeg < 67.5) {
+        direction = "ne"
+    } else if (angleDeg >= 67.5 && angleDeg < 112.5) {
+        direction = "e"
+    } else if (angleDeg >= 112.5 && angleDeg < 157.5) {
+        direction = "se"
+    } else if (angleDeg >= 157.5 && angleDeg < 202.5) {
+        direction = "s"
+    } else if (angleDeg >= 202.5 && angleDeg < 247.5) {
+        direction = "sw"
+    } else if (angleDeg >= 247.5 && angleDeg < 292.5) {
+        direction = "w"
+    } else if (angleDeg >= 292.5 && angleDeg < 337.5) {
+        direction = "nw"
+    }
+    player.style.transform = `translate(-50%, -50%) rotate(${angleDeg+180}deg)`;       
     // Resolve player vs obstacles
     if (obstacles.length > 0) {
         // player is 65x65 and positioned with center at (x,y)
@@ -1789,7 +1916,7 @@ function update(timestamp) {
     player.style.left = `${x}px`;
     player.style.top = `${y}px`;
     //player.src = "Player.png";
-    player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
+    //player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
 
     if (attack) {
         if (CurrWeap == 0) {
@@ -2188,7 +2315,7 @@ function update(timestamp) {
             setTimeout(() => { el.remove(); }, 50);
         } else if (CurrWeap == 0) {
             // Melee AoE: create a temporary black circle (50px radius) below the player
-            const radius = 65;
+            const radius = 80;
             const dia = radius * 2;
             const aoe = document.createElement('div');
             aoe.style.position = 'absolute';
@@ -2388,35 +2515,36 @@ function update(timestamp) {
             return true; // keep flying
         });
     }
-             
-    enemies.forEach(enemy => {
-    if (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank) {
-        enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
-    }
-});
-    }
-
-
-     if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare) {
-        alert("Arena cleared. Proceed to the next area.");
-        camplevel++;
-        if (currCamplevel === 1) {
-            NextLevelSquare(550, 80);
-        }
-    }
-//fps
-    //console.log("CampEnemyCount:", CampEnemyCount, "camplevel:", camplevel, "currCamplevel:", currCamplevel);
-
-
-    if (playerhp <= 0) {
-        // Reset everything
-        playerhp = 100;
-        time = Math.floor(elapsed/60)
     
-        level = 1;
-        x = 280;
-        y = 280;
-        direction = "n";
+    enemies.forEach(enemy => {
+        if (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank) {
+            enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+        }
+    });
+}
+
+
+if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare) {
+    alert("Arena cleared. Proceed to the next area.");
+    camplevel++;
+    if (currCamplevel === 1) {
+        NextLevelSquare(550, 80);
+    }
+}
+//fps
+//console.log("CampEnemyCount:", CampEnemyCount, "camplevel:", camplevel, "currCamplevel:", currCamplevel);
+
+
+
+if (playerhp <= 0) {
+    // Reset everything
+    playerhp = 100;
+    time = Math.floor(elapsed/60)
+    
+    level = 1;
+    x = 280;
+    y = 280;
+    direction = "n";
         attack = false;
         FirstAttack = false;
         invinc = false;
@@ -2425,12 +2553,12 @@ function update(timestamp) {
         camplevel = 0;
         currCamplevel = 0;
         CampEnemyCount = -1;
-
-        nextlevelsquare = null;
-         lastlevelsquare = null;
         
-
-
+        nextlevelsquare = null;
+        lastlevelsquare = null;
+        
+        
+        
         for (let key in keysPressed) {
             keysPressed[key] = false;
         }
@@ -2454,7 +2582,7 @@ function update(timestamp) {
         obstacles = [];
         score *= (difficulty/2)**2;
         score = Math.floor(score);
-
+        
         console.log("Game Reset!");
         if (score > localStorage.getItem(Filename+"HS")) {
             localStorage.setItem(Filename+"HS", score);
@@ -2473,7 +2601,7 @@ function update(timestamp) {
         gameStarted = false;
         showMainMenu();
     } //level up
-
+    
     if (sanity <= 33) {
         document.getElementById("ShanImage").src = "ShanDisappointed.webp";
     }else if (sanity <= 66) {
@@ -2481,8 +2609,9 @@ function update(timestamp) {
     } else {
         document.getElementById("ShanImage").src = "HappyShan.webp";
     }
+    
     requestAnimationFrame(update);
-  } catch (err) {
+} catch (err) {
     console.error('Game loop error:', err);
   }
   
@@ -2509,8 +2638,6 @@ function showGameUI() {
     if (hud) hud.style.display = "grid";
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
-    TheyDontStopComing.play()
-    TheyDontStopComing.loop = true;
 }
 
 function showMainMenu() {
@@ -2525,6 +2652,8 @@ function showMainMenu() {
     if (hud) hud.style.display = "none";
     TheyDontStopComing.pause();
     TheyDontStopComing.currentTime = 0;
+    ATMOC.pause();
+    ATMOC.currentTime = 0;
     backgroundMusic.play()
     backgroundMusic.loop = true;
 }
@@ -2566,7 +2695,7 @@ function startBoostOverlay(durationMs) {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
+//loveday
 
 
 class LevelSquare {
@@ -2630,7 +2759,7 @@ function LastLevelSquare(x, y) {
     gameArea.appendChild(el);
 }
 //startGame
-
+//Loveday
 
 async function startGameFromMenu() {
     document.getElementById("ScoreTitle").innerHTML = "Score";
@@ -2719,8 +2848,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const m1 = document.getElementById("map1");
     const m2 = document.getElementById("map2");
     if (helpBtn) helpBtn.addEventListener("click", () => {
-        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper.\nC to answer a math question to regain sanity\n\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
-    });
+        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Assault Rajfle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+    });//alert
     if (scoresBtn) scoresBtn.addEventListener("click", () => {
         const hs = localStorage.getItem(Filename+"HS") || 0;
         const maxtime = localStorage.getItem(Filename+"Time") || 0;
