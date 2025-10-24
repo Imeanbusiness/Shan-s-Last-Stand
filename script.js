@@ -2297,7 +2297,7 @@ function update(timestamp) {
                     const blocked = lineBlockedByObstacles(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
                     if (!blocked) {
                        
-                        const dmg = (500+(500*sanity/100)+ (score/100) * (sanity/100)) * (1+(0.1*(level-1)));
+                        const dmg = (900) * (1+(0.1*(level-1)));
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
                         if (enemy.enemyHP <= 0) {
@@ -2454,6 +2454,7 @@ function update(timestamp) {
             //SBMessage
         }
     }
+
     //dash
     // Arena
     if (projectiles.length > 0) {
@@ -2462,9 +2463,9 @@ function update(timestamp) {
         const calcDamage = (enemy) => {
             if (Projweapon == 2) {
     
-                enemy.enemyHP -= (650+(650 * sanity / 100) + (score / 200) * (sanity / 100)) * (1+(0.1*(level-1)));
+                enemy.enemyHP -= Math.floor((700+(700 * 0.5)) * (1+(0.1*(level-1))));
             } else if (Projweapon == 3) {
-                enemy.enemyHP -= (200+(200 * sanity / 100) + (score / 2000) * (sanity / 100)) * (1+(0.1*(level-1)));
+                enemy.enemyHP -= Math.floor((300) * (1+(0.1*(level-1))));
             }
         };
         projectiles = projectiles.filter((p) => {
@@ -2522,7 +2523,18 @@ function update(timestamp) {
         }
     });
 }
-
+try {
+        switch (CurrWeap) {
+            case 0: document.getElementById("shots").innerText = "N/A";
+            break;
+            case 1: document.getElementById("shots").innerText = (Math.floor(sanity/(Math.floor(difficulty/2)+1)))+"/"+(Math.floor(100/(Math.floor(difficulty/2)+1)));
+            break;
+            case 2: document.getElementById("shots").innerText = (Math.floor(sanity/(Math.floor(difficulty/2)+3)))+"/"+(Math.floor(100/(Math.floor(difficulty/2)+3)));
+            break;
+            case 3: document.getElementById("shots").innerText = sanity+"/100";
+            break;
+        }
+} catch (e) {}
 
 if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare) {
     alert("Arena cleared. Proceed to the next area.");
@@ -2531,6 +2543,7 @@ if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare)
         NextLevelSquare(550, 80);
     }
 }
+//dash
 //fps
 //console.log("CampEnemyCount:", CampEnemyCount, "camplevel:", camplevel, "currCamplevel:", currCamplevel);
 
