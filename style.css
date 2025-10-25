@@ -111,14 +111,17 @@ body {
   background: white;
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: 50px;
+  grid-template-rows: 100px;
   justify-content: center;
   text-align: center;
-  background-color: darkgray;
-  gap: 8px; 
+  background-color: #666666;
+  background-image: url("PlayerHUDBG.jpg");
+  background-repeat: none;
+  background-size: cover;
   font-size: 14px;
   box-sizing: border-box;
-  padding: 4px; 
+  /*padding-left: 4px; 
+  padding-right: 4px; */
   min-width: 650px;
   min-height: 100px;
   max-width: 650px;
@@ -126,6 +129,16 @@ body {
   flex-shrink: 0; 
   overflow: hidden;
 
+}
+
+#playerHUD > div {
+  border-left: 4px solid black; /* Dark inner border between HUD elements */
+  border-top: 2px solid black;
+  border-bottom: 3px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /*justify-content: center;*/
 }
 
 #mainMenu {
@@ -213,19 +226,30 @@ body {
 
 .HudTitle {
   margin: 4px; /* smaller margin to preserve HUD space */
-  align-items: left;
+  align-items: left;  
   grid-row: 1;
-  color: red;
+  color: #FF000D;
   font-size: 15px;
 }
 
 .HudVar {
   margin: 4px; /* smaller margin to preserve HUD space */
+  margin-top: 20px; /* smaller margin to preserve HUD space */
+  align-items: left;
+  grid-row: 2;
+  color: #FF000D;
+  font-size: 11px;
+}
+
+.HudVarLong {
+  margin: 4px; /* smaller margin to preserve HUD space */
+  margin-top: 20px; /* smaller margin to preserve HUD space */
   align-items: left;
   grid-row: 2;
   color: red;
-  font-size: 10px;
+  font-size: 11px;
 }
+
 
 .element::-webkit-scrollbar {
   display: none; /* Hides the scrollbar */

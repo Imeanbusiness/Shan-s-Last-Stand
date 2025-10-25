@@ -83,6 +83,7 @@ document.addEventListener("mousemove", (e) => {
 //help
 gameArea.addEventListener("mousemove", (e) => {
      if (!gameArea) return;
+     gameArea.requestPointerLock();
     const rect = gameArea.body.getBoundingClientRect();
     mouseX = e.clientX - rect.left; // Mouse X relative to the game area
     mouseY = e.clientY - rect.top;  // Mouse Y relative to the game area
@@ -100,7 +101,7 @@ document.addEventListener("mousedown", () => {
 document.addEventListener("mouseup", () => {
     mouseHeld = false;
 });
-
+//playerAttacking
 // Config constants
     const ShotgunCooldown = 1100; // milliseconds
     const CalcgunCooldown = 1500;
@@ -152,6 +153,13 @@ document.addEventListener("mouseup", () => {
     const TheyDontStopComing = new Audio("TheyDontStopComing.mp3");
     const ATMOC = new Audio("ATMOC.mp3");
     const RifleSound = new Audio("RifleSound.mp3");
+
+
+    function playSound(sound) {
+        //const originalAudio = document.getElementById('mySound');
+        const newAudioInstance = sound.cloneNode(); // true for deep clone, but not necessary for audio elements
+        newAudioInstance.play();
+    }
 
     // Enemy projectile list
     let enemyProjectiles = [];
@@ -679,7 +687,7 @@ class RangedCharger {
         const vy = (dy / dist) * speed;
         // projectile carries damage equal to this.damage
             enemyProjectiles.push({ x: startX, y: startY, dx: vx, dy: vy, el: proj, damage: this.damage });
-            try { CalcgunSound.play(); } catch (e) {}
+            try { playSound(CalcgunSound); } catch (e) {}
     }
 }
 
@@ -1047,6 +1055,7 @@ function startRoom(x, timerd) {
                 break;
         }
         startGameFromMenu();
+        
     } else {
         //use to set enemy spawns per level
         
@@ -1894,6 +1903,18 @@ function update(timestamp) {
         direction = "nw"
     }
     player.style.transform = `translate(-50%, -50%) rotate(${angleDeg+180}deg)`;       
+    if (attack) {
+        if (CurrWeap == 0) {
+            player.src = "PlayerAttackingMC.png";
+        } else if (CurrWeap == 1) {
+            player.src = "PlayerAttacking.png";
+        } else if (CurrWeap == 2) {
+            player.src = "PlayerAttacking2.png";
+        } else if (CurrWeap == 3) {
+            player.src = "PlayerAttacking3.png";
+        }
+        player.style.transform = `translate(-50%, -50%) rotate(${angleDeg+180}deg)`;
+    }
     // Resolve player vs obstacles
     if (obstacles.length > 0) {
         // player is 65x65 and positioned with center at (x,y)
@@ -1918,18 +1939,6 @@ function update(timestamp) {
     //player.src = "Player.png";
     //player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
 
-    if (attack) {
-        if (CurrWeap == 0) {
-            player.src = "PlayerAttackingMC.png";
-        } else if (CurrWeap == 1) {
-            player.src = "PlayerAttacking.png";
-        } else if (CurrWeap == 2) {
-            player.src = "PlayerAttacking2.png";
-        } else if (CurrWeap == 3) {
-            player.src = "PlayerAttacking3.png";
-        }
-        player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
-    }
 //rifle
     // --- Charger Spawning ---
     if (spawntime > 50 && RoomType != 0) {
@@ -2048,7 +2057,7 @@ function update(timestamp) {
         if (touching) {
             if (enemy instanceof HealPickup) {
                 playerhp = Math.min(playerhp + 5+Math.floor(10/(0.9+Wave/10)), 100); // heal 30, max 100
-                sanity += 2;
+                sanity += 3;
                 if (sanity > 100) {
                     sanity = 100;
                 }
@@ -2103,13 +2112,13 @@ function update(timestamp) {
             }  else if (enemy instanceof Charger || enemy instanceof RangedCharger) {
                 if (!invinc) {
                     playerhp -= Math.floor((enemy.damage + Math.floor(Math.random() * 5)) * (0.9 + Wave / 10) ** 2);
-                    if (playerhp < 0) {
+                    if (playerhp <= 0) {
                         playerhp = 0;
-                        deathSound.play();
+                        playSound(deathSound);
                     }
                     console.log("Player HP:", playerhp);
                     invinc = true;
-                    ouch.play();
+                    playSound(ouch);
                     // Flash red on damage
                     setFlash("rgba(255, 0, 0, 0.25)", 120);
                     setTimeout(() => {
@@ -2154,7 +2163,7 @@ function update(timestamp) {
         }
     } catch (e) {}
 
-
+//death
     // --- Enemy-Enemy Collision ---
     
     for (let i = 0; i < enemies.length; i++) {
@@ -2245,7 +2254,7 @@ function update(timestamp) {
             shanEl.style.boxShadow = `inset 0 0 ${10 + tint * 40}px rgba(255,0,0,${0.25 * tint})`;
         }
     } catch (e) {}
-
+    //
     if (attack && FirstAttack) {
         FirstAttack = false;//level
         //Attacking
@@ -2395,14 +2404,14 @@ function update(timestamp) {
             // fallback color if image fails to load
             /*projEl.style.backgroundColor = "black";
             projEl.style.boxShadow = "0 0 6px rgba(255,255,255,0.15)";*/
-            CalcgunSound.play();
+            playSound(CalcgunSound);
             // start slightly in front of player
-            const dirVec = directionVectors[direction];
+             const dirVec = {x: ((mouseX - x)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2)), y: ((mouseY - y)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2))};
             const startX = x + dirVec.x * 35;
             const startY = y + dirVec.y * 35;
             projEl.style.left = `${startX}px`;
             projEl.style.top = `${startY}px`;
-            projEl.style.transform = `rotate(${directionAnglesShots[direction]+90}deg)`;
+            projEl.style.transform = `rotate(${angleDeg+90}deg)`;
             gameArea.appendChild(projEl);
             Projweapon = CurrWeap;
             projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
@@ -2430,15 +2439,25 @@ function update(timestamp) {
             // fallback color if image fails to load
             /*projEl.style.backgroundColor = "black";
             projEl.style.boxShadow = "0 0 6px rgba(255,255,255,0.15)";*/
-            RifleSound.play();
+            playSound(RifleSound);
             //shaun
             // start slightly in front of player
-            const dirVec = directionVectors[direction];
+           
+            const spread = 8; //spread of weapon in degrees
+            chance = (Math.random()-0.5) * (spread*2);
+            let posx = mouseX - x;
+            let posy = mouseY - y;
+            let AngleShot =  angleDeg;
+            let trueAngle = AngleShot+chance;
+            let shotX = Math.cos((trueAngle-90)* Math.PI / 180);
+            let shotY = Math.sin((trueAngle-90)* Math.PI / 180);
+            const dirVec = {x: shotX, y: shotY};
+            console.log("gunx: "+AngleShot)
             const startX = x + dirVec.x * 35;
             const startY = y + dirVec.y * 35;
             projEl.style.left = `${startX}px`;
             projEl.style.top = `${startY}px`;
-            projEl.style.transform = `rotate(${directionAnglesShots[direction]+90}deg)`;
+            projEl.style.transform = `rotate(${trueAngle-90}deg)`;
             gameArea.appendChild(projEl);
             projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
             Projweapon = CurrWeap;
@@ -2550,6 +2569,7 @@ if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare)
 
 
 if (playerhp <= 0) {
+    deathSound.volume = 1;
     // Reset everything
     playerhp = 100;
     time = Math.floor(elapsed/60)
