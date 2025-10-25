@@ -232,7 +232,7 @@ window.onload = function() {
         let maxwave = localStorage.getItem(Filename+"Wave");
 
     }
-    alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Assault Rajfle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+    alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
 
     backgroundMusic.play();
     backgroundMusic.loop = true;   // 🔁 make it loop
@@ -2219,7 +2219,7 @@ function update(timestamp) {
             case 0: document.getElementById("weapon").innerText = "M. Pencil"; break;
             case 1: document.getElementById("weapon").innerText = "Shauntgun"; break;
             case 2: document.getElementById("weapon").innerText = "Shauniper"; break;
-            case 3: document.getElementById("weapon").innerText = "Assault Rajfle"; break;
+            case 3: document.getElementById("weapon").innerText = "Asshaunt Rifle"; break;
         }
         //document.getElementById("weapon").innerText = CurrWeap == 1 ? "Shauntgun" : "Shauniper";
     } catch (e) {}
@@ -2894,7 +2894,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const m1 = document.getElementById("map1");
     const m2 = document.getElementById("map2");
     if (helpBtn) helpBtn.addEventListener("click", () => {
-        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Assault Rajfle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     });//alert
     if (scoresBtn) scoresBtn.addEventListener("click", () => {
         const hs = localStorage.getItem(Filename+"HS") || 0;
