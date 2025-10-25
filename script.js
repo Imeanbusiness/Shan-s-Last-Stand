@@ -32,7 +32,7 @@
 
     let mouseX = 0;
     let mouseY = 0;
-
+//dash
     const body = document.body;
 
     
@@ -62,10 +62,10 @@ gameArea.addEventListener("click", () => {
 // Handle pointer lock changes
 document.addEventListener("pointerlockchange", () => {
     if (document.pointerLockElement === gameArea) {
-        console.log("Pointer locked in game area.");
+       // console.log("Pointer locked in game area.");
         crosshair.style.display = "block"; // Show our fake cursor
     } else {
-        console.log("Pointer unlocked.");
+        //console.log("Pointer unlocked.");
         crosshair.style.display = "none"; // Hide it
     }
 });
@@ -150,6 +150,7 @@ document.addEventListener("mouseup", () => {
     const backgroundMusic = new Audio("shaunsshotgun.mp3");
     const deathSound = new Audio("ShanDeath.mp3");
     const domDeath = new Audio("DomDeath.mp3");
+    const chengDeath = new Audio("ChengDeath.mp3");
     const ZukDeath = new Audio("ZukDeath.mp3");
     const dashCharged = new Audio("DashCharge.mp3");
     const MCSwoosh = new Audio("MCSwoosh.mp3");
@@ -475,7 +476,7 @@ class Charger {
         }
     }
 }
-//Cheng.jpg
+//Cheng.png
 // Ranged variant: stops approaching when within 100px and fires projectiles at the player
 class RangedCharger {
     constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
@@ -540,10 +541,12 @@ class RangedCharger {
                 //MoveChance = Math.random()
                 
             }
+            //console.log
             // Update rotation as in Charger
             let angleRad = Math.atan2(dy, dx);
             let angleDeg = angleRad * (180 / Math.PI);
-            let angleDash = angleDeg+135+180-220
+            let angleDash = angleDeg + 90
+        
             if (this.fireCooldown >= (this.fireInterval - 15)) {
 
                 
@@ -595,9 +598,9 @@ class RangedCharger {
     
                 this.el.style.left = `${this.x}px`;
                 this.el.style.top = `${this.y}px`;
-                this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
-                console.log(angleDash)
-            } else if ((dist > 120)) {
+                this.el.style.transform = `rotate(${angleDash + 180}deg)`;
+                console.log("Cheng Angle: "+angleDash + " Cheng Speed: " +this.speed)
+            } else if ((dist > 170)) {
                 this.x += (dx / dist) * this.speed;
                 this.y += (dy / dist) * this.speed;
                 this.el.style.left = `${this.x}px`;
@@ -605,56 +608,43 @@ class RangedCharger {
                 // Update rotation as in Charger
                 let angleRad = Math.atan2(dy, dx);
                 let angleDeg = angleRad * (180 / Math.PI);
+
+                if (angleDeg < 0) {
+                    angleDeg = 360 - angleDeg
+                }
+
+
                 this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
             } else {
-                if (angleDash >= 315 || angleDash <= 45) {
-                    if (MoveChance > 0.5) {
-                        this.x += (dx / dist) * 1.5 * this.speed;
+                if (MoveChance > 0.5) {
+                    this.x -= 0.8 * (dx / dist) * this.speed;
+                    this.y -= 0.8 * (dy / dist) * this.speed;
+                    this.el.style.left = `${this.x}px`;
+                    this.el.style.top = `${this.y}px`;
+                    // Update rotation as in Charger
+                    let angleRad = Math.atan2(dy, dx);
+                    let angleDeg = angleRad * (180 / Math.PI);
     
-                    } else {
-                        this.x += -1 * (dx / dist) * 1.5 * this.speed;
-                    }   
-                    this.y += (dy / dist) * 0.8 * this.speed;
+                    if (angleDeg < 0) {
+                        angleDeg = 360 - angleDeg
+                    }
+
+                } else {
+                    this.x += 0.8 * (dx / dist) * this.speed;
+                    this.y += 0.8 * (dy / dist) * this.speed;
+                    this.el.style.left = `${this.x}px`;
+                    this.el.style.top = `${this.y}px`;
+                    // Update rotation as in Charger
+                    let angleRad = Math.atan2(dy, dx);
+                    let angleDeg = angleRad * (180 / Math.PI);
     
+                    if (angleDeg < 0) {
+                        angleDeg = 360 - angleDeg
+                    }
                 }
-    
-                if (angleDash > 45 && angleDash <= 135) {
-                    if (MoveChance > 0.5) {
-                        this.y += (dy / dist) * 1.5 * this.speed;
-    
-                    } else {
-                        this.y += -1 * (dy / dist) * 1.5 * this.speed;
-                    }   
-                    this.x += (dx / dist) * 0.8 * this.speed;
-    
-                }
-    
-                if (angleDash > 135 && angleDash <= 225) {
-                    if (MoveChance > 0.5) {
-                        this.x += (dx / dist) * 1.5 * this.speed;
-    
-                    } else {
-                        this.x += -1 * (dx / dist) * 1.5 * this.speed;
-                    }   
-                    this.y += (dy / dist) * 0.8 * this.speed;
-    
-                }
-    
-                if (angleDash > 225 && angleDash < 315) {
-                    if (MoveChance > 0.5) {
-                        this.y += (dy / dist) * 1.5 * this.speed;
-    
-                    } else {
-                        this.y += -1 * (dy / dist) * 1.5 * this.speed;
-                    }   
-                    this.x += (dx / dist) * 0.8 * this.speed;
-    
-                }
-    
-                this.el.style.left = `${this.x}px`;
-                this.el.style.top = `${this.y}px`;
+
+
                 this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
-                console.log(angleDash)
             }
 
         }
@@ -806,7 +796,7 @@ async function FPSCount() {
             framespassed = 1;
         }
         document.getElementById("FPSCounter").innerHTML = "FPS: "+Math.max((0, (framespassed-1)*frameCheckTime))
-        console.log("FPS:"+(framespassed-1))
+        //console.log("FPS:"+(framespassed-1))
         framespassed = 0;
     } else {
     }
@@ -1147,7 +1137,7 @@ function startRoom(x, timerd) {
                     invinc = true;
                     setTimeout(() => { invinc = false; }, iFrames);
                     p.el.remove();
-                    return false;
+                    return false;//shift
                 }
             } catch (e) {}
             return true;
@@ -1307,15 +1297,20 @@ function handleEnemyDeath(enemy) {
     // Base score
     score += 250 * Mult;
     // Extra handling based on type
+    //console.log("Enemy File name: "+enemy.fil)
     if (enemy.fileName == "Zuk.png") {
         score += 250 * Mult;
         tankCount = Math.max(0, tankCount - 1);
-        try { ZukDeath.play(); } catch (e) {}
+        try { playSound(ZukDeath); } catch (e) {}
     } else if (enemy.fileName == "Shower.jpg") {
         score += 750 * Mult;
         showerCount = Math.max(0, showerCount - 1);
+    } else if (enemy.fileName == "Cheng.png") {
+        score+= 125 * Mult;
+        try { playSound(chengDeath); } catch (e) {}
+        chargerCount = Math.max(0, chargerCount - 1);
     } else {
-        try { domDeath.play(); } catch (e) {}
+        try { playSound(domDeath); } catch (e) {}
         chargerCount = Math.max(0, chargerCount - 1);
     }
 
@@ -1351,7 +1346,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
     }
 
 
-    console.log(CampEnemyCount);
+    //console.log(CampEnemyCount);
 
 
     switch (t) {
@@ -1364,7 +1359,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
             damage = Math.floor(5 * difficulty / 2);
             enemyHP = Math.floor((250 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 3.5 * difficulty / 3;
-            fileName = 'RangedDom'; width = 50; height = 50; break;
+            fileName = 'Cheng.png'; width = 50; height = 50; break;
         case 'zuk':
             damage = Math.floor(6 * difficulty / 2);
             enemyHP = Math.floor((700 * (0.9 + Wave/10) ** 2) * difficulty / 2);
@@ -1435,7 +1430,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
             enemyCount++;
         } else {
             // Special-case: Ranged variant that looks like Dom.png
-            if (fileName === 'RangedDom') {
+            if (fileName === 'Cheng.png') {
                 enemies.push(new RangedCharger(ex, ey, speed, enemyHP, damage, 'Cheng.png', width, height));
             } else {
                 enemies.push(new Charger(ex, ey, speed, enemyHP, damage, fileName, width, height));
@@ -1676,7 +1671,7 @@ function update(timestamp) {
         MoveChanceTimer++ 
         if (MoveChanceTimer>120) {
             MoveChance = Math.random();
-            console.log("Reset!")
+           // console.log("Reset!")
             MoveChanceTimer = 0;
         }
         
@@ -1732,14 +1727,14 @@ function update(timestamp) {
 
         if (keysPressed[" "] && attack == false && Atdelay <= 0) {
             attack = true;
-            console.log("attack!")
+           // console.log("attack!")
             FirstAttack = true;
             attackingDelay = 0;
         }
 
         if (mouseHeld && !attack && Atdelay <= 0) {
                 attack = true;
-                console.log("Mouse click attack!");
+              //  console.log("Mouse click attack!");
                 FirstAttack = true;
                 attackingDelay = 0;
         }
@@ -1768,7 +1763,8 @@ function update(timestamp) {
         dashing = true;
         dashtimer = 0;
         dashCharge = false;
-        
+        invinc = true;
+        setTimeout(() => { invinc = false; }, 200);
         lockdirection = movdirection;
     }
 
@@ -1851,32 +1847,32 @@ function update(timestamp) {
     if (dx < 0) {
         if (dy < 0 ) {
             movdirection = "nw";
-            console.log(movdirection)
+            //console.log(movdirection)
         } else if (dy > 0) {
             movdirection = "sw";
-            console.log(movdirection)
+            //console.log(movdirection)
         } else {
             movdirection = "w";
-            console.log(movdirection)
+           // console.log(movdirection)
         }
     } else if (dx > 0) {
         if (dy < 0 ) {
             movdirection = "ne";
-            console.log(movdirection)
+           // console.log(movdirection)
         } else if (dy > 0) {
             movdirection = "se";
-            console.log(movdirection)
+           // console.log(movdirection)
         } else {
             movdirection = "e";
-            console.log(movdirection)
+           // console.log(movdirection)
         }
     } else {
         if (dy < 0) {
             movdirection = "n";
-            console.log(movdirection)
+           // console.log(movdirection)
         } else if (dy > 0) {
             movdirection = "s";
-            console.log(movdirection)
+           // console.log(movdirection)
         }
     }
 
@@ -1886,8 +1882,15 @@ function update(timestamp) {
     //dash
 
     const angleRad = Math.atan2(mouseY - y, mouseX - x);
-    const angleDeg = angleRad * (180 / Math.PI)+90;
-    console.log("angle: "+angleDeg)
+    let angleDeg = 0;
+    if (angleRad * (180 / Math.PI)+90 < 0 ) {
+        angleDeg = 360 + angleRad * (180 / Math.PI)+90;
+
+    } else {
+        angleDeg = angleRad * (180 / Math.PI)+90;
+    }
+
+    //console.log("angle: "+angleDeg)
     if (angleDeg >= 337.5 || angleDeg < 22.5) {
         direction = "n"
     } else if (angleDeg >= 22.5 && angleDeg < 67.5) {
@@ -2119,7 +2122,7 @@ function update(timestamp) {
                         playerhp = 0;
                         playSound(deathSound);
                     }
-                    console.log("Player HP:", playerhp);
+                    //console.log("Player HP:", playerhp);
                     invinc = true;
                     playSound(ouch);
                     // Flash red on damage
@@ -2455,7 +2458,7 @@ function update(timestamp) {
             let shotX = Math.cos((trueAngle-90)* Math.PI / 180);
             let shotY = Math.sin((trueAngle-90)* Math.PI / 180);
             const dirVec = {x: shotX, y: shotY};
-            console.log("gunx: "+AngleShot)
+            //console.log("gunx: "+AngleShot)
             const startX = x + dirVec.x * 35;
             const startY = y + dirVec.y * 35;
             projEl.style.left = `${startX}px`;
@@ -2600,7 +2603,7 @@ if (playerhp <= 0) {
         }
         // start
         enemies.forEach(enemy => enemy.el.remove());
-        enemies = [];
+        enemies = [];//timer
         chargerCount = 0;
         healthCount = 0;
         enemyCount = 0;
@@ -2856,7 +2859,10 @@ async function startGameFromMenu() {
 
     transitioning = false;
     showGameUI();
+
     timerd = 0;
+    enemies.forEach(enemy => enemy.el.remove());
+     enemies = [];
 
     if (gameStarted) return;
     gameStarted = true;
