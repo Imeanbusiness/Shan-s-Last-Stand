@@ -24,7 +24,7 @@ This is your health. Every time an enemy hits you, it gets reduced. You can pick
 
 ### 2: Weapon
 
-Shows the current weapon you have equipped. Press __1__ to equip the Shauntgun, a close range medium damge single shot shotgun, __2__ for the Shauniper, a long rage single shot high damage weapon, __2__ for the Assault Rajfle, a medium range high DPS automatic rifle, and __c__ for the M. Pencil, a melee weapon that helps you regain sanity.
+Shows the current weapon you have equipped. Press __1__ to equip the Shauntgun, a close range medium damge single shot shotgun, __2__ for the Shauniper, a long rage single shot high damage weapon, __2__ for the Asshaunt Rifle, a medium range high DPS automatic rifle, and __c__ for the M. Pencil, a melee weapon that helps you regain sanity.
 
 ### 3: Ammo
 
@@ -142,7 +142,7 @@ Note: All stats assume you are in "Derivatives are doable..." difficulty, the no
 
 - The Shan-inator 72, also known as the Shauniper, is a powerful old rifle designed by Shanvanth himself! This thing is powered by a TI-84 plus, and can blow off integration problems from a mile away. This weapon is a **long ranged** weapon that uses **projectiles** to attack. This projectile is **100% accurate**. This **high damage** weapon is very good at picking off enemies on the other side of the map, and has the **highest damage single shot**. However, it is **very slow** with the **lowest DPS in the game**, and **takes a lot of sanity** to be fired. It only hits **one target**. Due to its low ready time, it is a great switch in weapon for combos, and a **good utility** weapon in general.
 
-### Assault Rajfle
+### Asshaunt Rifle
 
 ![Interface](ShanAssaultRifle.png)
 
