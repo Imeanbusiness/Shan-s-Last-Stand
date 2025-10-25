@@ -84,12 +84,15 @@ document.addEventListener("mousemove", (e) => {
 gameArea.addEventListener("mousemove", (e) => {
      if (!gameArea) return;
      gameArea.requestPointerLock();
-    const rect = gameArea.body.getBoundingClientRect();
-    mouseX = e.clientX - rect.left; // Mouse X relative to the game area
-    mouseY = e.clientY - rect.top;  // Mouse Y relative to the game area
-    crosshair.style.transform = "translate(-50%, -50%)";
-    crosshair.style.left = mouseX+"px";
-    crosshair.style.top = mouseY+"px";
+    try {
+        const rect = gameArea.body.getBoundingClientRect();
+        mouseX = e.clientX - rect.left; // Mouse X relative to the game area
+        mouseY = e.clientY - rect.top;  // Mouse Y relative to the game area
+        crosshair.style.transform = "translate(-50%, -50%)";
+        crosshair.style.left = mouseX+"px";
+        crosshair.style.top = mouseY+"px";
+
+    } catch(e) {}
 });
 
 let mouseHeld = false;
