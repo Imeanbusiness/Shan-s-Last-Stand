@@ -2515,6 +2515,7 @@ function update(timestamp) {
                     return false;
                 }
             }
+            //setTimeout
             // enemy collision
             const projRect = p.el.getBoundingClientRect();
             for (let i = 0; i < enemies.length; i++) {
@@ -2578,67 +2579,70 @@ if (playerhp <= 0) {
     deathSound.volume = 1;
     // Reset everything
     playerhp = 100;
-    time = Math.floor(elapsed/60)
-    
-    level = 1;
-    x = 280;
-    y = 280;
-    direction = "n";
-        attack = false;
-        FirstAttack = false;
-        invinc = false;
-        sanity = 50;
-        sanityTimer = 0;
-        camplevel = 0;
-        currCamplevel = 0;
-        CampEnemyCount = -1;
+    setTimeout(() => {
         
-        nextlevelsquare = null;
-        lastlevelsquare = null;
+        time = Math.floor(elapsed/60)
         
-        
-        
-        for (let key in keysPressed) {
-            keysPressed[key] = false;
-        }
-        // start
-        enemies.forEach(enemy => enemy.el.remove());
-        enemies = [];//timer
-        chargerCount = 0;
-        healthCount = 0;
-        enemyCount = 0;
-        showerCount = 0;
-        scoreBoostCount = 0;
-        tankCount = 0;
-        timerd = 0;
-        transitioning = false;
-        framespassed = 0;
-        //if (score)
-        // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
-        try {
-            obstacles.forEach(o => { if (o && o.el) o.el.remove(); });
-        } catch (e) { }
-        obstacles = [];
-        score *= (difficulty/2)**2;
-        score = Math.floor(score);
-        
-        console.log("Game Reset!");
-        if (score > localStorage.getItem(Filename+"HS")) {
-            localStorage.setItem(Filename+"HS", score);
-        }
-        if (time > localStorage.getItem(Filename+"Time")) {
-            localStorage.setItem(Filename+"Time", time);
-        }
-        if (Wave > localStorage.getItem(Filename+"Wave")) {
-            localStorage.setItem(Filename+"Wave", Wave);
-        }
-        alert("You Died! Returning to main menu. Your final score was: " + score+"\nYou survived for "+time+" seconds and reached wave "+Wave+".");
-        alert("High Score: "+localStorage.getItem(Filename+"HS")+"\nLongest Time Survived: "+localStorage.getItem(Filename+"Time")+" seconds\nHighest Wave Reached: "+localStorage.getItem(Filename+"Wave"));
-        score = 0;
-        elapsed = 0;
-        Wave =0;
-        gameStarted = false;
-        showMainMenu();
+        level = 1;
+        x = 280;
+        y = 280;
+        direction = "n";
+            attack = false;
+            FirstAttack = false;
+            invinc = false;
+            sanity = 50;
+            sanityTimer = 0;
+            camplevel = 0;
+            currCamplevel = 0;
+            CampEnemyCount = -1;
+            
+            nextlevelsquare = null;
+            lastlevelsquare = null;
+            
+            
+            
+            for (let key in keysPressed) {
+                keysPressed[key] = false;
+            }
+            // start
+            enemies.forEach(enemy => enemy.el.remove());
+            enemies = [];//timer
+            chargerCount = 0;
+            healthCount = 0;
+            enemyCount = 0;
+            showerCount = 0;
+            scoreBoostCount = 0;
+            tankCount = 0;
+            timerd = 0;
+            transitioning = false;
+            framespassed = 0;
+            //if (score)
+            // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
+            try {
+                obstacles.forEach(o => { if (o && o.el) o.el.remove(); });
+            } catch (e) { }
+            obstacles = [];
+            score *= (difficulty/2)**2;
+            score = Math.floor(score);
+            
+            console.log("Game Reset!");
+            if (score > localStorage.getItem(Filename+"HS")) {
+                localStorage.setItem(Filename+"HS", score);
+            }
+            if (time > localStorage.getItem(Filename+"Time")) {
+                localStorage.setItem(Filename+"Time", time);
+            }
+            if (Wave > localStorage.getItem(Filename+"Wave")) {
+                localStorage.setItem(Filename+"Wave", Wave);
+            }
+            alert("You Died! Returning to main menu. Your final score was: " + score+"\nYou survived for "+time+" seconds and reached wave "+Wave+".");
+            alert("High Score: "+localStorage.getItem(Filename+"HS")+"\nLongest Time Survived: "+localStorage.getItem(Filename+"Time")+" seconds\nHighest Wave Reached: "+localStorage.getItem(Filename+"Wave"));
+            score = 0;
+            elapsed = 0;
+            Wave =0;
+            gameStarted = false;
+            showMainMenu();
+    }, 100);
     } //level up
     
     if (sanity <= 33) {
