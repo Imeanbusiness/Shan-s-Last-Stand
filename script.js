@@ -156,6 +156,7 @@ document.addEventListener("mouseup", () => {
     const MCSwoosh = new Audio("MCSwoosh.mp3");
     const TheyDontStopComing = new Audio("TheyDontStopComing.mp3");
     const ATMOC = new Audio("ATMOC.mp3");
+    const RITW = new Audio("RITW.mp3");
     const RifleSound = new Audio("RifleSound.mp3");
 
 
@@ -1046,6 +1047,8 @@ function startRoom(x, timerd) {
                 break;
             case 2: roboticsRoom();
                 break;
+            case 3: englishRoom();
+                break;
         }
         startGameFromMenu();
         
@@ -1507,6 +1510,59 @@ function roboticsRoom() {
     addObstacle(150, 600, 500, 50, { color: "#32527B" });
     
 }
+
+function roboticsRoom() {
+    RITW.play();
+    RITW.loop = true;
+    gameArea.style.backgroundImage = "url('MRFONGROOM.png')"
+
+    addObstacle(80, 210, 65, 330, { color: "#F8DFA1" }); 
+    //addObstacle(490, 210, 65, 330, { color: "#F8DFA1" }); 
+
+    addObstacle(490, 210, 65, 140, { color: "#F8DFA1" }); 
+
+    addObstacle(490, 455, 65, 80, { color: "#F8DFA1" }); 
+
+    addObstacle(215, 270, 200, 65, { color: "#F8DFA1" }); 
+    addObstacle(90, 260, 20, 25, { color: "#000000" }); 
+
+    addObstacle(110, 430, 20, 25, { color: "#000000" }); 
+
+    addObstacle(215, 470, 200, 65, { color: "#F8DFA1" }); 
+    addObstacle(290, 490, 25, 20, { color: "#000000" }); 
+    addObstacle(415+12.5, 470+7.5, 50, 50, { color: "#000000", blocksProjectiles: false}); 
+    addObstacle(500, 0, 70, 130, { color: "#947A54" }); 
+    addObstacle(540, 60, 25, 32, { color: "#a7a7a7" }); 
+    addObstacle(540+12, 60+13.5, 5, 5, { color: "#eeeeee" }); 
+    addObstacle(497.5-20, 575, 120, 65, { color: "#434343"}); 
+    addObstacle(80, 0, 65, 65, { color: "#F8DFA1" }); 
+    //addObstacle(0, 575, 90, 65, { color: "#434343", blocksProjectiles: false }); 
+
+    /*
+     addObstacle(0, 50, 50, 550, { color: "#F8DFA1" }); 
+    for (let i = 0; i < 9; i++) {
+        addObstacle(12.5, 70+60*i, 25, 20, { color: "#000000" }); 
+    }
+    addObstacle(600, 50, 50, 550, { color: "#F8DFA1" }); 
+    for (let i = 0; i < 9; i++) {
+        addObstacle(612.5, 70+60*i, 25, 20, { color: "#000000" }); 
+    }
+    addObstacle(140, 100, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(375, 100, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(140, 270, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(375, 270, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(140, 440, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(375, 440, 145, 60, { color: "#F8DFA1" }); 
+    addObstacle(75, 450, 40, 40, { color: "#333333", blocksProjectiles: false });
+    addObstacle(540, 280, 40, 40, { color: "#333333", blocksProjectiles: false });
+    addObstacle(470, 135, 35, 20, { color: "#000000" }); 
+    addObstacle(150, 600, 500, 50, { color: "#32527B" });
+    */
+    
+}
+
+
+
 //Math.min
 let lastFrameTime = 0;
 const fps = 60;
@@ -2697,6 +2753,8 @@ function showMainMenu() {
     TheyDontStopComing.currentTime = 0;
     ATMOC.pause();
     ATMOC.currentTime = 0;
+    RITW.pause();
+    RITW.currentTime = 0;
     backgroundMusic.play()
     backgroundMusic.loop = true;
 }
@@ -2893,6 +2951,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const m0 = document.getElementById("map0");
     const m1 = document.getElementById("map1");
     const m2 = document.getElementById("map2");
+    const m3 = document.getElementById("map3");
     if (helpBtn) helpBtn.addEventListener("click", () => {
         alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     });//alert
@@ -2938,6 +2997,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (m0) m0.addEventListener("click", () => chooseMap(0));
         if (m1) m1.addEventListener("click", () => chooseMap(1));
         if (m2) m2.addEventListener("click", () => chooseMap(2));
+        if (m3) m3.addEventListener("click", () => chooseMap(2));
         //startGameFromMenu();
     }
 
@@ -2947,6 +3007,8 @@ document.addEventListener("DOMContentLoaded", () => {
             lovedayRoom();
         } else if (map == 2) {
             roboticsRoom();
+        } else if (map == 3) {
+            englishRoom();
         }
         camplevel = 1;
         startGameFromMenu();
@@ -2989,10 +3051,13 @@ document.addEventListener("DOMContentLoaded", () => {
     if (m0) m0.addEventListener("mouseenter", () => setMDesc("Description: The full expeirence of Shanvanth's Last Stand"));
     if (m1) m1.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy. Description: Ah, Mr. Loveday's room, a nice open haven for Shanvanth. Now it has become a warzone. Where is Mr. Loveday?"));
     if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard. Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
+    if (m3) m3.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard. Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
+    //const clearmapDesc = () => setMDesc("");
     const clearmapDesc = () => setMDesc("");
     if (m0) m0.addEventListener("mouseleave", clearmapDesc);
     if (m1) m1.addEventListener("mouseleave", clearmapDesc);
     if (m2) m2.addEventListener("mouseleave", clearmapDesc);
+    if (m3) m3.addEventListener("mouseleave", clearmapDesc);
 });
 
 // Gate the loop to wait for menu
