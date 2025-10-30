@@ -33,6 +33,7 @@ body {
   margin: 0;
   background-image: url("Byrne.jpg");
   background-size: cover;
+  background-repeat: no-repeat;
 
   overflow: auto;
   user-select: none;
