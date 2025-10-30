@@ -3,6 +3,7 @@
     //game
     //fps
     //movechance
+    //player
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
 
@@ -129,7 +130,7 @@ document.addEventListener("mouseup", () => {
     let transitioning = false;
     const Filename = "ShansStand/";
     let timerd = 0;
-
+    let activateTimerReset = false;
     // Player control state
     let dashing = false;
     let dashtimer = 45;
@@ -600,7 +601,7 @@ class RangedCharger {
                 this.el.style.left = `${this.x}px`;
                 this.el.style.top = `${this.y}px`;
                 this.el.style.transform = `rotate(${angleDash + 180}deg)`;
-                console.log("Cheng Angle: "+angleDash + " Cheng Speed: " +this.speed)
+                //console.log("Cheng Angle: "+angleDash + " Cheng Speed: " +this.speed)
             } else if ((dist > 170)) {
                 this.x += (dx / dist) * this.speed;
                 this.y += (dy / dist) * this.speed;
@@ -1033,8 +1034,8 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
 
 //function to create rooms
 
-function startRoom(x, timerd) {
-    if (timerd == 0) {
+function startRoom(x, IGTimer) {
+    if (IGTimer == 0) {
         enemies.forEach(enemy => enemy.el.remove());
         enemies = [];
         document.getElementById("ScoreTitle").innerHTML = "Score";
@@ -1057,32 +1058,111 @@ function startRoom(x, timerd) {
         
         if (x == 0) {
             if (currCamplevel == 1) {
-                if (timerd == 150) {
-                       
-                            // schedule spawn with portal
-                            EnemySpawnCampaign('dom', 80, 400);
-                            spawntime = 0;
-    
+                if (CampEnemyCount <= 20 && CampEnemyCount >= 16) {
+
+                    if (IGTimer == 150) {
+                           
+                                // schedule spawn with portal
+                                EnemySpawnCampaign('dom', 80, 400);
+                                spawntime = 0;
+        
+                        }
+                    if (IGTimer == 170) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 150, 200);
+                        spawntime = 0;
                     }
-                if (timerd == 170) {
-                    const spawn = getValidSpawnRect(50, 50);
-                    EnemySpawnCampaign('dom', 150, 200);
-                    spawntime = 0;
+                    if (IGTimer == 240) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 500, 300);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 260) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 200, 600);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 300) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 250, 100);
+                        spawntime = 0;
+                    }
                 }
-                if (timerd == 240) {
-                    const spawn = getValidSpawnRect(50, 50);
-                    EnemySpawnCampaign('dom', 500, 300);
-                    spawntime = 0;
+                console.log("Camp Enemy Count: "+CampEnemyCount+ " Timer: "+activateTimerReset)
+                if (CampEnemyCount <= 15   && CampEnemyCount >= 11 && !activateTimerReset) {
+                    activateTimerReset = true;
+                    console.log("Should work??")
+                    timerd = 0;
                 }
-                if (timerd == 260) {
-                    const spawn = getValidSpawnRect(50, 50);
-                    EnemySpawnCampaign('dom', 200, 600);
-                    spawntime = 0;
+
+                if (CampEnemyCount <= 15  && CampEnemyCount >= 11) {
+                    if (IGTimer == 150) {
+                           
+                                // schedule spawn with portal
+                        EnemySpawnCampaign('dom', 80, 400);
+                        spawntime = 0;
+        
+                    }
+                    if (IGTimer == 170) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 150, 200);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 240) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 500, 300);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 260) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 200, 600);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 300) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 250, 100);
+                        spawntime = 0;
+                    }
                 }
-                if (timerd == 300) {
-                    const spawn = getValidSpawnRect(50, 50);
-                    EnemySpawnCampaign('dom', 250, 100);
-                    spawntime = 0;
+
+                if (CampEnemyCount <= 10   && CampEnemyCount >= 6 && activateTimerReset) {
+                    activateTimerReset = false;
+                    timerd = 0;
+                }
+
+                if (CampEnemyCount <= 10   && CampEnemyCount >= 6) {
+                    if (IGTimer == 150) {
+                           
+                                // schedule spawn with portal
+                        EnemySpawnCampaign('dom', 80, 400);
+                        spawntime = 0;
+        
+                    }
+                    if (IGTimer == 170) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 150, 200);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 240) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 500, 300);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 260) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 200, 600);
+                        spawntime = 0;
+                    }
+                    if (IGTimer == 300) {
+                        const spawn = getValidSpawnRect(50, 50);
+                        EnemySpawnCampaign('dom', 250, 100);
+                        spawntime = 0;
+                    }
+                }
+
+                if (CampEnemyCount <= 5   && CampEnemyCount >= 1 && !activateTimerReset) {
+                    activateTimerReset = true;
+                    timerd = 0;
                 }
                 
             }
@@ -1357,22 +1437,22 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
             damage = 4 * difficulty / 2;
             enemyHP = Math.floor((350 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = Math.floor(3 * difficulty / 3);
-            fileName = 'Dom.png'; width = 50; height = 50; break;
+            fileName = 'Dom.png'; width = 40; height = 40; break;
         case 'ranged':
             damage = Math.floor(5 * difficulty / 2);
             enemyHP = Math.floor((250 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 3.5 * difficulty / 3;
-            fileName = 'Cheng.png'; width = 50; height = 50; break;
+            fileName = 'Cheng.png'; width = 40; height = 40; break;
         case 'zuk':
             damage = Math.floor(6 * difficulty / 2);
             enemyHP = Math.floor((700 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 0.75 * difficulty / 3;
-            fileName = 'Zuk.png'; width = 70; height = 70; break;
+            fileName = 'Zuk.png'; width = 60; height = 60; break;
         case 'shower':
             damage = Math.floor(16 * difficulty / 2);
             enemyHP = Math.floor((3000 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 0.2 * difficulty / 3;
-            fileName = 'Shower.jpg'; width = 85; height = 85; break;
+            fileName = 'Shower.jpg'; width = 70; height = 70; break;
         case 'heal':
         case 'healpickup':
             damage = 0; enemyHP = 0; speed = 0; fileName = 'HealPickup'; width = 45; height = 45; break;
@@ -1511,7 +1591,7 @@ function roboticsRoom() {
     
 }
 
-function roboticsRoom() {
+function englishRoom() {
     RITW.play();
     RITW.loop = true;
     gameArea.style.backgroundImage = "url('MRFONGROOM.png')"
@@ -1630,17 +1710,17 @@ function update(timestamp) {
       startRoom(RoomType, timerd);
 
 
-      if (x <50) {
-        x = 50
+      if (x < 25) {
+        x = 25
       }
-      if (x > 650) {
-        x = 650
+      if (x > 625) {
+        x = 625
       }
-      if (y <50) {
-        y = 50
+      if (y <25) {
+        y = 25
       }
-      if (y > 650) {
-        y = 650
+      if (y > 625) {
+        y = 625
       }
 
       crosshair.style.transform = "translate(-50%, -50%)";
@@ -1802,8 +1882,8 @@ function update(timestamp) {
     dashtimer++;
     framespassed++;
     FPSCount();
-    
-    if (dashtimer >= 4) {
+    console.log(timerd);
+    if (dashtimer >= 6) {
         speed = BaseSpeed;
         dashing = false;
     }
@@ -1815,7 +1895,7 @@ function update(timestamp) {
     }
     
     if (keysPressed["shift"] && dashtimer >= 60 && !dashing) {
-        speed = 25;
+        speed = 20;
         dashing = true;
         dashtimer = 0;
         dashCharge = false;
@@ -1825,11 +1905,11 @@ function update(timestamp) {
     }
 
     if (keysPressed["w"] || keysPressed["arrowup"]) {
-        if (y >= 50) {
+        if (y >= 25) {
 
             dy -= speed;
         } else {
-            y = 50;
+            y = 25;
         }
 
 
@@ -1843,31 +1923,31 @@ function update(timestamp) {
 
 
     if (keysPressed["s"] || keysPressed["arrowdown"]) {
-        if (y <= 600) {
+        if (y <= 625) {
 
             dy += speed;
         } else {
-            y = 600;
+            y = 625;
         }
 
     } 
 
     if (keysPressed["a"] || keysPressed["arrowleft"]) {
-        if (x >= 50) {
+        if (x >= 25) {
 
             dx -= speed;
         } else {
-            x = 50;
+            x = 25;
         }
 
     }
 
     if (keysPressed["d"] || keysPressed["arrowright"]) {
-        if (x <= 600) {
+        if (x <= 625) {
 
             dx += speed;
         } else {
-            x = 600;
+            x = 625;
         }
 
     }
@@ -1980,10 +2060,10 @@ function update(timestamp) {
     // Resolve player vs obstacles
     if (obstacles.length > 0) {
         // player is 65x65 and positioned with center at (x,y)
-        let px = x - 32.5;
-        let py = y - 32.5;
-        const pw = 65;
-        const ph = 65;
+        let px = x - 25;
+        let py = y - 25;
+        const pw = 50;
+        const ph = 50;
         for (let i = 0; i < obstacles.length; i++) {
             const o = obstacles[i];
             if (rectsOverlap(px, py, pw, ph, o.x, o.y, o.width, o.height)) {
@@ -1992,8 +2072,8 @@ function update(timestamp) {
                 py = resolved.y;
             }
         }
-        x = px + 32.5;
-        y = py + 32.5;
+        x = px + 25;
+        y = py + 25;
     }
 
     player.style.left = `${x}px`;
@@ -2257,7 +2337,7 @@ function update(timestamp) {
         }
       }
     }
-
+   // console.log("X:", x, "Y:", y);
     document.getElementById("Score").innerText =  score;
     if (RoomType == 0) {
         document.getElementById("Score").innerText =  score+" / "+(Math.floor(level*2500*level/2));
@@ -2288,9 +2368,21 @@ function update(timestamp) {
 
     if (!transitioning && score >= Math.floor(level*2500*level/2) && RoomType == 0) { 
                     level++; 
-                    alert("Level up! You are now level "+level); 
+                    try { const existing = document.getElementById("SBMessage"); if (existing) existing.remove(); } catch (e) {}
+                newMessage = document.createElement("div");
+                newMessage.id = "SBMessage";
+                newMessage.className = 'gameMessage';
+                newMessage.innerHTML = "Level up! You are now level "+level;
+                SBmessagetimer = 0;
+                if (messagesContainer) messagesContainer.appendChild(newMessage);
+                
+
+                setTimeout(() => {
+                    try { const m = document.getElementById("SBMessage"); if (m) m.remove(); } catch (e) {}
+                }, 1200);
+                   // alert("Level up! You are now level "+level); 
                     playerhp = 100+level*20; 
-                    for (let k in keysPressed) { keysPressed[k] = false; } 
+                  //  for (let k in keysPressed) { keysPressed[k] = false; } 
     }
 
     try {
@@ -2635,6 +2727,7 @@ if (playerhp <= 0) {
     deathSound.volume = 1;
     // Reset everything
     playerhp = 100;
+    activateTimerReset = false;
     setTimeout(() => {
         
         time = Math.floor(elapsed/60)
@@ -2890,7 +2983,7 @@ async function startGameFromMenu() {
         console.log("Level:",level);
         // Initialize the first room
         currCamplevel = 1;
-        CampEnemyCount = 5; // Set the number of enemies for the first level
+        CampEnemyCount = 20; // Set the number of enemies for the first level
     } else if (RoomType === 0 && camplevel === 2) {
         console.log("Room Type:", RoomType);
         document.getElementById("ScoreTitle").innerHTML = "XP";
@@ -2997,7 +3090,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (m0) m0.addEventListener("click", () => chooseMap(0));
         if (m1) m1.addEventListener("click", () => chooseMap(1));
         if (m2) m2.addEventListener("click", () => chooseMap(2));
-        if (m3) m3.addEventListener("click", () => chooseMap(2));
+        if (m3) m3.addEventListener("click", () => chooseMap(3));
         //startGameFromMenu();
     }
 
