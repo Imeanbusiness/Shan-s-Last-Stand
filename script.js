@@ -305,16 +305,25 @@ window.onload = function() {
         }
     }
 }, { passive: false }); // Use passive: false to allow preventDefault
-    const viewportWidth = window.innerWidth;
+     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const WindowPixels = viewportHeight * viewportWidth;
     const intendedWindowSize = 1920 * 1080;
 
     console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
+    console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
 
-    document.body.style.zoom = Math.sqrt(WindowPixels / intendedWindowSize);
+    const BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
+
+    body.style.width = viewportWidth/BodyZoom + "px";
+    body.style.height = viewportHeight/BodyZoom + "px";
+
+
+
+
+    document.body.style.zoom = BodyZoom;
     document.body.backgroundSize = "cover";
-      // optional: set volume
+      // showGame
 }
 
 window.addEventListener("click", () => {
@@ -1129,6 +1138,19 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
     return best ? { x: best.x, y: best.y } : { x: playerX, y: playerY };
 }
 
+//showGame
+let elem = document.documentElement;
+
+/* View in fullscreen */
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.webkitRequestFullscreen) { /* Safari */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE11 */
+    elem.msRequestFullscreen();
+  }
+}
 // Game loop
 
 //function to create rooms
@@ -2964,6 +2986,7 @@ let difficultyLevel = 1; // 1-4
 let difficulty = 1; // alias used in spawn formulas
 
 function showGameUI() {
+    //openFullscreen();
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
     const opt = document.getElementById("optionsMenu");
