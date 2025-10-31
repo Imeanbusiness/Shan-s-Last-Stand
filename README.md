@@ -2,6 +2,27 @@
 
 ## Getting started
 
+### Minimum Specs
+
+- GPU: Nvidia GeForce GT 730
+
+- CPU: Intel Core i3-4130
+
+- RAM: 4GB
+
+It'll run *OKAY*, a little choppy but still playable.
+
+### Recommended Specs
+
+- GPU: Nvidia GeForce MX 110
+
+- CPU: Intel Core i5-4460
+
+- RAM: 8GB
+
+Pretty consistent 60fps, hopefully.
+
+
 ### Installation
 
 1. Click [here](https://github.com/Imeanbusiness/Shan-s-Last-Stand/archive/refs/heads/main.zip) to download. You can play online [here](https://imeanbusiness.github.io/Shan-s-Last-Stand/) on my github domain or [here](https://scraftyimb.itch.io/shans-last-stand) on itch.io.
@@ -239,3 +260,69 @@ Note: All stats assume you are in "Derivatives are doable..." difficulty, the no
 - Music, art done by warfreak72
 
 - OST from Imeanbusiness: [Musescore](https://musescore.com/user/75673225/sets/13822105)
+
+## Version Log
+
+### 1.0 (Base Version)
+
+- Basic version of game, no difficulties or map selection, just 3 enemies and a shotgun for a hackathon!
+
+### 1.0.1
+
+- Added Death sound for Zuk.
+
+- Added dash mechanic.
+
+- Added Shauniper, a long range weapon.
+
+- Showers more likely to spawn.
+
+### 1.1 (Maps and Difficulties)
+
+- Reworked sanity to be tied to weapons, like ammo.
+
+- Set Orbitron to official font.
+
+- Added 2 maps and 4 difficulties. Selection for them is finally available.
+
+- Hud updated to show 7 items instead of 5.
+
+- Screen colours are added for some reactiveness!
+
+- Added damage counter to show how much damage you did.
+
+- Fixed game messages
+
+### 1.1.1
+
+- Added music!
+
+- Added FPS Counter because it looks cool
+
+- Added experimental cutscenes for campaign
+
+### 1.1.2
+
+- Added new enemy (Cheng Feng)
+
+- Finally finished the first draft of this manual
+
+- Fixed sound issues
+
+- Added Ammo Remaining counter
+
+- Added new Ashaunt Rifle
+
+- Aiming with mouse movement instead of just movement now. Big change!
+
+### 1.1.3
+
+- 2 new maps and new music
+
+- Added window scaling
+
+- Changed HUD to be more viewable
+
+- Added options to change settings
+
+- Added accessable manual from game

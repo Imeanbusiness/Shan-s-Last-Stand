@@ -1,12 +1,14 @@
 (function(){
     'use strict';
     //game
-    //fps
+    //showGame
     //movechance
     //player
+    //locals
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
-
+    const FPSCounter = document.getElementById("FPSCounter");
+    FPSCounter.style.display = "none";
     // helper to determine whether the game area is currently visible/active
     const isGameActive = () => {
         try {
@@ -29,7 +31,7 @@
         return m;
     })();
 
-
+//playsound
 
     let mouseX = 0;
     let mouseY = 0;
@@ -164,6 +166,8 @@ document.addEventListener("mouseup", () => {
 
     function playSound(sound) {
         //const originalAudio = document.getElementById('mySound');
+        let SFXON = localStorage.getItem(Filename+"SFX");
+        if (SFXON != "true") return;
         const newAudioInstance = sound.cloneNode(); // true for deep clone, but not necessary for audio elements
         newAudioInstance.play();
     }
@@ -220,7 +224,26 @@ function showDamage(x, y, damage) {
     }, 16); // ~60fps
 }
 
+function MusicVolume(volume) {
+    backgroundMusic.volume = volume;
+    TheyDontStopComing.volume = volume;
+    ATMOC.volume = volume;
+    RITW.volume = volume;
+    PILINGBODIES.volume = volume;
+}
 
+function SFXVolume(volume) {
+    ouch.volume = volume;
+    ShotgunSound.volume = volume;
+    CalcgunSound.volume = volume;
+    deathSound.volume = volume;
+    domDeath.volume = volume;
+    chengDeath.volume = volume;
+    ZukDeath.volume = volume;
+    dashCharged.volume = volume;
+    MCSwoosh.volume = volume;
+    RifleSound.volume = volume;
+}
 
 
 window.onload = function() {
@@ -235,10 +258,51 @@ window.onload = function() {
         let maxwave = localStorage.getItem(Filename+"Wave");
 
     }
-    alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+    if (!localStorage.getItem(Filename+"hasVisited1")) {
+        localStorage.setItem(Filename+"hasVisited1", "true");
+        localStorage.setItem(Filename+"Music", "true");
+        localStorage.setItem(Filename+"SFX", "true");
+        localStorage.setItem(Filename+"SHS", "true");
+    } else {
+        let MusicON = localStorage.getItem(Filename+"Music");
+        let SFXON = localStorage.getItem(Filename+"SFX");
+        if (MusicON == "true") {
+            MusicVolume(1);
+        } else {
+            MusicVolume(0);
+        }
+
+        if (SFXON == "true") {
+            SFXVolume(1);
+        } else {
+            SFXVolume(0);
+        }
+        //let maxwave = localStorage.getItem(Filename+"Wave");
+
+    }
+
+    
+    //click
+    alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     document.addEventListener("wheel", function(e) {
+        e.preventDefault();
     if (e.ctrlKey || e.metaKey) { // Check for Ctrl (Windows) or Cmd (Mac)
         e.preventDefault();
+    //if (gameArea.style.display !== "none") {
+      //if (e.deltaY < 0) {
+        //}
+    }
+    console.log(CurrWeap)
+    if (e.deltaY < 0) {
+        CurrWeap--;
+        if (CurrWeap < 0) {
+            CurrWeap = 0;
+        }
+    } else if (e.deltaY > 0) {
+        CurrWeap++;
+        if (CurrWeap > 3) {
+            CurrWeap = 3;
+        }
     }
 }, { passive: false }); // Use passive: false to allow preventDefault
     const viewportWidth = window.innerWidth;
@@ -249,15 +313,14 @@ window.onload = function() {
     console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
 
     document.body.style.zoom = Math.sqrt(WindowPixels / intendedWindowSize);
-    backgroundMusic.play();
-    backgroundMusic.loop = true;   // 🔁 make it loop
-    backgroundMusic.volume = 2;  // optional: set volume
+    document.body.backgroundSize = "cover";
+      // optional: set volume
 }
 
 window.addEventListener("click", () => {
     backgroundMusic.play();
     backgroundMusic.loop = true;   // 🔁 make it loop
-    backgroundMusic.volume = 2;
+    //backgroundMusic.volume = 2;
 }, { once: true });
 //showGame
 //calc
@@ -331,7 +394,29 @@ document.addEventListener("keydown", e => {
     keysPressed[e.key.toLowerCase()] = true;
     // Only allow pausing with Escape when the game is active/visible
     if (e.key === "p" && isGameActive()) {
-        alert("Game Paused. Press OK to resume.");
+        if(confirm("Game Paused. Return to main menu?")) {
+            playerhp = -99999
+        }
+        for (let key in keysPressed) {
+            keysPressed[key] = false;
+        }
+        try {
+            const healthMsg = document.getElementById("HealthMessage");
+            if (healthMsg) healthMsg.remove();
+
+            const sbMsg = document.getElementById("SBMessage");
+            if (sbMsg) sbMsg.remove();
+
+            const wpMsg = document.getElementById("WeaponMessage");
+            if (wpMsg) sbMsg.remove();
+        } catch (e) {
+
+        }
+    }
+    if (e.key === "Escape" && isGameActive()) {
+        if(confirm("Game Paused. Return to main menu?")) {
+            playerhp = -99999
+        }
         for (let key in keysPressed) {
             keysPressed[key] = false;
         }
@@ -426,7 +511,8 @@ document.addEventListener("keyup", e => {
 
     }*/
     if (e.key.toLowerCase()=="h") { 
-        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper.\nC to answer a math question to regain sanity\n\nSanity affects damage! Sanity is sacrificed every few seconds.\nSurvive as many waves as you can!");
+        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+    
         for (let key in keysPressed) {
             keysPressed[key] = false;
         }
@@ -1938,7 +2024,7 @@ function update(timestamp) {
     dashtimer++;
     framespassed++;
     FPSCount();
-    console.log(timerd);
+
     if (dashtimer >= 6) {
         speed = BaseSpeed;
         dashing = false;
@@ -2841,7 +2927,11 @@ if (playerhp <= 0) {
                 localStorage.setItem(Filename+"Wave", Wave);
             }
             alert("You Died! Returning to main menu. Your final score was: " + score+"\nYou survived for "+time+" seconds and reached wave "+Wave+".");
-            alert("High Score: "+localStorage.getItem(Filename+"HS")+"\nLongest Time Survived: "+localStorage.getItem(Filename+"Time")+" seconds\nHighest Wave Reached: "+localStorage.getItem(Filename+"Wave"));
+            let SHS = localStorage.getItem(Filename+"SHS");
+            if (SHS == "true") {
+
+                alert("High Score: "+localStorage.getItem(Filename+"HS")+"\nLongest Time Survived: "+localStorage.getItem(Filename+"Time")+" seconds\nHighest Wave Reached: "+localStorage.getItem(Filename+"Wave"));
+            }
             score = 0;
             elapsed = 0;
             Wave =0;
@@ -2876,12 +2966,16 @@ let difficulty = 1; // alias used in spawn formulas
 function showGameUI() {
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
+    const opt = document.getElementById("optionsMenu");
     const area = document.getElementById("gameArea");
     const hud = document.getElementById("playerHUD");
     const maps = document.getElementById("mapMenu");
+    const fpsco = document.getElementById("FPSCounter");
+    if (fpsco) fpsco.style.display = "flex";
     if (menu) menu.style.display = "none";
     if (diff) diff.style.display = "none";
     if (maps) maps.style.display = "none";
+    if (opt) opt.style.display = "none";
     if (area) area.style.display = "block";
     if (hud) hud.style.display = "grid";
     backgroundMusic.pause();
@@ -2892,11 +2986,15 @@ function showMainMenu() {
     document.getElementById("FPSCounter").innerHTML = "FPS: 0"
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
+    const opt = document.getElementById("optionsMenu");
     const area = document.getElementById("gameArea");
     const hud = document.getElementById("playerHUD");
+    const fpsco = document.getElementById("FPSCounter");
+    if (fpsco) fpsco.style.display = "none";
     if (menu) menu.style.display = "flex";
     if (diff) diff.style.display = "none";
     if (area) area.style.display = "none";
+    if (opt) opt.style.display = "none";
     if (hud) hud.style.display = "none";
     TheyDontStopComing.pause();
     TheyDontStopComing.currentTime = 0;
@@ -3090,24 +3188,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const playBtn = document.getElementById("playButton");
     const helpBtn = document.getElementById("helpButton");
     const scoresBtn = document.getElementById("highScoresButton");
+    const optBtn = document.getElementById("optionsButton");
     const diffMenu = document.getElementById("difficultyMenu");
+    const optMenu = document.getElementById("optionsMenu");
     const mainMenu = document.getElementById("mainMenu");
     const backBtn = document.getElementById("backToMain");
     const backBtn2 = document.getElementById("backToMain2");
+    const backBtn3 = document.getElementById("backToMain3");
     const d1 = document.getElementById("difficulty1");
     const d2 = document.getElementById("difficulty2");
     const d3 = document.getElementById("difficulty3");
     const d4 = document.getElementById("difficulty4");
     const diffDesc = document.getElementById("difficultyDesc");
     const mapDesc = document.getElementById("mapDesc");
+    const optDesc = document.getElementById("optionsDesc");
     const mapmenu = document.getElementById("mapMenu");
     const m0 = document.getElementById("map0");
     const m1 = document.getElementById("map1");
     const m2 = document.getElementById("map2");
     const m3 = document.getElementById("map3");
     const m4 = document.getElementById("map4");
+    const o1 = document.getElementById("options1");
+    const o2 = document.getElementById("options2");
+    const o3 = document.getElementById("options3");
     if (helpBtn) helpBtn.addEventListener("click", () => {
-        alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\n1, 2 to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+           window.open("help.html", "_blank");
+
+        //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     });//alert
     if (scoresBtn) scoresBtn.addEventListener("click", () => {
         const hs = localStorage.getItem(Filename+"HS") || 0;
@@ -3121,9 +3228,36 @@ document.addEventListener("DOMContentLoaded", () => {
         if (mainMenu) mainMenu.style.display = "none";
         if (diffMenu) diffMenu.style.display = "flex";
     });
+
+    if (optBtn) optBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (mainMenu) mainMenu.style.display = "none";
+        if (optMenu) optMenu.style.display = "flex";
+        let MusicON = localStorage.getItem(Filename+"Music");
+        let SFXON = localStorage.getItem(Filename+"SFX");
+        let SHSON = localStorage.getItem(Filename+"SHS");
+        if (MusicON == "true") {
+            o1.innerHTML = "Music: ON";
+        } else {
+            o1.innerHTML = "Music: OFF";
+        }
+
+        if (SFXON == "true") {
+            o2.innerHTML = "SFX: ON";
+        } else {
+            o2.innerHTML = "SFX: OFF";
+        }
+
+        if (SHSON == "true") {
+            o3.innerHTML = "Show High Score: ON";
+        } else {
+            o3.innerHTML = "Show High Score: OFF";
+        }
+    });
+
     if (backBtn) backBtn.addEventListener("click", () => {
      
-       
+
             if (diffMenu) diffMenu.style.display = "none";
             if (mainMenu) mainMenu.style.display = "flex";
 
@@ -3139,6 +3273,55 @@ document.addEventListener("DOMContentLoaded", () => {
         
     });
 
+
+    if (backBtn3) backBtn3.addEventListener("click", () => {
+     
+       
+            if (optMenu) optMenu.style.display = "none";
+            if (mainMenu) mainMenu.style.display = "flex";
+
+        
+    });
+
+
+    if (o1) o1.addEventListener("click", () => {
+        let MusicON = localStorage.getItem(Filename+"Music");
+        if (MusicON == "true") {
+            localStorage.setItem(Filename+"Music", "false");
+            MusicVolume(0);
+            o1.innerHTML = "Music: OFF";
+        } else {
+            localStorage.setItem(Filename+"Music", "true");
+            MusicVolume(1);
+            o1.innerHTML = "Music: ON";
+        }
+        
+    });
+    if (o2) o2.addEventListener("click", () => {
+        let SFXON = localStorage.getItem(Filename+"SFX");
+        if (SFXON == "true") {
+            localStorage.setItem(Filename+"SFX", "false");
+            SFXVolume(0);
+            o2.innerHTML = "SFX: OFF";
+        } else {
+            localStorage.setItem(Filename+"SFX", "true");
+            SFXVolume(1);
+            o2.innerHTML = "SFX: ON";
+        }
+    });
+
+    if (o3) o3.addEventListener("click", () => {
+        let SHSON = localStorage.getItem(Filename+"SHS");
+        if (SHSON == "true") {
+            localStorage.setItem(Filename+"SHS", "false");
+            o3.innerHTML = "Show High Score: OFF";
+        } else {
+            localStorage.setItem(Filename+"SHS", "true");
+            o3.innerHTML = "Show High Score: ON";
+        }
+        console.log("Show High Score set to:", localStorage.getItem(Filename+"SHS"));
+    });
+    
     difficulty = 0;
     function chooseDifficulty(level) {
         difficultyLevel = level;
@@ -3185,31 +3368,37 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function setDesc(msg) {
         if (!diffDesc) return;
-        diffDesc.textContent = msg;
+        diffDesc.innerHTML = msg;
         diffDesc.style.display = msg ? "block" : "none";
     }
 
     function setMDesc(msg) {
         if (!mapDesc) return;
-        mapDesc.textContent = msg;
+        mapDesc.innerHTML = msg;
         mapDesc.style.display = msg ? "block" : "none";
     }
 
-    if (d1) d1.addEventListener("mouseenter", () => setDesc("A nice and easy baby puzzle. Enemies are slow and deal less damage. Enemies spawn less often. Are you new to this math stuff or something? Sanity regain sanity faster. Weapons cost less sanity to fire Score Multiplier: x0.25"));
-    if (d2) d2.addEventListener("mouseenter", () => setDesc("A balanced practice exam. The enemies are normal speed and deal normal damage. Sanity is regained at a normal rate. Firing weapons takes a normal amount of sanity. Recommended for average players. Score Multiplier: x1"));
-    if (d3) d3.addEventListener("mouseenter", () => setDesc("Tough test. Faster and more agile enemies, heavier damage. Mistakes are not recommended. Enemies spawn more often. Sanity is regained slower. Firing weapons takes a normal amount of sanity. Score Multiplier: x1.75"));
-    if (d4) d4.addEventListener("mouseenter", () => setDesc("Unfair final. Brutal stats. You were warned. Sanity is never auto regained. Weapons cost more sanity. Enemies are lighting fast and deal insane damage. Enemies swarm you. Mistakes are not allowed. Only a master of calc can last even 20 seconds. Score Multiplier: x4"));
+    function setOptDesc(msg) {
+        if (!optDesc) return;
+        optDesc.innerHTML = msg;
+        optDesc.style.display = msg ? "block" : "none";
+    }
+
+    if (d1) d1.addEventListener("mouseenter", () => setDesc("A nice and easy baby puzzle.<br>Enemies are slow and deal less damage. Enemies spawn less often. Are you new to this math stuff or something? Sanity regain sanity faster. Weapons cost less sanity to fire<br>Score Multiplier: x0.25"));
+    if (d2) d2.addEventListener("mouseenter", () => setDesc("A balanced practice exam.<br>The enemies are normal speed and deal normal damage. Sanity is regained at a normal rate. Firing weapons takes a normal amount of sanity. Recommended for average players.<br>Score Multiplier: x1"));
+    if (d3) d3.addEventListener("mouseenter", () => setDesc("Tough test.<br>Faster and more agile enemies, heavier damage. Mistakes are not recommended. Enemies spawn more often. Sanity is regained slower. Firing weapons takes a little more of sanity.<br>Score Multiplier: x1.75"));
+    if (d4) d4.addEventListener("mouseenter", () => setDesc("Unfair final.<br>Brutal stats. You were warned. Sanity is never auto regained. Weapons cost more sanity. Enemies are lighting fast and deal insane damage. Enemies swarm you. Mistakes are not allowed. Only a master of calc can last even 20 seconds.<br>Score Multiplier: x4"));
     const clearDesc = () => setDesc("");
     if (d1) d1.addEventListener("mouseleave", clearDesc);
     if (d2) d2.addEventListener("mouseleave", clearDesc);
     if (d3) d3.addEventListener("mouseleave", clearDesc);
     if (d4) d4.addEventListener("mouseleave", clearDesc);
 
-    if (m0) m0.addEventListener("mouseenter", () => setMDesc("Description: The full expeirence of Shanvanth's Last Stand"));
-    if (m1) m1.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy. Description: Ah, Mr. Loveday's room, a nice open haven for Shanvanth. Now it has become a warzone. Where is Mr. Loveday?"));
-    if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard. Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
-    if (m3) m3.addEventListener("mouseenter", () => setMDesc("Difficulty: Medium. Description: A semi open room with desks and chairs all over. Shanvanth must face his lunch room's actual purpose."));
-    if (m4) m4.addEventListener("mouseenter", () => setMDesc("Difficulty: Medium. Description: A semi open room with desks and chairs all over. Shanvanth must face his lunch room's actual purpose."));
+    if (m0) m0.addEventListener("mouseenter", () => setMDesc("Difficulty: Harder than Calc III.<br>Description: The full expeirence of Shanvanth's Last Stand. WARNING: Not working yet"));
+    if (m1) m1.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy.<br>Description: Ah, Mr. Loveday's room, a nice open haven for Shanvanth. Now it has become a warzone. Where is Mr. Loveday?"));
+    if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
+    if (m3) m3.addEventListener("mouseenter", () => setMDesc("Difficulty: Medium.<br>Description: A semi open room with desks and chairs all over. Shanvanth must face his lunch room's actual purpose."));
+    if (m4) m4.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: Shanvanth's physics room, turned into a colloseum. Ms. Labrash's Table plan now gets in the way of Shanvanth's shots and movements, who will struggle to survive."));
     //const clearmapDesc = () => setMDesc("");
     const clearmapDesc = () => setMDesc("");
     if (m0) m0.addEventListener("mouseleave", clearmapDesc);
@@ -3217,6 +3406,16 @@ document.addEventListener("DOMContentLoaded", () => {
     if (m2) m2.addEventListener("mouseleave", clearmapDesc);
     if (m3) m3.addEventListener("mouseleave", clearmapDesc);
     if (m4) m4.addEventListener("mouseleave", clearmapDesc);
+
+
+    if (o1) o1.addEventListener("mouseenter", () => setOptDesc("Toggle background music on or off. Turns off both the menu and in-game music."));
+    if (o2) o2.addEventListener("mouseenter", () => setOptDesc("Toggle sound effects on or off. Includes Death sounds, weapon sounds, enemy sounds, and the dash chime."));
+    if (o3) o3.addEventListener("mouseenter", () => setOptDesc("Toggle whether to show your high score at the end of each game."));
+    const clearOptDesc = () => setOptDesc("");
+    if (o1) o1.addEventListener("mouseleave", clearOptDesc);
+    if (o2) o2.addEventListener("mouseleave", clearOptDesc);
+    if (o3) o3.addEventListener("mouseleave", clearOptDesc);
+    
 });
 
 // Gate the loop to wait for menu
@@ -3239,4 +3438,4 @@ const originalUpdate = update;
     try { Object.freeze(window.ShansLastStand); } catch (e) {}
 
 })();
-//cutsc
+//timerd

@@ -164,6 +164,18 @@ body {
   
 }
 
+.optionsButtons { display: flex; flex-direction: column; gap: 12px; }
+
+#optionsMenu {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+  
+}
+
 
 #mapMenu {
   position: fixed;
@@ -176,6 +188,19 @@ body {
 }
 
 #difficultyDesc {
+  position: absolute;
+  left: 65%;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 260px;
+  min-height: 120px;
+  border: 2px solid black;
+  background: rgba(255,255,255,0.9);
+  padding: 12px;
+  display: none;
+}
+
+#optionsDesc {
   position: absolute;
   left: 65%;
   top: 50%;
@@ -229,8 +254,9 @@ body {
   margin: 4px; /* smaller margin to preserve HUD space */
   align-items: left;  
   grid-row: 1;
-  color: #FF000D;
-  font-size: 15px;
+  color: red;
+  font-size: 17px;
+  font-weight: bold;
 }
 
 .HudVar {
@@ -238,8 +264,9 @@ body {
   margin-top: 20px; /* smaller margin to preserve HUD space */
   align-items: left;
   grid-row: 2;
-  color: #FF000D;
-  font-size: 11px;
+  color: red;
+  font-size: 15px;
+  font-weight: bold;
 }
 
 .HudVarLong {
@@ -248,7 +275,8 @@ body {
   align-items: left;
   grid-row: 2;
   color: red;
-  font-size: 11px;
+  font-size: 13px;
+  font-weight: bold;
 }
 
 
