@@ -6,8 +6,22 @@
   <link rel="icon" type="images/x-icon" href="ShanDisappointed.webp">
   <title>Shanvanth's Last Stand</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
-<body>
+<body oncontextmenu="return false;">
+  <button id="pauseButton" style="display:none;">| |</button>
+  <button id="attackButton" style="display:none;">💥</button>
+  <div id="movementButtonsDiv" style="display:none;">
+    <p>&nbsp;</p>
+    <button id="upButton" class="movementButton">↑</button>
+    <p>&nbsp;</p>
+    <button id="leftButton" class="movementButton">←</button>
+    <p>&nbsp;</p>
+    <button id="rightButton" class="movementButton">→</button>
+    <p>&nbsp;</p>
+    <button id="downButton" class="movementButton">↓</button>
+    <p>&nbsp;</p>
+  </div>
   <p id = "FPSCounter">FPS: 0</p>
   <div id="mainMenu">
     <div class="menuContent">

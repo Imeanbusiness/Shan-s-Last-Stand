@@ -250,6 +250,69 @@ body {
   background: white;
 }
 
+#pauseButton {
+  position: fixed;
+  top: 5%;
+  left: 5%;
+  z-index: 1000000;
+  height: 80px;
+  width: 80px;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  border-radius: 40px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid black;
+  color: red;
+  cursor: pointer;
+  display: none; /* Hidden by default, shown on mobile/tablet */
+}
+
+
+#attackButton {
+  position: fixed;
+  top: 15%;
+  left: 85%;
+  z-index: 1000000;
+  height: 170px;
+  width: 170px;
+  justify-content: center;
+  align-items: center;
+  font-size: 80px;
+  border-radius: 85px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid black;
+  color: red;
+  cursor: pointer;
+  display: none; /* Hidden by default, shown on mobile/tablet */
+}
+
+#movementButtonsDiv {
+  position: fixed;
+  top: 55%;
+  left: 5%;
+  z-index: 1000000;
+  height: 270px;
+  width: 270px;
+  grid-template-columns: 90px 90px 90px;
+  grid-template-rows: 90px 90px 90px;
+  gap: 0px;
+}
+
+.movementButton {
+  height: 100px;
+  width: 100px;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  border-radius: 40px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 2px solid black;
+  color: red;
+  cursor: pointer;
+  font-weight: bold;
+}
+
 .HudTitle {
   margin: 4px; /* smaller margin to preserve HUD space */
   align-items: left;  

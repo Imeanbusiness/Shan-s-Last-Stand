@@ -4,7 +4,7 @@
     //showGame
     //movechance
     //player
-    //locals
+    //window
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
     const FPSCounter = document.getElementById("FPSCounter");
@@ -58,6 +58,139 @@ crosshair.style.zIndex = "9999";
 gameArea.appendChild(crosshair);
 
 // Request pointer lock on click
+const pauseButton = document.getElementById("pauseButton");
+const attackButton = document.getElementById("attackButton");
+
+
+const upButton = document.getElementById("upButton");
+const downButton = document.getElementById("downButton");
+const leftButton = document.getElementById("leftButton");
+const rightButton = document.getElementById("rightButton");
+
+
+
+
+
+upButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["w"] = true;
+
+}, { passive: false });
+
+upButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["w"] = false;
+}, { passive: false });
+
+upButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["w"] = false;
+    
+}, { passive: false });
+
+
+downButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["s"] = true;
+
+}, { passive: false });
+
+downButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["s"] = false;
+}, { passive: false });
+
+downButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["s"] = false;
+}, { passive: false });
+
+
+leftButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["a"] = true;
+
+}, { passive: false });
+
+leftButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["a"] = false;
+}, { passive: false });
+
+leftButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["a"] = false;
+}, { passive: false });
+
+
+rightButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["d"] = true;
+
+}, { passive: false });
+
+rightButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["d"] = false;
+}, { passive: false });
+
+rightButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["d"] = false;
+}, { passive: false });
+
+
+
+function useAttack() {
+    if (attack == false && Atdelay <= 0) {
+            attack = true;
+           // console.log("attack!")
+            FirstAttack = true;
+            attackingDelay = 0;
+        }
+}
+
+
+
+
+
+
+
+
+
+
+attackButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    // start an immediate attack and mark held so update() will keep firing when cooldowns allow
+    mouseHeld = true;
+    useAttack();
+}, { passive: false });
+
+attackButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    mouseHeld = false;
+}, { passive: false });
+
+attackButton.addEventListener("touchcancel", function(e) {
+    e.preventDefault();
+    mouseHeld = false;
+}, { passive: false });
+
+
+pauseButton.addEventListener("click", () => {
+    pauseGame();
+});
+
+
+
 gameArea.addEventListener("click", () => {
     gameArea.requestPointerLock();
 });
@@ -198,6 +331,22 @@ document.addEventListener("mouseup", () => {
     let level = 1;
 
 
+
+
+    var device = "null"
+    const webname = "Imeanbusiness"
+    const ua = navigator.userAgent
+    if (/Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(ua)) {
+    device = "phone"
+    } else if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    device = "tablet"
+    } else {
+    device = "desktop"
+    }
+
+    console.log("Device Type: "+device)
+//showgameUI
+
 function showDamage(x, y, damage) {
     const dmgEl = document.createElement("div");
     dmgEl.innerText = Math.floor(damage); // round down
@@ -283,7 +432,8 @@ window.onload = function() {
 
     
     //click
-    alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+    this.alert("WARNING: Currently in dev status. Some things may not work as intended.")
+    //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     document.addEventListener("wheel", function(e) {
         e.preventDefault();
     if (e.ctrlKey || e.metaKey) { // Check for Ctrl (Windows) or Cmd (Mac)
@@ -398,11 +548,9 @@ const projectileSpeed = 20; // pixels per frame
 const keysPressed = {};
 let enemies = [];
 
-// Track key press/release
-document.addEventListener("keydown", e => {
-    keysPressed[e.key.toLowerCase()] = true;
-    // Only allow pausing with Escape when the game is active/visible
-    if (e.key === "p" && isGameActive()) {
+
+function pauseGame() {
+    if (isGameActive) {
         if(confirm("Game Paused. Return to main menu?")) {
             playerhp = -99999
         }
@@ -422,25 +570,18 @@ document.addEventListener("keydown", e => {
 
         }
     }
+}
+
+
+// Track key press/release
+document.addEventListener("keydown", e => {
+    keysPressed[e.key.toLowerCase()] = true;
+    // Only allow pausing with Escape when the game is active/visible
+    if (e.key === "p" && isGameActive()) {
+        pauseGame();
+    }
     if (e.key === "Escape" && isGameActive()) {
-        if(confirm("Game Paused. Return to main menu?")) {
-            playerhp = -99999
-        }
-        for (let key in keysPressed) {
-            keysPressed[key] = false;
-        }
-        try {
-            const healthMsg = document.getElementById("HealthMessage");
-            if (healthMsg) healthMsg.remove();
-
-            const sbMsg = document.getElementById("SBMessage");
-            if (sbMsg) sbMsg.remove();
-
-            const wpMsg = document.getElementById("WeaponMessage");
-            if (wpMsg) sbMsg.remove();
-        } catch (e) {
-
-        }
+        pauseGame();
     }
 
 });
@@ -3003,9 +3144,19 @@ function showGameUI() {
     if (hud) hud.style.display = "grid";
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
+    if (device == "phone" || device == "tablet") {
+        document.getElementById("pauseButton").style.display = "flex";
+        document.getElementById("attackButton").style.display = "flex";
+        document.getElementById("movementButtonsDiv").style.display = "grid";
+    }
 }
 
 function showMainMenu() {
+    if (device == "phone" || device == "tablet") {
+        document.getElementById("pauseButton").style.display = "none";
+        document.getElementById("attackButton").style.display = "none";
+        document.getElementById("movementButtonsDiv").style.display = "none";
+    }
     document.getElementById("FPSCounter").innerHTML = "FPS: 0"
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
