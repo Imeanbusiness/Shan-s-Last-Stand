@@ -9,19 +9,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body oncontextmenu="return false;">
-  <button id="pauseButton" style="display:none;">| |</button>
+  <button id="pencilButton" style="display:none;">✏️</button>
+  <button id="dashButton" style="display:none;">⚡︎</button>
+  <button id="switchButton" style="display:none;">⇆</button>
   <button id="attackButton" style="display:none;">💥</button>
+  <button id="pauseButton" style="display:none;">| |</button>
+
+
+  <div id="movementJoystick">
+    <div id = "movementJoystickInner"></div>
+  </div>
+
+  <div id="aimingJoystick">
+    <div id = "aimingJoystickInner"></div>
+  </div>
+
+
+  <!--
   <div id="movementButtonsDiv" style="display:none;">
-    <p>&nbsp;</p>
+    <button id = "upleftButton" class="movementButton">↖</button>
     <button id="upButton" class="movementButton">↑</button>
-    <p>&nbsp;</p>
+    <button id = "uprightButton" class="movementButton">↗</button>
     <button id="leftButton" class="movementButton">←</button>
     <p>&nbsp;</p>
     <button id="rightButton" class="movementButton">→</button>
-    <p>&nbsp;</p>
+    <button id = "downleftButton" class="movementButton">↙</button>
     <button id="downButton" class="movementButton">↓</button>
-    <p>&nbsp;</p>
+    <button id = "downrightButton" class="movementButton">↘</button>
   </div>
+  -->
   <p id = "FPSCounter">FPS: 0</p>
   <div id="mainMenu">
     <div class="menuContent">

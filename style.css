@@ -268,18 +268,73 @@ body {
   display: none; /* Hidden by default, shown on mobile/tablet */
 }
 
+#pencilButton {
+  position: fixed;
+  top: 45%;
+  left: 10%;
+  z-index: 1000000;
+  height: 160px;
+  width: 160px;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+  border-radius: 85px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid black;
+  color: red;
+  cursor: pointer;
+ /* Hidden by default, shown on mobile/tablet */
+}
+
+#switchButton {
+  position: fixed;
+  top: 45%;
+  right: 10%;
+  z-index: 1000000;
+  height: 160px;
+  width: 160px;
+  justify-content: center;
+  align-items: center;
+  font-size: 100px;
+  border-radius: 85px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid black;
+  color: red;
+  cursor: pointer;
+ /* Hidden by default, shown on mobile/tablet */
+}
+
+#dashButton {
+  position: fixed;
+  top: 20%;
+  left: 3%;
+  z-index: 1000000;
+  height: 200px;
+  width: 200px;
+  justify-content: center;
+  align-items: center;
+  font-size: 120px;
+  border-radius: 100px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid black;
+  color: red;
+  cursor: pointer;
+ /* Hidden by default, shown on mobile/tablet */
+}
+
+
 
 #attackButton {
   position: fixed;
-  top: 15%;
-  left: 85%;
+  top: 13%;
+  right: 3%;
   z-index: 1000000;
-  height: 170px;
-  width: 170px;
+  height: 240px;
+  width: 240px;
   justify-content: center;
   align-items: center;
-  font-size: 80px;
-  border-radius: 85px;
+  font-size: 150px;
+  border-radius: 120px;
   background-color: rgba(255, 255, 255, 0.2);
   border: 2px solid black;
   color: red;
@@ -287,24 +342,82 @@ body {
   display: none; /* Hidden by default, shown on mobile/tablet */
 }
 
+
+#movementJoystick {
+  position: fixed;
+  bottom: 5%;
+  left: 5%;
+  z-index: 1000000;
+  height: 200px;
+  width: 200px;
+  border-radius: 100px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid black;
+
+
+}
+
+#movementJoystickInner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 80px;
+  width: 80px;
+  margin-left: -40px;
+  margin-top: -40px;
+  border-radius: 40px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 2px solid black;
+}
+
+
+#aimingJoystick {
+  position: fixed;
+  bottom: 5%;
+  right: 5%;
+  z-index: 1000000;
+  height: 200px;
+  width: 200px;
+  border-radius: 100px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 2px solid black;
+
+
+}
+
+#aimingJoystickInner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 80px;
+  width: 80px;
+  margin-left: -40px;
+  margin-top: -40px;
+  border-radius: 40px;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 2px solid black;
+}
+
+
+
 #movementButtonsDiv {
   position: fixed;
   top: 55%;
   left: 5%;
   z-index: 1000000;
-  height: 270px;
-  width: 270px;
-  grid-template-columns: 90px 90px 90px;
-  grid-template-rows: 90px 90px 90px;
+  height: 240px;
+  width: 240px;
+  grid-template-columns: 80px 80px 80px;
+  grid-template-rows: 80px 80px 80px;
   gap: 0px;
 }
 
 .movementButton {
-  height: 100px;
-  width: 100px;
+  height: 80px;
+  width: 80px;
   justify-content: center;
   align-items: center;
-  font-size: 40px;
+  font-size: 60px;
   border-radius: 40px;
   background-color: rgba(255, 255, 255, 0.5);
   border: 2px solid black;

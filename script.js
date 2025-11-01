@@ -62,6 +62,95 @@ const pauseButton = document.getElementById("pauseButton");
 const attackButton = document.getElementById("attackButton");
 
 
+const upleftButton = document.getElementById("upleftButton");
+const uprightButton = document.getElementById("uprightButton");
+const downleftButton = document.getElementById("downleftButton");
+const downrightButton = document.getElementById("downrightButton");
+
+/*
+
+upleftButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["w"] = true;
+    keysPressed["a"] = true;
+}, { passive: false });
+
+upleftButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["w"] = false;
+    keysPressed["a"] = false;
+}, { passive: false });
+
+upleftButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["w"] = false;
+    keysPressed["a"] = false;
+}, { passive: false });
+
+uprightButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["w"] = true;
+    keysPressed["d"] = true;
+}, { passive: false });
+
+uprightButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["w"] = false;
+    keysPressed["d"] = false;
+}, { passive: false });
+
+uprightButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["w"] = false;
+    keysPressed["d"] = false;
+}, { passive: false });
+
+downleftButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["s"] = true;
+    keysPressed["a"] = true;
+}, { passive: false });
+
+downleftButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["s"] = false;
+    keysPressed["a"] = false;
+}, { passive: false });
+
+downleftButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["s"] = false;
+    keysPressed["a"] = false;
+}, { passive: false });
+
+downrightButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    keysPressed["s"] = true;
+    keysPressed["d"] = true;
+}, { passive: false });
+
+downrightButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    keysPressed["s"] = false;
+    keysPressed["d"] = false;
+}, { passive: false });
+
+downrightButton.addEventListener("touchcancel", function(e) {
+    if (e.cancelable) {
+         e.preventDefault();
+    }
+    keysPressed["s"] = false;
+    keysPressed["d"] = false;
+}, { passive: false });
+
+*/
+
 const upButton = document.getElementById("upButton");
 const downButton = document.getElementById("downButton");
 const leftButton = document.getElementById("leftButton");
@@ -70,7 +159,7 @@ const rightButton = document.getElementById("rightButton");
 
 
 
-
+/*
 upButton.addEventListener("touchstart", function(e) {
     e.preventDefault();
     keysPressed["w"] = true;
@@ -188,8 +277,167 @@ attackButton.addEventListener("touchcancel", function(e) {
 pauseButton.addEventListener("click", () => {
     pauseGame();
 });
+*/
+function useAttack() {
+    if (attack == false && Atdelay <= 0) {
+            attack = true;
+           // console.log("attack!")
+            FirstAttack = true;
+            attackingDelay = 0;
+        }
+}
 
 
+
+
+
+
+
+
+
+
+attackButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    // start an immediate attack and mark held so update() will keep firing when cooldowns allow
+    mouseHeld = true;
+    useAttack();
+}, { passive: false });
+
+attackButton.addEventListener("touchend", function(e) {
+    e.preventDefault();
+    mouseHeld = false;
+}, { passive: false });
+
+attackButton.addEventListener("touchcancel", function(e) {
+    e.preventDefault();
+    mouseHeld = false;
+}, { passive: false });
+
+
+pauseButton.addEventListener("click", () => {
+    pauseGame();
+});
+
+const pencilButton = document.getElementById("pencilButton");
+
+pencilButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    CurrWeap = 0;
+
+}, { passive: false });
+
+const dashButton = document.getElementById("dashButton");
+
+dashButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    if (dashtimer >= 60 && !dashing) {
+        speed = 20;
+        dashing = true;
+        dashtimer = 0;
+        dashCharge = false;
+        invinc = true;
+        setTimeout(() => { invinc = false; }, 200);
+        lockdirection = movdirection;
+    }
+
+}, { passive: false });
+
+const switchButton = document.getElementById("switchButton");
+
+switchButton.addEventListener("touchstart", function(e) {
+    e.preventDefault();
+    CurrWeap++;
+    if ( CurrWeap > 3) CurrWeap = 1;
+
+}, { passive: false });
+   
+
+
+/*
+const touchConfig = {
+    upButton:      { keys: ['w'] },
+    downButton:    { keys: ['s'] },
+    leftButton:    { keys: ['a'] },
+    rightButton:   { keys: ['d'] },
+    upleftButton:  { keys: ['w','a'] },
+    uprightButton: { keys: ['w','d'] },
+    downleftButton:{ keys: ['s','a'] },
+    downrightButton:{keys: ['s','d'] },
+    attackButton:  { action: 'attack' },
+    pauseButton:   { action: 'pause' } // optional
+  };
+
+  const activeTouch = new Map(); // touchId -> buttonId
+
+  function findControlButtonAt(x, y) {
+    let el = document.elementFromPoint(x, y);
+    while (el) {
+      if (el.id && touchConfig[el.id]) return el;
+      el = el.parentElement;
+    }
+    return null;
+  }
+
+  function activateButtonById(id) {
+    const cfg = touchConfig[id];
+    if (!cfg) return;
+    if (cfg.keys) cfg.keys.forEach(k => keysPressed[k] = true);
+    if (cfg.action === 'attack') { mouseHeld = true; useAttack(); }
+    // add other actions if needed (pause etc.)
+  }
+
+  function deactivateButtonById(id) {
+    const cfg = touchConfig[id];
+    if (!cfg) return;
+    if (cfg.keys) cfg.keys.forEach(k => keysPressed[k] = false);
+    if (cfg.action === 'attack') mouseHeld = false;
+  }
+
+  document.addEventListener('touchstart', (ev) => {
+    for (let t of ev.changedTouches) {
+      const btn = findControlButtonAt(t.clientX, t.clientY);
+      if (btn) {
+        activeTouch.set(t.identifier, btn.id);
+        activateButtonById(btn.id);
+      }
+    }
+    ev.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('touchmove', (ev) => {
+    for (let t of ev.changedTouches) {
+      const prevId = activeTouch.get(t.identifier) || null;
+      const btn = findControlButtonAt(t.clientX, t.clientY);
+      const newId = btn ? btn.id : null;
+      if (newId === prevId) continue;
+      if (prevId) deactivateButtonById(prevId);
+      if (newId) {
+        activeTouch.set(t.identifier, newId);
+        activateButtonById(newId);
+      } else {
+        activeTouch.delete(t.identifier);
+      }
+    }
+    ev.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('touchend', (ev) => {
+    for (let t of ev.changedTouches) {
+      const prevId = activeTouch.get(t.identifier);
+      if (prevId) { deactivateButtonById(prevId); activeTouch.delete(t.identifier); }
+    }
+    ev.preventDefault();
+  }, { passive: false });
+
+  document.addEventListener('touchcancel', (ev) => {
+    for (let t of ev.changedTouches) {
+      const prevId = activeTouch.get(t.identifier);
+      if (prevId) { deactivateButtonById(prevId); activeTouch.delete(t.identifier); }
+    }
+    ev.preventDefault();
+  }, { passive: false });
+
+*/
 
 gameArea.addEventListener("click", () => {
     gameArea.requestPointerLock();
@@ -276,7 +524,7 @@ document.addEventListener("mouseup", () => {
     let MoveChanceTimer = 0;
 
 
-
+    let joystickAimingDeg = 0;
     let RoomType = 0;
 
     // Audio
@@ -428,7 +676,12 @@ window.onload = function() {
         }
         //let maxwave = localStorage.getItem(Filename+"Wave");
 
+
+
     }
+
+
+    
 
     
     //click
@@ -473,7 +726,293 @@ window.onload = function() {
 
     document.body.style.zoom = BodyZoom;
     document.body.backgroundSize = "cover";
+     const joystick = document.getElementById("movementJoystick");
+    const knob = document.getElementById("movementJoystickInner");
+
+    
+
+    let activePointerId = null;
+
+    const maxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; // clamp knob inside
+    const deadzone = 17*BodyZoom; // pixels inside which no movement occurs
+    console.log(`Joystick maxRadius: ${maxRadius}px`);
+    
+
+    function getKnobRelativePosition() {
+        knob.getBoundingClientRect();
+        const rect = knob.getBoundingClientRect();
+        const parentRect = joystick.getBoundingClientRect();
+        const x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
+        const y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        return { x, y };
+    }
+    
+    console.log("Initial knob position:", getKnobRelativePosition());
+    let holdingKnob = false;
+    
+    const knobmarginX = -40 * BodyZoom;
+    const knobmarginY = -40 * BodyZoom;
+    //knobPosX
+    let JoystickAngle = 0;
+
+    const centerKnob = getKnobRelativePosition();
+    
+    function knobPosition(x, y) {
+        knob.style.top = y+50+"%"
+        knob.style.left = x+50+"%"
+    }
+
+    function resetKnob() {
+        knobPosition(0, 0);
+    }
+
+    joystick.addEventListener("touchstart", (ev) => {
+        ev.preventDefault();
+        holdingKnob = true;
+    }, { passive: false });
+
+    joystick.addEventListener("touchend", (ev) => {
+        ev.preventDefault();
+        holdingKnob = false;
+        JoystickAngle = 0;
+    }, { passive: false });
+    
+    joystick.addEventListener("pointerdown", (ev) => {
+
+        ev.preventDefault();
+        
+        let dx = ev.clientX-centerKnob.x+knobmarginX;
+        let dy = ev.clientY-centerKnob.y+knobmarginY;
+        activePointerId = ev.pointerId;
+        //console.log(dx, dy);
+        if (dx > maxRadius) dx = maxRadius;
+        if (dx < -maxRadius) dx = -maxRadius;
+        if (dy > maxRadius) dy = maxRadius;
+        if (dy < -maxRadius) dy = -maxRadius;
+        knobPosition(((dx/maxRadius)*100/2), ((dy/maxRadius)*100/2));
+        let totalMove = Math.sqrt(dx**2 + dy**2);
+        console.log("Total move:", totalMove);
+        if (totalMove < deadzone) {
+        } else {
+            JoystickAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            if (JoystickAngle < 0) JoystickAngle += 360;
+            if (JoystickAngle > 360) JoystickAngle -= 360;
+            console.log("Joystick angle:", JoystickAngle);
+            if (JoystickAngle >= 337.5 || JoystickAngle < 22.5) {
+                keysPressed["w"] = true;
+            } else if (JoystickAngle >= 22.5 && JoystickAngle < 67.5) {
+                keysPressed["w"] = true;
+                keysPressed["d"] = true;
+            } else if (JoystickAngle >= 67.5 && JoystickAngle < 112.5) {
+                keysPressed["d"] = true;
+            } else if (JoystickAngle >= 112.5 && JoystickAngle < 157.5) {
+                keysPressed["s"] = true;
+                keysPressed["d"] = true;
+            } else if (JoystickAngle >= 157.5 && JoystickAngle < 202.5) {
+                keysPressed["s"] = true;
+            } else if (JoystickAngle >= 202.5 && JoystickAngle < 247.5) {
+                keysPressed["s"] = true;
+                keysPressed["a"] = true;
+            } else if (JoystickAngle >= 247.5 && JoystickAngle < 292.5) {
+                keysPressed["a"] = true;
+            } else if (JoystickAngle >= 292.5 && JoystickAngle < 337.5) {
+                keysPressed["w"] = true;
+                keysPressed["a"] = true;
+            }
+
+        }
+        //holdingKnob = true;
+        
+        
+    }, { passive: false });
+
+    joystick.addEventListener("pointerup", (ev) => {
+        ev.preventDefault();
+        resetKnob();
+        keysPressed["w"] = false;
+        keysPressed["a"] = false;
+        keysPressed["s"] = false;
+        keysPressed["d"] = false;
+
+    }, { passive: false });
+
+    joystick.addEventListener("pointermove", (ev) => {
+        
+        if (activePointerId != ev.pointerId) return;
+        if (!holdingKnob) return;
+        keysPressed["w"] = false;
+        keysPressed["a"] = false;
+        keysPressed["s"] = false;
+        keysPressed["d"] = false;
+
+        ev.preventDefault();
+        let dx = ev.clientX-centerKnob.x+knobmarginX;
+        let dy = ev.clientY-centerKnob.y+knobmarginY;
+        //console.log(dx, dy);
+        if (dx > maxRadius) dx = maxRadius;
+        if (dx < -maxRadius) dx = -maxRadius;
+        if (dy > maxRadius) dy = maxRadius;
+        if (dy < -maxRadius) dy = -maxRadius;
+        knobPosition(((dx/maxRadius)*100/2), ((dy/maxRadius)*100/2));
+        let totalMove = Math.sqrt(dx**2 + dy**2);
+        console.log("Total move:", totalMove);
+        if (totalMove < deadzone) {
+        } else {
+            JoystickAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            if (JoystickAngle < 0) JoystickAngle += 360;
+            if (JoystickAngle > 360) JoystickAngle -= 360;
+            console.log("Joystick angle:", JoystickAngle);
+            if (JoystickAngle >= 337.5 || JoystickAngle < 22.5) {
+                keysPressed["w"] = true;
+            } else if (JoystickAngle >= 22.5 && JoystickAngle < 67.5) {
+                keysPressed["w"] = true;
+                keysPressed["d"] = true;
+            } else if (JoystickAngle >= 67.5 && JoystickAngle < 112.5) {
+                keysPressed["d"] = true;
+            } else if (JoystickAngle >= 112.5 && JoystickAngle < 157.5) {
+                keysPressed["s"] = true;
+                keysPressed["d"] = true;
+            } else if (JoystickAngle >= 157.5 && JoystickAngle < 202.5) {
+                keysPressed["s"] = true;
+            } else if (JoystickAngle >= 202.5 && JoystickAngle < 247.5) {
+                keysPressed["s"] = true;
+                keysPressed["a"] = true;
+            } else if (JoystickAngle >= 247.5 && JoystickAngle < 292.5) {
+                keysPressed["a"] = true;
+            } else if (JoystickAngle >= 292.5 && JoystickAngle < 337.5) {
+                keysPressed["w"] = true;
+                keysPressed["a"] = true;
+            }
+
+        }
+    }, { passive: false });
+
+    joystick.style.display = "none";
+    /*
+
+
+
+    function endPointer(ev) {
+        if (activePointerId !== ev.pointerId) return;
+        try { joystick.releasePointerCapture(ev.pointerId); } catch (e) {}
+        clearJoystick();
+    }
+    */
       // showGame
+
+
+
+
+
+
+
+
+
+    const Aimingjoystick = document.getElementById("aimingJoystick");
+    const AimingKnob = document.getElementById("aimingJoystickInner");
+
+    
+
+    let activePointerId2 = null;
+
+    const AimingmaxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; // clamp knob inside
+    const Aimingdeadzone = 17*BodyZoom; // pixels inside which no movement occurs
+    console.log(`Aiming Joystick maxRadius: ${maxRadius}px`);
+    
+
+    function getAimingKnobRelativePosition() {
+        AimingKnob.getBoundingClientRect();
+        const rect = AimingKnob.getBoundingClientRect();
+        //const parentRect = joystick.getBoundingClientRect();
+        const x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
+        const y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        return { x, y };
+    }
+    
+    console.log("Initial knob position:", getAimingKnobRelativePosition());
+    let holdingAimingKnob = false;
+    
+    const AimingknobmarginX = -40 * BodyZoom;
+    const AimingknobmarginY = -40 * BodyZoom;
+    //knobPosX
+
+    const centerAimingKnob = getAimingKnobRelativePosition();
+    
+    function AimingknobPosition(x, y) {
+        AimingKnob.style.top = y+50+"%"
+        AimingKnob.style.left = x+50+"%"
+    }
+
+    function resetAimingKnob() {
+        AimingknobPosition(0, 0);
+    }
+
+    Aimingjoystick.addEventListener("touchstart", (ev) => {
+        ev.preventDefault();
+        holdingAimingKnob = true;
+    }, { passive: false });
+
+    Aimingjoystick.addEventListener("touchend", (ev) => {
+        ev.preventDefault();
+        holdingAimingKnob = false;
+    }, { passive: false });
+    
+    Aimingjoystick.addEventListener("pointerdown", (ev) => {
+
+        ev.preventDefault();
+        
+        let dx = ev.clientX-centerAimingKnob.x+AimingknobmarginX;
+        let dy = ev.clientY-centerAimingKnob.y+AimingknobmarginY;
+        activePointerId = ev.pointerId;
+        //console.log(dx, dy);
+        if (dx > maxRadius) dx = maxRadius;
+        if (dx < -maxRadius) dx = -maxRadius;
+        if (dy > maxRadius) dy = maxRadius;
+        if (dy < -maxRadius) dy = -maxRadius;
+        AimingknobPosition(((dx/maxRadius)*100/2), ((dy/maxRadius)*100/2));
+        let totalMove = Math.sqrt(dx**2 + dy**2);
+        if (totalMove < deadzone) {
+        } else {
+            joystickAimingDeg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            if (joystickAimingDeg < 0) joystickAimingDeg += 360;
+            if (joystickAimingDeg > 360) joystickAimingDeg -= 360;
+            console.log("Aiming Joystick angle:", joystickAimingDeg);
+        }
+        //holdingAimingKnob = true;
+        
+        
+    }, { passive: false });
+
+    Aimingjoystick.addEventListener("pointerup", (ev) => {
+        ev.preventDefault();
+        resetAimingKnob();
+
+    }, { passive: false });
+
+    Aimingjoystick.addEventListener("pointermove", (ev) => {
+        
+        if (activePointerId != ev.pointerId) return;
+        if (!holdingAimingKnob) return;
+       let dx = ev.clientX-centerAimingKnob.x+AimingknobmarginX;
+        let dy = ev.clientY-centerAimingKnob.y+AimingknobmarginY;
+        activePointerId = ev.pointerId;
+        //console.log(dx, dy);
+        if (dx > maxRadius) dx = maxRadius;
+        if (dx < -maxRadius) dx = -maxRadius;
+        if (dy > maxRadius) dy = maxRadius;
+        if (dy < -maxRadius) dy = -maxRadius;
+        AimingknobPosition(((dx/maxRadius)*100/2), ((dy/maxRadius)*100/2));
+        let totalMove = Math.sqrt(dx**2 + dy**2);
+        if (totalMove < deadzone) {
+        } else {
+            joystickAimingDeg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+            if (joystickAimingDeg < 0) joystickAimingDeg += 360;
+            if (joystickAimingDeg > 360) joystickAimingDeg -= 360;
+            console.log("Aiming Joystick angle:", joystickAimingDeg);
+        }
+    }, { passive: false });
+
+    Aimingjoystick.style.display = "none";
 }
 
 window.addEventListener("click", () => {
@@ -2321,7 +2860,6 @@ function update(timestamp) {
     y += dy;
 
     //dash
-
     const angleRad = Math.atan2(mouseY - y, mouseX - x);
     let angleDeg = 0;
     if (angleRad * (180 / Math.PI)+90 < 0 ) {
@@ -2329,6 +2867,10 @@ function update(timestamp) {
 
     } else {
         angleDeg = angleRad * (180 / Math.PI)+90;
+    }
+
+    if (device == "phone" || device == "tablet") {
+        angleDeg = joystickAimingDeg;
     }
 
     //console.log("angle: "+angleDeg)
@@ -2865,7 +3407,13 @@ function update(timestamp) {
             projEl.style.boxShadow = "0 0 6px rgba(255,255,255,0.15)";*/
             playSound(CalcgunSound);
             // start slightly in front of player
-             const dirVec = {x: ((mouseX - x)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2)), y: ((mouseY - y)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2))};
+             //const dirVec = {x: ((mouseX - x)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2)), y: ((mouseY - y)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2))};
+            let AngleShot =  angleDeg;
+            let trueAngle = AngleShot;
+            let shotX = Math.cos((trueAngle-90)* Math.PI / 180);
+            let shotY = Math.sin((trueAngle-90)* Math.PI / 180);
+            const dirVec = {x: shotX, y: shotY};
+            //console.log("gunx: "+AngleShot)
             const startX = x + dirVec.x * 35;
             const startY = y + dirVec.y * 35;
             projEl.style.left = `${startX}px`;
@@ -3147,15 +3695,26 @@ function showGameUI() {
     if (device == "phone" || device == "tablet") {
         document.getElementById("pauseButton").style.display = "flex";
         document.getElementById("attackButton").style.display = "flex";
-        document.getElementById("movementButtonsDiv").style.display = "grid";
+        document.getElementById("movementJoystick").style.display = "flex";
+        document.getElementById("aimingJoystick").style.display = "flex";
+        document.getElementById("pencilButton").style.display = "flex";
+        document.getElementById("dashButton").style.display = "flex";
+        document.getElementById("switchButton").style.display = "flex";
+    
     }
+        
+    
 }
 
 function showMainMenu() {
     if (device == "phone" || device == "tablet") {
         document.getElementById("pauseButton").style.display = "none";
         document.getElementById("attackButton").style.display = "none";
-        document.getElementById("movementButtonsDiv").style.display = "none";
+        document.getElementById("movementJoystick").style.display = "none";
+        document.getElementById("aimingJoystick").style.display = "none";
+        document.getElementById("pencilButton").style.display = "none";
+        document.getElementById("dashButton").style.display = "none";
+        document.getElementById("switchButton").style.display = "none";
     }
     document.getElementById("FPSCounter").innerHTML = "FPS: 0"
     const menu = document.getElementById("mainMenu");
