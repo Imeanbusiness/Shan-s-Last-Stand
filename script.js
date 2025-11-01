@@ -485,17 +485,11 @@ window.onload = function() {
         ev.preventDefault();
         holdingKnob = true;
     }, { passive: false });
-
-    joystick.addEventListener("touchend", (ev) => {
-        ev.preventDefault();
-        holdingKnob = false;
-        JoystickAngle = 0;
-    }, { passive: false });
     
     joystick.addEventListener("pointerdown", (ev) => {
 
         ev.preventDefault();
-        
+        holdingKnob = true;
         let dx = ev.clientX-centerKnob.x+knobmarginX;
         let dy = ev.clientY-centerKnob.y+knobmarginY;
         activePointerId = ev.pointerId;
@@ -542,6 +536,7 @@ window.onload = function() {
     }, { passive: false });
 
     joystick.addEventListener("pointerup", (ev) => {
+        holdingKnob = true;
         ev.preventDefault();
         resetKnob();
         keysPressed["w"] = false;
@@ -667,14 +662,11 @@ window.onload = function() {
         holdingAimingKnob = true;
     }, { passive: false });
 
-    Aimingjoystick.addEventListener("touchend", (ev) => {
-        ev.preventDefault();
-        holdingAimingKnob = false;
-    }, { passive: false });
     
     Aimingjoystick.addEventListener("pointerdown", (ev) => {
 
         ev.preventDefault();
+        holdingAimingKnob = true;
         
         let dx = ev.clientX-centerAimingKnob.x+AimingknobmarginX;
         let dy = ev.clientY-centerAimingKnob.y+AimingknobmarginY;
@@ -700,6 +692,7 @@ window.onload = function() {
 
     Aimingjoystick.addEventListener("pointerup", (ev) => {
         ev.preventDefault();
+        holdingAimingKnob = false;
         resetAimingKnob();
 
     }, { passive: false });
