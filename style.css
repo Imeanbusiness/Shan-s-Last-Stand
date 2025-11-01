@@ -252,15 +252,15 @@ body {
 
 #pauseButton {
   position: fixed;
-  top: 5%;
+  top: 3%;
   left: 5%;
   z-index: 1000000;
-  height: 80px;
-  width: 80px;
+  height: 100px;
+  width: 100px;
   justify-content: center;
   align-items: center;
-  font-size: 40px;
-  border-radius: 40px;
+  font-size: 50px;
+  border-radius: 50px;
   background-color: rgba(255, 255, 255, 0.2);
   border: 2px solid black;
   color: red;
@@ -289,7 +289,7 @@ body {
 #switchButton {
   position: fixed;
   top: 45%;
-  right: 10%;
+  right: 12%;
   z-index: 1000000;
   height: 160px;
   width: 160px;

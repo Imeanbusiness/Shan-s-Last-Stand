@@ -31,7 +31,7 @@
         return m;
     })();
 
-//playsound
+//alert
 
     let mouseX = 0;
     let mouseY = 0;
@@ -400,7 +400,7 @@ window.onload = function() {
 
     
     //click
-    this.alert("WARNING: Currently in dev status. Some things may not work as intended.")
+    
     //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     document.addEventListener("wheel", function(e) {
         e.preventDefault();
@@ -721,6 +721,17 @@ window.onload = function() {
     }, { passive: false });
 
     Aimingjoystick.style.display = "none";
+    
+    if (viewportHeight > viewportWidth && device == "phone") {
+        dashButton.style.top = "10%";
+        joystick.style.bottom = "2%";
+        Aimingjoystick.style.bottom = "2%";
+        pencilButton.style.top = "75%";
+        switchButton.style.top = "75%";
+        pencilButton.style.left = "26%";
+        switchButton.style.right = "26%";
+        attackButton.style.top = "8%";
+    }
 }
 
 window.addEventListener("click", () => {
