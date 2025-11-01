@@ -67,89 +67,6 @@ const uprightButton = document.getElementById("uprightButton");
 const downleftButton = document.getElementById("downleftButton");
 const downrightButton = document.getElementById("downrightButton");
 
-/*
-
-upleftButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["w"] = true;
-    keysPressed["a"] = true;
-}, { passive: false });
-
-upleftButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["w"] = false;
-    keysPressed["a"] = false;
-}, { passive: false });
-
-upleftButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["w"] = false;
-    keysPressed["a"] = false;
-}, { passive: false });
-
-uprightButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["w"] = true;
-    keysPressed["d"] = true;
-}, { passive: false });
-
-uprightButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["w"] = false;
-    keysPressed["d"] = false;
-}, { passive: false });
-
-uprightButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["w"] = false;
-    keysPressed["d"] = false;
-}, { passive: false });
-
-downleftButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["s"] = true;
-    keysPressed["a"] = true;
-}, { passive: false });
-
-downleftButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["s"] = false;
-    keysPressed["a"] = false;
-}, { passive: false });
-
-downleftButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["s"] = false;
-    keysPressed["a"] = false;
-}, { passive: false });
-
-downrightButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["s"] = true;
-    keysPressed["d"] = true;
-}, { passive: false });
-
-downrightButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["s"] = false;
-    keysPressed["d"] = false;
-}, { passive: false });
-
-downrightButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["s"] = false;
-    keysPressed["d"] = false;
-}, { passive: false });
-
-*/
 
 const upButton = document.getElementById("upButton");
 const downButton = document.getElementById("downButton");
@@ -159,125 +76,7 @@ const rightButton = document.getElementById("rightButton");
 
 
 
-/*
-upButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["w"] = true;
 
-}, { passive: false });
-
-upButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["w"] = false;
-}, { passive: false });
-
-upButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["w"] = false;
-    
-}, { passive: false });
-
-
-downButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["s"] = true;
-
-}, { passive: false });
-
-downButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["s"] = false;
-}, { passive: false });
-
-downButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["s"] = false;
-}, { passive: false });
-
-
-leftButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["a"] = true;
-
-}, { passive: false });
-
-leftButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["a"] = false;
-}, { passive: false });
-
-leftButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["a"] = false;
-}, { passive: false });
-
-
-rightButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    keysPressed["d"] = true;
-
-}, { passive: false });
-
-rightButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    keysPressed["d"] = false;
-}, { passive: false });
-
-rightButton.addEventListener("touchcancel", function(e) {
-    if (e.cancelable) {
-         e.preventDefault();
-    }
-    keysPressed["d"] = false;
-}, { passive: false });
-
-
-
-function useAttack() {
-    if (attack == false && Atdelay <= 0) {
-            attack = true;
-           // console.log("attack!")
-            FirstAttack = true;
-            attackingDelay = 0;
-        }
-}
-
-
-
-
-
-
-
-
-
-
-attackButton.addEventListener("touchstart", function(e) {
-    e.preventDefault();
-    // start an immediate attack and mark held so update() will keep firing when cooldowns allow
-    mouseHeld = true;
-    useAttack();
-}, { passive: false });
-
-attackButton.addEventListener("touchend", function(e) {
-    e.preventDefault();
-    mouseHeld = false;
-}, { passive: false });
-
-attackButton.addEventListener("touchcancel", function(e) {
-    e.preventDefault();
-    mouseHeld = false;
-}, { passive: false });
-
-
-pauseButton.addEventListener("click", () => {
-    pauseGame();
-});
-*/
 function useAttack() {
     if (attack == false && Atdelay <= 0) {
             attack = true;
@@ -353,91 +152,7 @@ switchButton.addEventListener("touchstart", function(e) {
    
 
 
-/*
-const touchConfig = {
-    upButton:      { keys: ['w'] },
-    downButton:    { keys: ['s'] },
-    leftButton:    { keys: ['a'] },
-    rightButton:   { keys: ['d'] },
-    upleftButton:  { keys: ['w','a'] },
-    uprightButton: { keys: ['w','d'] },
-    downleftButton:{ keys: ['s','a'] },
-    downrightButton:{keys: ['s','d'] },
-    attackButton:  { action: 'attack' },
-    pauseButton:   { action: 'pause' } // optional
-  };
 
-  const activeTouch = new Map(); // touchId -> buttonId
-
-  function findControlButtonAt(x, y) {
-    let el = document.elementFromPoint(x, y);
-    while (el) {
-      if (el.id && touchConfig[el.id]) return el;
-      el = el.parentElement;
-    }
-    return null;
-  }
-
-  function activateButtonById(id) {
-    const cfg = touchConfig[id];
-    if (!cfg) return;
-    if (cfg.keys) cfg.keys.forEach(k => keysPressed[k] = true);
-    if (cfg.action === 'attack') { mouseHeld = true; useAttack(); }
-    // add other actions if needed (pause etc.)
-  }
-
-  function deactivateButtonById(id) {
-    const cfg = touchConfig[id];
-    if (!cfg) return;
-    if (cfg.keys) cfg.keys.forEach(k => keysPressed[k] = false);
-    if (cfg.action === 'attack') mouseHeld = false;
-  }
-
-  document.addEventListener('touchstart', (ev) => {
-    for (let t of ev.changedTouches) {
-      const btn = findControlButtonAt(t.clientX, t.clientY);
-      if (btn) {
-        activeTouch.set(t.identifier, btn.id);
-        activateButtonById(btn.id);
-      }
-    }
-    ev.preventDefault();
-  }, { passive: false });
-
-  document.addEventListener('touchmove', (ev) => {
-    for (let t of ev.changedTouches) {
-      const prevId = activeTouch.get(t.identifier) || null;
-      const btn = findControlButtonAt(t.clientX, t.clientY);
-      const newId = btn ? btn.id : null;
-      if (newId === prevId) continue;
-      if (prevId) deactivateButtonById(prevId);
-      if (newId) {
-        activeTouch.set(t.identifier, newId);
-        activateButtonById(newId);
-      } else {
-        activeTouch.delete(t.identifier);
-      }
-    }
-    ev.preventDefault();
-  }, { passive: false });
-
-  document.addEventListener('touchend', (ev) => {
-    for (let t of ev.changedTouches) {
-      const prevId = activeTouch.get(t.identifier);
-      if (prevId) { deactivateButtonById(prevId); activeTouch.delete(t.identifier); }
-    }
-    ev.preventDefault();
-  }, { passive: false });
-
-  document.addEventListener('touchcancel', (ev) => {
-    for (let t of ev.changedTouches) {
-      const prevId = activeTouch.get(t.identifier);
-      if (prevId) { deactivateButtonById(prevId); activeTouch.delete(t.identifier); }
-    }
-    ev.preventDefault();
-  }, { passive: false });
-
-*/
 
 gameArea.addEventListener("click", () => {
     gameArea.requestPointerLock();
@@ -963,7 +678,7 @@ window.onload = function() {
         
         let dx = ev.clientX-centerAimingKnob.x+AimingknobmarginX;
         let dy = ev.clientY-centerAimingKnob.y+AimingknobmarginY;
-        activePointerId = ev.pointerId;
+        activePointerId2 = ev.pointerId;
         //console.log(dx, dy);
         if (dx > maxRadius) dx = maxRadius;
         if (dx < -maxRadius) dx = -maxRadius;
@@ -991,11 +706,11 @@ window.onload = function() {
 
     Aimingjoystick.addEventListener("pointermove", (ev) => {
         
-        if (activePointerId != ev.pointerId) return;
+        if (activePointerId2 != ev.pointerId) return;
         if (!holdingAimingKnob) return;
        let dx = ev.clientX-centerAimingKnob.x+AimingknobmarginX;
         let dy = ev.clientY-centerAimingKnob.y+AimingknobmarginY;
-        activePointerId = ev.pointerId;
+        activePointerId2 = ev.pointerId;
         //console.log(dx, dy);
         if (dx > maxRadius) dx = maxRadius;
         if (dx < -maxRadius) dx = -maxRadius;
