@@ -77,7 +77,11 @@ Use __WASD or Arrow Keys__ (imagine) to move. Use your __mouse cursor__ to aim y
 
 ![Interface](AttackingRead.png)
 
-Press the __spacebar__ or __click__ to attack. Different weapons have different damage values. A number will pop up, showing how much damage you did. If you deal enough damage to an enemy, they will die. You can switch weapons using the __number keys__, or __c__ for the mechanical pencil. 
+On __desktop__, press the __spacebar__ or __click__ to attack. Different weapons have different damage values. A number will pop up, showing how much damage you did. If you deal enough damage to an enemy, they will die. You can switch weapons using the __number keys__, or __c__ for the mechanical pencil. Press __shift__ to dash. 
+
+![Interface](MobileGameplay.jpg)
+
+On __mobile__, use the __left joystick__ to move, and the __the right joystick to aim__. Press the __attack button__ to attack. It has the explosion on it. Press __Switch Button__ to cycle between your weapons. Press __Pencil Button__ to switch to the mechanical pencil. Press __Dash Button__ to dash. It has a lightning symbol on it.
 
 ### Surviving 
 
