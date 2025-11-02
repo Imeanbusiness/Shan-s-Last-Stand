@@ -515,30 +515,32 @@ window.onload = function() {
         return { x, y };
     }
     
-    console.log("Initial knob position:", getKnobRelativePosition());
     let holdingKnob = false;
     
     let knobmarginX = -40 * BodyZoom;
     let knobmarginY = -40 * BodyZoom;
     if (browserType == "Safari") {
         //knobmarginX = 40+40 * BodyZoom;
-       // knobmarginY = 1562.5+40 * BodyZoom;
+        // knobmarginY = 1562.5+40 * BodyZoom;
     }
-
+    
     //knobPosX
     let JoystickAngle = 0;
-
+    
     const centerKnob = getKnobRelativePosition();
     
+
+    this.alert("Initial Knob Pos: " + centerKnob.x +" " + centerKnob.y);
+
     function knobPosition(x, y) {
         knob.style.top = y+50+"%"
         knob.style.left = x+50+"%"
     }
-
+    
     function resetKnob() {
         knobPosition(0, 0);
     }
-
+    
     joystick.addEventListener("touchstart", (ev) => {
         ev.preventDefault();
         holdingKnob = true;
@@ -589,8 +591,9 @@ window.onload = function() {
         //holdingKnob = true;
         
         
+        
     }, { passive: false });
-
+    
     joystick.addEventListener("pointerup", (ev) => {
         holdingKnob = true;
         ev.preventDefault();
