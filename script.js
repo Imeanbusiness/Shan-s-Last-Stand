@@ -534,7 +534,7 @@ window.onload = function() {
     const centerKnob = getKnobRelativePosition();
     
 
-    this.alert("Initial Knob Pos: " + centerKnob.x +" " + centerKnob.y);
+    //this.alert("Initial Knob Pos: " + centerKnob.x +" " + centerKnob.y);
 
     function knobPosition(x, y) {
         knob.style.top = y+50+"%"
@@ -794,9 +794,19 @@ window.onload = function() {
         pencilButton.style.left = "26%";
         switchButton.style.right = "26%";
         attackButton.style.top = "8%";
+    } else {
+        dashButton.style.top = "20%";
+        joystick.style.bottom = "5%";
+        Aimingjoystick.style.bottom = "5%";
+        pencilButton.style.top = "45%";
+        switchButton.style.top = "45%";
+        pencilButton.style.left = "10%";
+        switchButton.style.right = "12%";
+        attackButton.style.top = "13%";
     }
 
     if (device == "phone" && browserType == "Safari") {
+        pauseButton.style.fontSize = "25px";
         attackButton.style.fontSize = "75px";
         dashButton.style.fontSize = "60px";
         pencilButton.style.fontSize = "40px";
