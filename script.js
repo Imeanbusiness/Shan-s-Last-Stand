@@ -171,7 +171,7 @@ switchButton.addEventListener("touchstart", function(e) {
 
 }, { passive: false });
    
-
+//playSound
 
 
 
@@ -282,13 +282,71 @@ document.addEventListener("mouseup", () => {
     const PILINGBODIES = new Audio("PilingBodies.mp3");
     const RifleSound = new Audio("RifleSound.mp3");
 
+    // Flag to indicate we've performed a user gesture that allows future audio playback on restrictive browsers
+    let audioUnlocked = false;
 
+    // central list of audio elements we can try to "prime" on first gesture
+    const _allAudioElements = [ouch, ShotgunSound, CalcgunSound, backgroundMusic, deathSound, domDeath, chengDeath, ZukDeath, dashCharged, MCSwoosh, TheyDontStopComing, ATMOC, RITW, PILINGBODIES, RifleSound];
+
+    // Try to unlock audio by playing+pausing each element on the first user gesture.
+    // This helps Safari/iOS which require an explicit user gesture to allow audio playback later.
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+        _allAudioElements.forEach(a => {
+            try {
+                // help mobile Safari: ensure playsinline is set
+                if (typeof a.setAttribute === 'function') {
+                    try { a.setAttribute('playsinline', ''); } catch (e) {}
+                }
+                // Attempt a quick play/pause to prime the element. Some browsers will allow subsequent plays.
+                const p = a.play();
+                if (p && typeof p.then === 'function') {
+                    p.then(() => {
+                        try { a.pause(); a.currentTime = 0; } catch (e) {}
+                    }).catch(() => {
+                        // ignore play rejection
+                    });
+                }
+            } catch (e) {
+                // ignore
+            }
+        });
+    }
+
+    // Attach a light-weight gesture listener to prime audio on the first interaction
+    // Use pointerdown/touchstart/click to maximize coverage across devices and input types
+    const _onFirstGesture = () => { unlockAudio(); removeFirstGestureListeners(); };
+    function removeFirstGestureListeners() {
+        document.removeEventListener('pointerdown', _onFirstGesture);
+        document.removeEventListener('touchstart', _onFirstGesture);
+        document.removeEventListener('click', _onFirstGesture);
+    }
+    document.addEventListener('pointerdown', _onFirstGesture, { once: true, passive: true });
+    document.addEventListener('touchstart', _onFirstGesture, { once: true, passive: true });
+    document.addEventListener('click', _onFirstGesture, { once: true, passive: true });
+
+    // Play a sound safely: check settings, create a fresh Audio instance from the source to avoid playback state conflicts,
+    // attempt to play and gracefully catch Promise rejections.
     function playSound(sound) {
-        //const originalAudio = document.getElementById('mySound');
-        let SFXON = localStorage.getItem(Filename+"SFX");
-        if (SFXON != "true") return;
-        const newAudioInstance = sound.cloneNode(); // true for deep clone, but not necessary for audio elements
-        newAudioInstance.play();
+        try {
+            let SFXON = localStorage.getItem(Filename+"SFX");
+            if (SFXON != "true") return;
+            // If unlocking hasn't happened yet, attempt to prime now (best-effort)
+            if (!audioUnlocked) unlockAudio();
+            const src = sound && sound.src ? sound.src : null;
+            if (!src) return;
+            const s = new Audio(src);
+            // copy volume if present
+            try { s.volume = (typeof sound.volume === 'number') ? sound.volume : 1.0; } catch (e) {}
+            try { s.setAttribute && s.setAttribute('playsinline', ''); } catch (e) {}
+            const p = s.play();
+            if (p && typeof p.then === 'function') {
+                p.catch(() => { /* ignore play rejection */ });
+            }
+        } catch (e) {
+            // swallow any unexpected errors
+        }
     }
 
     // Enemy projectile list
@@ -815,7 +873,9 @@ window.onload = function() {
     }
 }
 
-window.addEventListener("click", () => {
+    window.addEventListener("click", () => {
+    // Ensure audio is unlocked on first user click (helps Safari/iOS)
+    try { unlockAudio(); } catch (e) {}
     backgroundMusic.play();
     backgroundMusic.loop = true;   // 🔁 make it loop
     //backgroundMusic.volume = 2;
@@ -1824,7 +1884,7 @@ function startRoom(x, IGTimer) {
                 if (hit && !invinc) {
                     playerhp -= Math.floor(p.damage + Math.floor(Math.random() * 5));
                     if (playerhp < 0) playerhp = 0;
-                    ouch.play();
+                    try { playSound(ouch); } catch (e) { /* ignore */ }
                     setFlash('rgba(255,0,0,0.25)', 120);
                     invinc = true;
                     setTimeout(() => { invinc = false; }, iFrames);
@@ -2540,7 +2600,7 @@ function update(timestamp) {
     
     if (dashtimer >= 50 && !dashCharge) {
         dashCharge = true; 
-        dashCharged.play();
+    try { playSound(dashCharged); } catch (e) { /* ignore */ }
 
     }
     
@@ -3107,7 +3167,7 @@ function update(timestamp) {
             el.id = "ShotgunShot";
             el.style.backgroundImage = "url('ShotgunShot.png')";
             el.style.backgroundSize = "cover";
-            ShotgunSound.play();
+            try { playSound(ShotgunSound); } catch (e) { /* ignore */ }
             gameArea.appendChild(el);
             switch (direction) {
                 case "n": el.style.left = `${x}px`; el.style.top = `${y-70}px`; break;
@@ -3168,7 +3228,7 @@ function update(timestamp) {
             aoe.style.opacity = '0.95';
             aoe.style.zIndex = 9998;
             gameArea.appendChild(aoe);
-            MCSwoosh.play();
+            try { playSound(MCSwoosh); } catch (e) { /* ignore */ }
             // Remove any enemies whose centers lie within radius and are not blocked by obstacles
             let killed = false;
             enemies = enemies.filter((enemy) => {
