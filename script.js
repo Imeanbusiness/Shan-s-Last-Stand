@@ -501,7 +501,7 @@ window.onload = function() {
     let knobmarginY = -40 * BodyZoom;
     if (browserType == "Safari") {
         knobmarginX = 40 * BodyZoom;
-        knobmarginY = 80 * BodyZoom;
+        knobmarginY = 160 * BodyZoom;
     }
 
     //knobPosX
