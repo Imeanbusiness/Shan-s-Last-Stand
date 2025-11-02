@@ -430,24 +430,25 @@ window.onload = function() {
     
     //click
     if (browserType == "Safari" && device != "desktop") {
-        alert("You're on Safari! Gross! Some features of the game are BREAKING because of you! I want to stick it to Apple! Please tell them to fix their damn browser! Some features may not work as intended because of that damn company!");
+        alert("Seriously? You're on Safari! Gross! Some features of the game are BREAKING because of you! I want to stick it to Apple! Please tell them to fix their damn browser! Some features may not work as intended because of that damn company!");
     }
     //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     document.addEventListener("wheel", function(e) {
         e.preventDefault();
-    if (e.ctrlKey || e.metaKey) { // Check for Ctrl (Windows) or Cmd (Mac)
-        e.preventDefault();
-    //if (gameArea.style.display !== "none") {
-      //if (e.deltaY < 0) {
-        //}
-    }
-    console.log(CurrWeap)
-    if (e.deltaY < 0) {
-        CurrWeap--;
-        if (CurrWeap < 0) {
-            CurrWeap = 0;
-        }
-    } else if (e.deltaY > 0) {
+        if (e.ctrlKey || e.metaKey) { // Check for Ctrl (Windows) or Cmd (Mac)
+            e.preventDefault();
+            //if (gameArea.style.display !== "none") {
+                //if (e.deltaY < 0) {
+                    //}
+                }
+                console.log(CurrWeap)
+                if (e.deltaY < 0) {
+                    CurrWeap--;
+                    if (CurrWeap < 0) {
+                        CurrWeap = 0;
+                    }
+                } else if (e.deltaY > 0) {
+        
         CurrWeap++;
         if (CurrWeap > 3) {
             CurrWeap = 3;
@@ -461,6 +462,7 @@ window.onload = function() {
 
     console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
     console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
+    this.alert("Viewport Size: " + viewportWidth + "x" + viewportHeight);
 
     const BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
 
@@ -487,7 +489,6 @@ window.onload = function() {
     function getKnobRelativePosition() {
         knob.getBoundingClientRect();
         const rect = knob.getBoundingClientRect();
-        const parentRect = joystick.getBoundingClientRect();
         const x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
         const y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
         return { x, y };
