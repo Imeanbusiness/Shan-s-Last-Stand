@@ -510,8 +510,12 @@ window.onload = function() {
     function getKnobRelativePosition() {
         knob.getBoundingClientRect();
         const rect = knob.getBoundingClientRect();
-        const x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
-        const y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        let x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
+        let y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        if (browserType == "Safari") {
+            x *= BodyZoom;
+            y *= BodyZoom;
+        }
         return { x, y };
     }
     
