@@ -330,3 +330,17 @@ Note: All stats assume you are in "Derivatives are doable..." difficulty, the no
 - Added options to change settings
 
 - Added accessable manual from game
+
+### 1.2 (Mobile)
+
+- Added mobile support!
+
+- Removed startup alert
+
+- Fixed viewport issues that were hiding UI
+
+### 1.2.1 [Current]
+
+- Mobile port on Safari fix
+
+- Added average FPS Counter
