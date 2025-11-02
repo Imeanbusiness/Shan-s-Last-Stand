@@ -344,7 +344,7 @@ body {
 
 
 #movementJoystick {
-  position: fixed;
+  position: absolute;
   bottom: 5%;
   left: 5%;
   z-index: 1000000;
@@ -372,7 +372,7 @@ body {
 
 
 #aimingJoystick {
-  position: fixed;
+  position: absolute;
   bottom: 5%;
   right: 5%;
   z-index: 1000000;

@@ -462,7 +462,7 @@ window.onload = function() {
 
     console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
     console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
-    this.alert("Viewport Size: " + viewportWidth + "x" + viewportHeight);
+    
 
     const BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
 
@@ -500,8 +500,8 @@ window.onload = function() {
     let knobmarginX = -40 * BodyZoom;
     let knobmarginY = -40 * BodyZoom;
     if (browserType == "Safari") {
-        knobmarginX = 40+40 * BodyZoom;
-        knobmarginY = 1562.5+40 * BodyZoom;
+        //knobmarginX = 40+40 * BodyZoom;
+       // knobmarginY = 1562.5+40 * BodyZoom;
     }
 
     //knobPosX
@@ -537,13 +537,11 @@ window.onload = function() {
         if (dy < -maxRadius) dy = -maxRadius;
         knobPosition(((dx/maxRadius)*100/2), ((dy/maxRadius)*100/2));
         let totalMove = Math.sqrt(dx**2 + dy**2);
-        console.log("Total move:", totalMove);
         if (totalMove < deadzone) {
         } else {
             JoystickAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
             if (JoystickAngle < 0) JoystickAngle += 360;
             if (JoystickAngle > 360) JoystickAngle -= 360;
-            console.log("Joystick angle:", JoystickAngle);
             if (JoystickAngle >= 337.5 || JoystickAngle < 22.5) {
                 keysPressed["w"] = true;
             } else if (JoystickAngle >= 22.5 && JoystickAngle < 67.5) {
@@ -602,13 +600,11 @@ window.onload = function() {
         if (dy < -maxRadius) dy = -maxRadius;
         knobPosition(((dx/maxRadius)*100/2), ((dy/maxRadius)*100/2));
         let totalMove = Math.sqrt(dx**2 + dy**2);
-        console.log("Total move:", totalMove);
         if (totalMove < deadzone) {
         } else {
             JoystickAngle = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
             if (JoystickAngle < 0) JoystickAngle += 360;
             if (JoystickAngle > 360) JoystickAngle -= 360;
-            console.log("Joystick angle:", JoystickAngle);
             if (JoystickAngle >= 337.5 || JoystickAngle < 22.5) {
                 keysPressed["w"] = true;
             } else if (JoystickAngle >= 22.5 && JoystickAngle < 67.5) {
@@ -725,7 +721,6 @@ window.onload = function() {
             joystickAimingDeg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
             if (joystickAimingDeg < 0) joystickAimingDeg += 360;
             if (joystickAimingDeg > 360) joystickAimingDeg -= 360;
-            console.log("Aiming Joystick angle:", joystickAimingDeg);
         }
         //holdingAimingKnob = true;
         
@@ -758,7 +753,6 @@ window.onload = function() {
             joystickAimingDeg = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
             if (joystickAimingDeg < 0) joystickAimingDeg += 360;
             if (joystickAimingDeg > 360) joystickAimingDeg -= 360;
-            console.log("Aiming Joystick angle:", joystickAimingDeg);
         }
     }, { passive: false });
 
