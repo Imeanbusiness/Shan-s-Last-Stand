@@ -227,6 +227,7 @@ document.addEventListener("mouseup", () => {
     let dashCharge = false;
     let transitioning = false;
     const Filename = "ShansStand/";
+    let totalFrames = 0;
     let timerd = 0;
     let activateTimerReset = false;
     // Player control state
@@ -237,6 +238,7 @@ document.addEventListener("mouseup", () => {
     let WeaponMessageTimer = 0;
     let MoveChance = 0;
     let MoveChanceTimer = 0;
+    let FPSChecked = 0;
 
 
     let joystickAimingDeg = 0;
@@ -1304,7 +1306,13 @@ async function FPSCount() {
         if (framespassed-1 <= 0) {
             framespassed = 1;
         }
-        document.getElementById("FPSCounter").innerHTML = "FPS: "+Math.max((0, (framespassed-1)*frameCheckTime))
+        totalFrames += Math.max((0, (framespassed-1)*frameCheckTime));
+        FPSChecked += 1;
+        console.log(totalFrames);
+        console.log(elapsed);
+        console.log((Math.round((totalFrames/(FPSChecked)) *10)/10));
+        document.getElementById("FPSCounter").innerHTML = "FPS: "+Math.max((0, (framespassed-1)*frameCheckTime))+"<br>Average FPS: "+(Math.round((totalFrames/(FPSChecked)) *10)/10);
+
         //console.log("FPS:"+(framespassed-1))
         framespassed = 0;
     } else {
@@ -3303,7 +3311,9 @@ if (playerhp <= 0) {
     setTimeout(() => {
         
         time = Math.floor(elapsed/60)
-        
+        totalFrames = 0;
+        FPSChecked = 0;
+        //FPS
         level = 1;
         x = 280;
         y = 280;
@@ -3435,7 +3445,7 @@ function showMainMenu() {
         document.getElementById("dashButton").style.display = "none";
         document.getElementById("switchButton").style.display = "none";
     }
-    document.getElementById("FPSCounter").innerHTML = "FPS: 0"
+    document.getElementById("FPSCounter").innerHTML = "FPS: 0";
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
     const opt = document.getElementById("optionsMenu");

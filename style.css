@@ -480,3 +480,107 @@ body {
   color: grey;
   z-index: 999;
 }
+
+
+
+
+
+
+
+
+
+/* === Safari-friendly button reset & styling ===
+   Paste near the top of your main stylesheet (after font imports).
+   This normalizes button appearance across browsers and fixes iOS/Safari quirks.
+*/
+
+button,
+input[type="button"],
+input[type="submit"],
+input[type="reset"],
+a.btn,
+.game-button {
+  /* Reset native browser chrome */
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-decoration: none;
+  box-sizing: border-box;
+  outline: none;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0); /* remove tap flash */
+  touch-action: manipulation;
+  -webkit-font-smoothing: antialiased; /* nicer text on Safari */
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  /* Force a composite layer to avoid some Safari rasterization bugs */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Base visual style — change to match your theme */
+.game-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 10px;
+  background: linear-gradient(180deg,#0ea5ff 0%, #006bb3 100%); /* example */
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 6px 14px rgba(2,6,23,0.6), inset 0 -2px 0 rgba(255,255,255,0.06);
+  transition: transform 120ms ease, box-shadow 120ms ease, opacity 120ms ease;
+  -webkit-backdrop-filter: none; /* avoid unexpected blurs on iOS */
+}
+
+/* Press / active state — use transform (GPU compositable) */
+.game-button:active,
+.game-button.is-pressed {
+  transform: translateZ(0) translateY(1px) scale(0.997);
+  box-shadow: 0 4px 8px rgba(2,6,23,0.45), inset 0 -1px 0 rgba(255,255,255,0.03);
+}
+
+/* Focus visible accessibility styling */
+.game-button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(0,184,255,0.18), 0 6px 14px rgba(2,6,23,0.6);
+  outline: none;
+}
+
+/* Fix for gradient borders & radius clipping issues in Safari:
+   ensures background doesn't bleed under rounded corners */
+.game-button {
+  background-clip: padding-box;
+  -webkit-background-clip: padding-box;
+}
+
+/* If you create "ghost" buttons (transparent with border), use this pattern */
+.game-button.ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.12);
+  box-shadow: none;
+}
+
+/* If fixed-position UI looks wrong, ensure it isn't inside a transformed parent:
+   We can't detect that here — see checklist below. */
+.fixed-ui .game-button { position: relative; z-index: 9999; }
+
+/* Small helper to increase hit area if icons are small */
+.game-button .hit-expand {
+  display: inline-block;
+  padding: 8px; /* increases tap area without changing visual padding */
+  margin: -8px;
+}
+
+/* Debug helper — temporarily outlines the element to find overlays */
+.debug-btn-outline * { outline: 1px dashed rgba(255,0,0,0.5); }
