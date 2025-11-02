@@ -310,6 +310,25 @@ document.addEventListener("mouseup", () => {
     }
 
     console.log("Device Type: "+device)
+
+    var userAgent = navigator.userAgent;
+    let browserType = "Unknown";
+    if (userAgent.indexOf("Chrome") > -1 && userAgent.indexOf("Safari") > -1) {
+    console.log("Browser: Chrome");
+    } else if (userAgent.indexOf("Firefox") > -1) {
+    console.log("Browser: Firefox");
+    } else if (userAgent.indexOf("Safari") > -1) {
+    browserType = "Safari";
+    console.log("Browser: Safari");
+    } else if (userAgent.indexOf("Edge") > -1) {
+    console.log("Browser: Edge");
+    } else if (userAgent.indexOf("MSIE") > -1 || userAgent.indexOf("Trident") > -1) {
+    console.log("Browser: Internet Explorer");
+    } else {
+    console.log("Browser: Unknown or other");
+    }
+
+    console.log("User Agent String: " + userAgent);
 //showgameUI
 
 function showDamage(x, y, damage) {
@@ -361,6 +380,7 @@ function SFXVolume(volume) {
 
 
 window.onload = function() {
+
     if (!localStorage.getItem(Filename+"hasVisited")) {
         localStorage.setItem(Filename+"hasVisited", "true");
         localStorage.setItem(Filename+"HS", 0);
@@ -402,6 +422,9 @@ window.onload = function() {
 
     
     //click
+    if (browserType == "Safari" && device != "desktop") {
+        this.alert("You're on Safari! Gross! Some features of the game are BREAKING because of you! I want to stick it to Apple! Please tell them to fix their damn browser! Some features may not work as intended because of that damn company!");
+    }
     
     //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     document.addEventListener("wheel", function(e) {
@@ -467,8 +490,13 @@ window.onload = function() {
     console.log("Initial knob position:", getKnobRelativePosition());
     let holdingKnob = false;
     
-    const knobmarginX = -40 * BodyZoom;
-    const knobmarginY = -40 * BodyZoom;
+    let knobmarginX = -40 * BodyZoom;
+    let knobmarginY = -40 * BodyZoom;
+    if (browserType == "Safari") {
+        knobmarginX = 0;
+        knobmarginY = 0;
+    }
+
     //knobPosX
     let JoystickAngle = 0;
 
