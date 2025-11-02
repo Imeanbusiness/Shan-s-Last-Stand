@@ -57,6 +57,27 @@ crosshair.style.zIndex = "9999";
 
 gameArea.appendChild(crosshair);
 
+
+
+const Mobilecrosshair = document.createElement("div");
+    
+    // Create visual Mobilecrosshair
+    Mobilecrosshair.id = "Mobilecrosshair";
+    Mobilecrosshair.style.position = "absolute";
+    Mobilecrosshair.style.width = "10px";
+    Mobilecrosshair.style.height = "10px";
+    Mobilecrosshair.style.background = "transparent";
+    Mobilecrosshair.style.border = "2px solid red";
+Mobilecrosshair.style.borderRadius = "50%";
+Mobilecrosshair.style.left = "50%";
+Mobilecrosshair.style.top = "50%";
+Mobilecrosshair.style.transform = "translate(-50%, -50%)";
+Mobilecrosshair.style.pointerEvents = "none"; // Don't block clicks
+Mobilecrosshair.style.display = "none";
+Mobilecrosshair.style.zIndex = "9999";
+
+gameArea.appendChild(Mobilecrosshair);
+
 // Request pointer lock on click
 const pauseButton = document.getElementById("pauseButton");
 const attackButton = document.getElementById("attackButton");
@@ -2632,6 +2653,22 @@ function update(timestamp) {
 
     if (device == "phone" || device == "tablet") {
         angleDeg = joystickAimingDeg;
+        let changeLeft = (x + (200 * Math.cos((angleDeg-90) * (Math.PI / 180))))
+        if (changeLeft < 25) {
+            changeLeft = 25
+        }
+        if (changeLeft > 625) {
+            changeLeft = 625
+        }
+        let changeTop = (y + (200 * Math.sin((angleDeg-90) * (Math.PI / 180))))
+        if (changeTop < 25) {
+            changeTop = 25
+        }
+        if (changeTop > 625) {
+            changeTop = 625
+        }
+        Mobilecrosshair.style.left = changeLeft + "px";
+        Mobilecrosshair.style.top = changeTop + "px";
     }
 
     //console.log("angle: "+angleDeg)
@@ -2683,6 +2720,8 @@ function update(timestamp) {
         x = px + 25;
         y = py + 25;
     }
+
+    
 
     player.style.left = `${x}px`;
     player.style.top = `${y}px`;
@@ -2879,6 +2918,7 @@ function update(timestamp) {
         }
         
     });
+    
 
 
     try {
@@ -3463,6 +3503,8 @@ function showGameUI() {
         document.getElementById("pencilButton").style.display = "flex";
         document.getElementById("dashButton").style.display = "flex";
         document.getElementById("switchButton").style.display = "flex";
+        document.getElementById("Mobilecrosshair").style.display = "flex";
+        
     
     }
         
@@ -3478,6 +3520,7 @@ function showMainMenu() {
         document.getElementById("pencilButton").style.display = "none";
         document.getElementById("dashButton").style.display = "none";
         document.getElementById("switchButton").style.display = "none";
+        document.getElementById("Mobilecrosshair").style.display = "none";
     }
     document.getElementById("FPSCounter").innerHTML = "FPS: 0";
     const menu = document.getElementById("mainMenu");
