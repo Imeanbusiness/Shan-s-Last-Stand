@@ -451,7 +451,7 @@ window.onload = function() {
     
     //click
     if (browserType == "Safari" && device != "desktop") {
-        alert("Seriously? You're on Safari! Gross! Some features of the game are BREAKING because of you! I want to stick it to Apple! Please tell them to fix their damn browser! Some features may not work as intended because of that damn company!");
+        alert("EW! You're on Safari! Gross! Some features of the game are BREAKING because of you! I want to stick it to Apple! Please tell them to fix their damn browser! Some features may not work as intended because of that damn company!");
     }
     //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     document.addEventListener("wheel", function(e) {
@@ -694,9 +694,12 @@ window.onload = function() {
     function getAimingKnobRelativePosition() {
         AimingKnob.getBoundingClientRect();
         const rect = AimingKnob.getBoundingClientRect();
-        //const parentRect = joystick.getBoundingClientRect();
-        const x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
-        const y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        let x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
+        let y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        if (browserType == "Safari") {
+            x *= BodyZoom;
+            y *= BodyZoom;
+        }
         return { x, y };
     }
     
@@ -706,10 +709,6 @@ window.onload = function() {
     let AimingknobmarginX = -40 * BodyZoom;
     let AimingknobmarginY = -40 * BodyZoom;
 
-    if (browserType == "Safari") {
-        AimingknobmarginX = 1562.5 * BodyZoom;
-        AimingknobmarginY = 1562.5 * BodyZoom;
-    }
     //knobPosX
 
     const centerAimingKnob = getAimingKnobRelativePosition();
@@ -795,6 +794,14 @@ window.onload = function() {
         pencilButton.style.left = "26%";
         switchButton.style.right = "26%";
         attackButton.style.top = "8%";
+    }
+
+    if (device == "phone" && browserType == "Safari") {
+        attackButton.style.fontSize = "75px";
+        dashButton.style.fontSize = "60px";
+        pencilButton.style.fontSize = "40px";
+        switchButton.style.fontSize = "50px";
+
     }
 }
 
