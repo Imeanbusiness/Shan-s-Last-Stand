@@ -856,8 +856,8 @@ window.onload = function() {
         dashButton.style.fontSize = "60px";
         pencilButton.style.fontSize = "40px";
         switchButton.style.fontSize = "50px";
-        document.getElementById("playerHUD").style.fontSize = (14*BodyZoom)+"px";
-        /*
+        //document.getElementById("playerHUD").style.fontSize = (14*BodyZoom)+"px";
+       
         this.document.getElementById("HealthTitle").style.fontSize = (17*BodyZoom)+"px"
         this.document.getElementById("WeaponTitle").style.fontSize = (17*BodyZoom)+"px"
         this.document.getElementById("AmmoTitle").style.fontSize = (17*BodyZoom)+"px"
@@ -870,7 +870,7 @@ window.onload = function() {
         this.document.getElementById("sanity").style.fontSize = (14*BodyZoom)+"px"
         this.document.getElementById("wave").style.fontSize = (14*BodyZoom)+"px"
         this.document.getElementById("score").style.fontSize = (14*BodyZoom)+"px"
-        */
+        
         
 
     }
