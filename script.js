@@ -869,7 +869,7 @@ window.onload = function() {
         this.document.getElementById("shots").style.fontSize = (14*BodyZoom)+"px"
         this.document.getElementById("sanity").style.fontSize = (14*BodyZoom)+"px"
         this.document.getElementById("wave").style.fontSize = (14*BodyZoom)+"px"
-        this.document.getElementById("score").style.fontSize = (14*BodyZoom)+"px"
+        this.document.getElementById("Score").style.fontSize = (14*BodyZoom)+"px"
         
         
 
