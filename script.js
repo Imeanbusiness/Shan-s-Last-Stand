@@ -1,15 +1,15 @@
 (function(){
     'use strict';
-    //game
-    //showGame
-    //movechance
-    //player
-    //window
+    
+    
+    
+    
+    
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
     const FPSCounter = document.getElementById("FPSCounter");
     FPSCounter.style.display = "none";
-    // helper to determine whether the game area is currently visible/active
+    
     const isGameActive = () => {
         try {
             return gameArea && window.getComputedStyle(gameArea).display !== 'none';
@@ -17,31 +17,31 @@
             return false;
         }
     };
-//playSound
-    // central messages container (stacked, centered at top of game area)
+
+    
     const messagesContainer = (() => {
         let m = document.getElementById('GameMessages');
         if (!m && gameArea) {
             m = document.createElement('div');
             m.id = 'GameMessages';
-            // visual layout handled by CSS; keep pointer-events none so it won't block clicks
+            
             m.style.pointerEvents = 'none';
             gameArea.appendChild(m);
         }
         return m;
     })();
 
-//alert
+
 
     let mouseX = 0;
     let mouseY = 0;
-//dash
+
     const body = document.body;
 
     
     const crosshair = document.createElement("div");
     
-    // Create visual crosshair
+    
     crosshair.style.position = "absolute";
     crosshair.style.width = "10px";
     crosshair.style.height = "10px";
@@ -51,7 +51,7 @@ crosshair.style.borderRadius = "50%";
 crosshair.style.left = "50%";
 crosshair.style.top = "50%";
 crosshair.style.transform = "translate(-50%, -50%)";
-crosshair.style.pointerEvents = "none"; // Don't block clicks
+crosshair.style.pointerEvents = "none"; 
 crosshair.style.display = "none";
 crosshair.style.zIndex = "9999";
 
@@ -61,7 +61,7 @@ gameArea.appendChild(crosshair);
 
 const Mobilecrosshair = document.createElement("div");
     
-    // Create visual Mobilecrosshair
+    
     Mobilecrosshair.id = "Mobilecrosshair";
     Mobilecrosshair.style.position = "absolute";
     Mobilecrosshair.style.width = "10px";
@@ -72,13 +72,13 @@ Mobilecrosshair.style.borderRadius = "50%";
 Mobilecrosshair.style.left = "50%";
 Mobilecrosshair.style.top = "50%";
 Mobilecrosshair.style.transform = "translate(-50%, -50%)";
-Mobilecrosshair.style.pointerEvents = "none"; // Don't block clicks
+Mobilecrosshair.style.pointerEvents = "none"; 
 Mobilecrosshair.style.display = "none";
 Mobilecrosshair.style.zIndex = "9999";
 
 gameArea.appendChild(Mobilecrosshair);
 
-// Request pointer lock on click
+
 const pauseButton = document.getElementById("pauseButton");
 const attackButton = document.getElementById("attackButton");
 
@@ -101,7 +101,7 @@ const rightButton = document.getElementById("rightButton");
 function useAttack() {
     if (attack == false && Atdelay <= 0) {
             attack = true;
-           // console.log("attack!")
+           
             FirstAttack = true;
             attackingDelay = 0;
         }
@@ -118,7 +118,7 @@ function useAttack() {
 
 attackButton.addEventListener("touchstart", function(e) {
     e.preventDefault();
-    // start an immediate attack and mark held so update() will keep firing when cooldowns allow
+    
     mouseHeld = true;
     useAttack();
 }, { passive: false });
@@ -171,7 +171,7 @@ switchButton.addEventListener("touchstart", function(e) {
 
 }, { passive: false });
    
-//playSound
+
 
 
 
@@ -179,18 +179,18 @@ gameArea.addEventListener("click", () => {
     gameArea.requestPointerLock();
 });
 
-// Handle pointer lock changes
+
 document.addEventListener("pointerlockchange", () => {
     if (document.pointerLockElement === gameArea) {
-       // console.log("Pointer locked in game area.");
-        crosshair.style.display = "block"; // Show our fake cursor
+       
+        crosshair.style.display = "block"; 
     } else {
-        //console.log("Pointer unlocked.");
-        crosshair.style.display = "none"; // Hide it
+        
+        crosshair.style.display = "none"; 
     }
 });
 
-// Track relative mouse movement when pointer is locked
+
 document.addEventListener("mousemove", (e) => {
     if (document.pointerLockElement === gameArea) {
         mouseX += e.movementX;
@@ -200,14 +200,14 @@ document.addEventListener("mousemove", (e) => {
         mouseY = Math.max(0, Math.min(gameArea.offsetHeight, mouseY));
     }
 });
-//help
+
 gameArea.addEventListener("mousemove", (e) => {
      if (!gameArea) return;
      gameArea.requestPointerLock();
     try {
         const rect = gameArea.body.getBoundingClientRect();
-        mouseX = e.clientX - rect.left; // Mouse X relative to the game area
-        mouseY = e.clientY - rect.top;  // Mouse Y relative to the game area
+        mouseX = e.clientX - rect.left; 
+        mouseY = e.clientY - rect.top;  
         crosshair.style.transform = "translate(-50%, -50%)";
         crosshair.style.left = mouseX+"px";
         crosshair.style.top = mouseY+"px";
@@ -224,16 +224,16 @@ document.addEventListener("mousedown", () => {
 document.addEventListener("mouseup", () => {
     mouseHeld = false;
 });
-//playerAttacking
-// Config constants
-    const ShotgunCooldown = 1100; // milliseconds
+
+
+    const ShotgunCooldown = 1100; 
     const CalcgunCooldown = 1500;
     const RiflegunCooldown = 67;
     const MCCooldown = 300;
     const iFrames = 1000;
     const BaseSpeed = 5.5;
     let Projweapon = "";
-    // Game state (declared here so they're not globals on window)
+    
     let sanity = 50;
     let sanityTimer = 0;
     let puzzlecooldown = 4000;
@@ -251,7 +251,7 @@ document.addEventListener("mouseup", () => {
     let totalFrames = 0;
     let timerd = 0;
     let activateTimerReset = false;
-    // Player control state
+    
     let dashing = false;
     let dashtimer = 45;
     let Hmessagetimer = 0;
@@ -265,8 +265,8 @@ document.addEventListener("mouseup", () => {
     let joystickAimingDeg = 0;
     let RoomType = 0;
 
-    // Audio
-    const ouch = new Audio('Ouch.mp3'); // Replace with your sound file path
+    
+    const ouch = new Audio('Ouch.mp3'); 
     const ShotgunSound = new Audio('ShotgunSound.mp3');
     const CalcgunSound = new Audio('Pew.mp3');
     const backgroundMusic = new Audio("shaunsshotgun.mp3");
@@ -284,18 +284,18 @@ document.addEventListener("mouseup", () => {
 
 
     function playSound(sound) {
-        //const originalAudio = document.getElementById('mySound');
+        
         if (browserType =="Safari") {
             sound.play();
             return;
         }
         let SFXON = localStorage.getItem(Filename+"SFX");
         if (SFXON != "true") return;
-        const newAudioInstance = sound.cloneNode(); // true for deep clone, but not necessary for audio elements
+        const newAudioInstance = sound.cloneNode(); 
         newAudioInstance.play();
     }
 
-    // Enemy projectile list
+    
     let enemyProjectiles = [];
 
 
@@ -304,7 +304,7 @@ document.addEventListener("mouseup", () => {
     let framhechecking = false;
     
 
-    // Other globals that were previously implicitly global
+    
     let MathQuest = false;
     let Atdelay = 0;
     let Mult = 1;
@@ -314,7 +314,7 @@ document.addEventListener("mouseup", () => {
     let attack = false;
     let FirstAttack = false;
     let spawnEnemy = 0;
-    // transient vars that must not be globals
+    
     let number1 = 0, number2 = 0, number3 = 0, chance = 0, ans = null;
     let newMessage = null;
     let time = 0;
@@ -343,12 +343,12 @@ document.addEventListener("mouseup", () => {
         if (userAgent.includes("Edge")) {
             return "Microsoft Edge";
         } else if (userAgent.includes("Chrome") && !userAgent.includes("Edg")) {
-            // Exclude Edge which also contains "Chrome" in its UA string
+            
             return "Google Chrome";
         } else if (userAgent.includes("Firefox")) {
             return "Mozilla Firefox";
         } else if (userAgent.includes("Safari") && !userAgent.includes("Chrome")) {
-            // Exclude Chrome which also contains "Safari" in its UA string
+            
             return "Safari";
         } else if (userAgent.includes("Opera") || userAgent.includes("OPR")) {
             return "Opera";
@@ -361,11 +361,11 @@ document.addEventListener("mouseup", () => {
     
 
 const browserType = getBrowserType();
-//showgameUI
+
 
 function showDamage(x, y, damage) {
     const dmgEl = document.createElement("div");
-    dmgEl.innerText = Math.floor(damage); // round down
+    dmgEl.innerText = Math.floor(damage); 
     dmgEl.style.position = "absolute";
     dmgEl.style.left = `${x}px`;
     dmgEl.style.top = `${y}px`;
@@ -373,10 +373,10 @@ function showDamage(x, y, damage) {
     dmgEl.style.fontWeight = "bold";
     dmgEl.style.fontSize = "18px";
     dmgEl.style.textShadow = "1px 1px 2px black";
-    dmgEl.style.pointerEvents = "none"; // won't block clicks
+    dmgEl.style.pointerEvents = "none"; 
     gameArea.appendChild(dmgEl);
 
-    // Animate floating up & fading out
+    
     let pos = 0;
     const floatUp = setInterval(() => {
         pos += 1;
@@ -386,7 +386,7 @@ function showDamage(x, y, damage) {
             clearInterval(floatUp);
             dmgEl.remove();
         }
-    }, 16); // ~60fps
+    }, 16); 
 }
 
 function MusicVolume(volume) {
@@ -484,7 +484,7 @@ window.onload = function() {
         } else {
             SFXVolume(0);
         }
-        //let maxwave = localStorage.getItem(Filename+"Wave");
+        
 
 
 
@@ -494,18 +494,18 @@ window.onload = function() {
     
 
     
-    //click
+    
     if (browserType == "Safari" && device != "desktop") {
         alert("EW! You're on Safari! Gross! Some features of the game are BREAKING because of you! I want to stick it to Apple! Please tell them to fix their damn browser! Some features may not work as intended because of that damn company!");
     }
-    //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
+    
     document.addEventListener("wheel", function(e) {
         e.preventDefault();
-        if (e.ctrlKey || e.metaKey) { // Check for Ctrl (Windows) or Cmd (Mac)
+        if (e.ctrlKey || e.metaKey) { 
             e.preventDefault();
-            //if (gameArea.style.display !== "none") {
-                //if (e.deltaY < 0) {
-                    //}
+            
+                
+                    
                 }
                 console.log(CurrWeap)
                 if (e.deltaY < 0) {
@@ -520,7 +520,7 @@ window.onload = function() {
             CurrWeap = 3;
         }
     }
-}, { passive: false }); // Use passive: false to allow preventDefault
+}, { passive: false }); 
      const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
     const WindowPixels = viewportHeight * viewportWidth;
@@ -547,16 +547,16 @@ window.onload = function() {
 
     let activePointerId = null;
 
-    const maxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; // clamp knob inside
-    const deadzone = 17*BodyZoom; // pixels inside which no movement occurs
+    const maxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; 
+    const deadzone = 17*BodyZoom; 
     console.log(`Joystick maxRadius: ${maxRadius}px`);
     
 
     function getKnobRelativePosition() {
         knob.getBoundingClientRect();
         const rect = knob.getBoundingClientRect();
-        let x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
-        let y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        let x = rect.left
+        let y = rect.top
         if (browserType == "Safari") {
             x *= BodyZoom;
             y *= BodyZoom;
@@ -569,17 +569,17 @@ window.onload = function() {
     let knobmarginX = -40 * BodyZoom;
     let knobmarginY = -40 * BodyZoom;
     if (browserType == "Safari") {
-        //knobmarginX = 40+40 * BodyZoom;
-        // knobmarginY = 1562.5+40 * BodyZoom;
+        
+        
     }
     
-    //knobPosX
+    
     let JoystickAngle = 0;
     
     const centerKnob = getKnobRelativePosition();
     
 
-    //this.alert("Initial Knob Pos: " + centerKnob.x +" " + centerKnob.y);
+    
 
     function knobPosition(x, y) {
         knob.style.top = y+50+"%"
@@ -602,7 +602,7 @@ window.onload = function() {
         let dx = ev.clientX-centerKnob.x+knobmarginX;
         let dy = ev.clientY-centerKnob.y+knobmarginY;
         activePointerId = ev.pointerId;
-        //console.log(dx, dy);
+        
         if (dx > maxRadius) dx = maxRadius;
         if (dx < -maxRadius) dx = -maxRadius;
         if (dy > maxRadius) dy = maxRadius;
@@ -637,7 +637,7 @@ window.onload = function() {
             }
 
         }
-        //holdingKnob = true;
+        
         
         
         
@@ -666,7 +666,7 @@ window.onload = function() {
         ev.preventDefault();
         let dx = ev.clientX-centerKnob.x+knobmarginX;
         let dy = ev.clientY-centerKnob.y+knobmarginY;
-        //console.log(dx, dy);
+        
         if (dx > maxRadius) dx = maxRadius;
         if (dx < -maxRadius) dx = -maxRadius;
         if (dy > maxRadius) dy = maxRadius;
@@ -704,17 +704,8 @@ window.onload = function() {
     }, { passive: false });
 
     joystick.style.display = "none";
-    /*
-
-
-
-    function endPointer(ev) {
-        if (activePointerId !== ev.pointerId) return;
-        try { joystick.releasePointerCapture(ev.pointerId); } catch (e) {}
-        clearJoystick();
-    }
-    */
-      // showGame
+    
+      
 
 
 
@@ -731,16 +722,16 @@ window.onload = function() {
 
     let activePointerId2 = null;
 
-    const AimingmaxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; // clamp knob inside
-    const Aimingdeadzone = 17*BodyZoom; // pixels inside which no movement occurs
+    const AimingmaxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; 
+    const Aimingdeadzone = 17*BodyZoom; 
     console.log(`Aiming Joystick maxRadius: ${maxRadius}px`);
     
 
     function getAimingKnobRelativePosition() {
         AimingKnob.getBoundingClientRect();
         const rect = AimingKnob.getBoundingClientRect();
-        let x = rect.left// + rect.width / 2 - (parentRect.left + parentRect.width / 2);
-        let y = rect.top// + rect.height / 2 - (parentRect.top + parentRect.height / 2);
+        let x = rect.left
+        let y = rect.top
         if (browserType == "Safari") {
             x *= BodyZoom;
             y *= BodyZoom;
@@ -754,7 +745,7 @@ window.onload = function() {
     let AimingknobmarginX = -40 * BodyZoom;
     let AimingknobmarginY = -40 * BodyZoom;
 
-    //knobPosX
+    
 
     const centerAimingKnob = getAimingKnobRelativePosition();
     
@@ -781,7 +772,7 @@ window.onload = function() {
         let dx = ev.clientX-centerAimingKnob.x+AimingknobmarginX;
         let dy = ev.clientY-centerAimingKnob.y+AimingknobmarginY;
         activePointerId2 = ev.pointerId;
-        //console.log(dx, dy);
+        
         if (dx > maxRadius) dx = maxRadius;
         if (dx < -maxRadius) dx = -maxRadius;
         if (dy > maxRadius) dy = maxRadius;
@@ -794,7 +785,7 @@ window.onload = function() {
             if (joystickAimingDeg < 0) joystickAimingDeg += 360;
             if (joystickAimingDeg > 360) joystickAimingDeg -= 360;
         }
-        //holdingAimingKnob = true;
+        
         
         
     }, { passive: false });
@@ -813,7 +804,7 @@ window.onload = function() {
        let dx = ev.clientX-centerAimingKnob.x+AimingknobmarginX;
         let dy = ev.clientY-centerAimingKnob.y+AimingknobmarginY;
         activePointerId2 = ev.pointerId;
-        //console.log(dx, dy);
+        
         if (dx > maxRadius) dx = maxRadius;
         if (dx < -maxRadius) dx = -maxRadius;
         if (dy > maxRadius) dy = maxRadius;
@@ -856,7 +847,7 @@ window.onload = function() {
         dashButton.style.fontSize = "60px";
         pencilButton.style.fontSize = "40px";
         switchButton.style.fontSize = "50px";
-        //document.getElementById("playerHUD").style.fontSize = (14*BodyZoom)+"px";
+        
          let BodyZoomZOOM = BodyZoom * 1.3;
         this.document.getElementById("HealthTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
         this.document.getElementById("WeaponTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
@@ -878,11 +869,11 @@ window.onload = function() {
 
 window.addEventListener("click", () => {
     backgroundMusic.play();
-    backgroundMusic.loop = true;   // 🔁 make it loop
-    //backgroundMusic.volume = 2;
+    backgroundMusic.loop = true;   
+    
 }, { once: true });
-//showGame
-//calc
+
+
 MathQuest = false;
 let Wave = 1;
 let invinc = false;
@@ -893,7 +884,7 @@ let camplevel = 1;
 let currCamplevel = 1;
 let CampEnemyCount = -1;
 
-//forEach
+
 let x = 280;
 let y = 280;
 let speed = 5;
@@ -927,9 +918,9 @@ const directionAnglesShots = {
   nw: 315
 };
 
-//forEa
 
-// Direction unit vectors for projectile movement
+
+
 const directionVectors = {
   n:  { x:  0, y: -1 },
   ne: { x:  Math.SQRT1_2, y: -Math.SQRT1_2 },
@@ -941,9 +932,9 @@ const directionVectors = {
   nw: { x: -Math.SQRT1_2, y: -Math.SQRT1_2 }
 };
 
-// Simple projectile list for weapon 2
+
 let projectiles = [];
-const projectileSpeed = 20; // pixels per frame
+const projectileSpeed = 20; 
 
 const keysPressed = {};
 let enemies = [];
@@ -973,10 +964,10 @@ function pauseGame() {
 }
 
 
-// Track key press/release
+
 document.addEventListener("keydown", e => {
     keysPressed[e.key.toLowerCase()] = true;
-    // Only allow pausing with Escape when the game is active/visible
+    
     if (e.key === "p" && isGameActive()) {
         pauseGame();
     }
@@ -987,79 +978,8 @@ document.addEventListener("keydown", e => {
 });
 document.addEventListener("keyup", e => {
     keysPressed[e.key.toLowerCase()] = false
-    // Only allow the 'c' math prompt when game is active/visible
-    /*if (e.key.toLowerCase()=="c"  && !MathQuest && isGameActive()) {
-        MathQuest = true;
-        sanity-=10;
-        number1 = Math.floor(Math.random()*1000)
-        number2 = Math.floor(Math.random()*100)
-        number3 = Math.floor(Math.random()*50)
-        chance = Math.floor(Math.random()*5)
-        if (chance == 1) {
-            ans = prompt("What is "+number1+" + "+number2+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
-            if (ans == number1+number2) {
-                sanity += 25;
-                alert("Correct! You feel a bit more sane.")
-            } else {
-                alert("Wrong Answer! Psycho!")
-            }
-        } else if (chance == 2) {
-            ans = prompt("What is "+number1+" - "+number3+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
-            if (ans == number1-number3) {
-                sanity += 25;
-                alert("Correct! You feel a bit more sane.")
-            } else {
-                alert("Wrong Answer! Psycho!")
-            }
-        } else if (chance == 0) {
-            ans = prompt("What is "+number3+" * "+number2+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
-            if (ans == number3*number2) {
-                sanity += 25;
-                alert("Correct! You feel a bit more sane.")
-            } else {
-                alert("Wrong Answer! Psycho!")
-            }
-        } else if (chance == 3) {
-            ans = prompt("What is "+number1+" / "+number3+" ? Round your answer! Don't let Shan just sacrifice his sanity!")
-            if (ans == Math.floor(number1 / number3)) {
-                sanity += 25;
-                alert("Correct! You feel a bit more sane.")
-            } else {
-                alert("Wrong Answer! Psycho!")
-            }
-        } else {
-            ans = prompt("What is ("+number2+"^"+number3+")%"+number1+"-67 ? Round your answer! Don't let Shan just sacrifice his sanity!")
-            if (ans == Math.floor(number2**number3%number1-67)) {
-                sanity += 10000;
-                alert("Correct! You feel super sane!")
-            } else {
-                alert("Wrong Answer! Psycho!")
-            }
-        }
-        if (sanity > 100) {
-            sanity = 100;
-        }
-        console.log(sanity)
-        try {
-            const healthMsg = document.getElementById("HealthMessage");
-            if (healthMsg) healthMsg.remove();
-
-            const sbMsg = document.getElementById("SBMessage");
-            if (sbMsg) sbMsg.remove();
-
-            const wpMsg = document.getElementById("WeaponMessage");
-            if (wpMsg) sbMsg.remove();
-        } catch (e) {
-
-        }
-        for (let key in keysPressed) {
-            keysPressed[key] = false;
-        }
-        setTimeout(() => { 
-        MathQuest = false;
-        }, puzzlecooldown);
-
-    }*/
+    
+    
     if (e.key.toLowerCase()=="h") { 
         alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
     
@@ -1069,7 +989,7 @@ document.addEventListener("keyup", e => {
     }
 });
 
-// Enemy class
+
 class Charger {
   constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
     this.x = x;
@@ -1080,7 +1000,7 @@ class Charger {
     this.damage =damage
     this.width = width;
     this.height = height;
-    // Create the DOM element
+    
     this.el = document.createElement("div");
     this.el.style.position = "absolute";
     this.el.style.left = `${x}px`;
@@ -1091,10 +1011,10 @@ class Charger {
     this.el.style.backgroundImage = "url('"+fileName+"')";
     this.el.style.backgroundSize = "cover";
 
-    // Create HP display
+    
     this.hpText = document.createElement("div");
     this.hpText.style.position = "absolute";
-    this.hpText.style.top = "-15px"; // above the enemy
+    this.hpText.style.top = "-15px"; 
     this.hpText.style.left = "50%";
     this.hpText.style.transform = "translateX(-50%)";
     this.hpText.style.color = "red";
@@ -1117,18 +1037,18 @@ class Charger {
         this.el.style.left = `${this.x}px`;
         this.el.style.top = `${this.y}px`;
 
-        // Update HP text
+        
         this.hpText.innerText = Math.ceil(this.enemyHP);
 
-        // 🔥 Rotate enemy toward player
-        let angleRad = Math.atan2(dy, dx); // radians
-        let angleDeg = angleRad * (180 / Math.PI); // convert to degrees
+        
+        let angleRad = Math.atan2(dy, dx); 
+        let angleDeg = angleRad * (180 / Math.PI); 
         this.el.style.transform = `rotate(${angleDeg+90+180}deg)`;
         }
     }
 }
-//Cheng.png
-// Ranged variant: stops approaching when within 100px and fires projectiles at the player
+
+
 class RangedCharger {
     constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
         this.x = x;
@@ -1139,9 +1059,9 @@ class RangedCharger {
         this.damage = damage;
         this.width = width;
         this.height = height;
-    this.fireCooldown = 0; // frames until next shot
-    this.fireInterval = 90 / (difficulty/3); // frames between shots (~3s)
-        // Create DOM
+    this.fireCooldown = 0; 
+    this.fireInterval = 90 / (difficulty/3); 
+        
         this.el = document.createElement('div');
         this.el.style.position = 'absolute';
         this.el.style.left = `${x}px`;
@@ -1166,7 +1086,7 @@ class RangedCharger {
     }
 
     moveToward(targetX, targetY) {
-        // compute center distance
+        
         const centerX = this.x + (this.width ? this.width / 2 : 0);
         const centerY = this.y + (this.height ? this.height / 2 : 0);
         const dx = targetX - centerX;
@@ -1174,26 +1094,26 @@ class RangedCharger {
         const dist = Math.hypot(dx, dy);
         
         if (dist > 170 && this.fireCooldown <= (this.fireInterval - 15)) {
-            // move toward player
+            
             this.x += (dx / dist) * this.speed;
             this.y += (dy / dist) * this.speed;
             this.el.style.left = `${this.x}px`;
             this.el.style.top = `${this.y}px`;
-            // Update rotation as in Charger
+            
             let angleRad = Math.atan2(dy, dx);
             let angleDeg = angleRad * (180 / Math.PI);
             this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
         } else {
-            //MoveChance = 0;
-            // stop moving and attempt to fire
+            
+            
             if (this.fireCooldown <= 0) {
                 this.fireCooldown = this.fireInterval;
                 this.fireAt(targetX, targetY);
-                //MoveChance = Math.random()
+                
                 
             }
-            //console.log
-            // Update rotation as in Charger
+            
+            
             let angleRad = Math.atan2(dy, dx);
             let angleDeg = angleRad * (180 / Math.PI);
             let angleDash = angleDeg + 90
@@ -1250,13 +1170,13 @@ class RangedCharger {
                 this.el.style.left = `${this.x}px`;
                 this.el.style.top = `${this.y}px`;
                 this.el.style.transform = `rotate(${angleDash + 180}deg)`;
-                //console.log("Cheng Angle: "+angleDash + " Cheng Speed: " +this.speed)
+                
             } else if ((dist > 170)) {
                 this.x += (dx / dist) * this.speed;
                 this.y += (dy / dist) * this.speed;
                 this.el.style.left = `${this.x}px`;
                 this.el.style.top = `${this.y}px`;
-                // Update rotation as in Charger
+                
                 let angleRad = Math.atan2(dy, dx);
                 let angleDeg = angleRad * (180 / Math.PI);
 
@@ -1272,7 +1192,7 @@ class RangedCharger {
                     this.y -= 0.8 * (dy / dist) * this.speed;
                     this.el.style.left = `${this.x}px`;
                     this.el.style.top = `${this.y}px`;
-                    // Update rotation as in Charger
+                    
                     let angleRad = Math.atan2(dy, dx);
                     let angleDeg = angleRad * (180 / Math.PI);
     
@@ -1285,7 +1205,7 @@ class RangedCharger {
                     this.y += 0.8 * (dy / dist) * this.speed;
                     this.el.style.left = `${this.x}px`;
                     this.el.style.top = `${this.y}px`;
-                    // Update rotation as in Charger
+                    
                     let angleRad = Math.atan2(dy, dx);
                     let angleDeg = angleRad * (180 / Math.PI);
     
@@ -1300,36 +1220,36 @@ class RangedCharger {
 
         }
         if (this.fireCooldown > 0) this.fireCooldown--;
-        // Update HP text
+        
         this.hpText.innerText = Math.ceil(this.enemyHP);
     }
 
     fireAt(targetX, targetY) {
-        // create a projectile element aimed at the target
+        
         const proj = document.createElement('div');
         proj.style.position = 'absolute';
         proj.style.width = '15px';
         proj.style.height = '15px';
-        //proj.style.borderRadius = '50%';
-        //proj.style.background = "orange";
+        
+        
         proj.style.backgroundImage = 'url("Wheels.png")';
         proj.style.backgroundSize = "cover";
         proj.style.backgroundRepeat = "no-repeat";
         proj.style.backgroundPosition = "center";
-        // start at center of enemy
+        
         const startX = this.x + (this.width ? this.width / 2 : 0);
         const startY = this.y + (this.height ? this.height / 2 : 0);
         proj.style.left = `${startX}px`;
         proj.style.top = `${startY}px`;
         gameArea.appendChild(proj);
-        // compute velocity
+        
         const dx = targetX - startX;
         const dy = targetY - startY;
         const dist = Math.hypot(dx, dy) || 1;
-        const speed = 11*difficulty/3; // enemy projectile speed
+        const speed = 11*difficulty/3; 
         const vx = (dx / dist) * speed;
         const vy = (dy / dist) * speed;
-        // projectile carries damage equal to this.damage
+        
             enemyProjectiles.push({ x: startX, y: startY, dx: vx, dy: vy, el: proj, damage: this.damage });
             try { playSound(CalcgunSound); } catch (e) {}
     }
@@ -1342,7 +1262,7 @@ class Tank {
     this.speed = speed;
     this.enemyHP = enemyHP;
     this.sound = sound;
-    // Create the DOM element
+    
     this.el = document.createElement("div");
     this.el.style.position = "absolute";
     this.el.style.left = `${x}px`;
@@ -1353,10 +1273,10 @@ class Tank {
     this.el.style.backgroundImage = "url('Zuk.png')";
     this.el.style.backgroundSize = "cover";
 
-    // Create HP display
+    
     this.hpText = document.createElement("div");
     this.hpText.style.position = "absolute";
-    this.hpText.style.top = "-15px"; // above the enemy
+    this.hpText.style.top = "-15px"; 
     this.hpText.style.left = "50%";
     this.hpText.style.transform = "translateX(-50%)";
     this.hpText.style.color = "red";
@@ -1379,12 +1299,12 @@ class Tank {
         this.el.style.left = `${this.x}px`;
         this.el.style.top = `${this.y}px`;
 
-        // Update HP text
+        
         this.hpText.innerText = Math.ceil(this.enemyHP);
 
-        // 🔥 Rotate enemy toward player
-        let angleRad = Math.atan2(dy, dx); // radians
-        let angleDeg = angleRad * (180 / Math.PI); // convert to degrees
+        
+        let angleRad = Math.atan2(dy, dx); 
+        let angleDeg = angleRad * (180 / Math.PI); 
         this.el.style.transform = `rotate(${angleDeg+90+180}deg)`;
         }
     }
@@ -1393,7 +1313,7 @@ Atdelay = 0;
 Mult = 1
 Boost = false
 scoreBoostCount = 0;
-//const
+
 
 class HealPickup {
     constructor(x, y) {
@@ -1401,7 +1321,7 @@ class HealPickup {
     this.y = y;
     
 
-    // Create the DOM element
+    
     this.el = document.createElement("div");
     this.el.style.position = "absolute";
     this.el.style.left = `${x}px`;
@@ -1421,7 +1341,7 @@ class ScoreBoost {
     this.y = y;
     
 
-    // Create the DOM element
+    
     this.el = document.createElement("div");
     this.el.style.position = "absolute";
     this.el.style.left = `${x}px`;
@@ -1435,7 +1355,7 @@ class ScoreBoost {
   }
 }
 
-//fpsco
+
 async function FPSCount() {
      document.getElementById("FPSCounter").style.display = "flex";
      let frameCheckTime = 1
@@ -1453,16 +1373,16 @@ async function FPSCount() {
         console.log((Math.round((totalFrames/(FPSChecked)) *10)/10));
         document.getElementById("FPSCounter").innerHTML = "FPS: "+Math.max((0, (framespassed-1)*frameCheckTime))+"<br>Average FPS: "+(Math.round((totalFrames/(FPSChecked)) *10)/10);
 
-        //console.log("FPS:"+(framespassed-1))
+        
         framespassed = 0;
     } else {
     }
     
 }
-//show
-//curr
-// ---------------- Obstacle System ----------------
-// Simple axis-aligned rectangular obstacles within the game area
+
+
+
+
 let obstacles = [];
 
 function createObstacleElement(x, y, width, height, color) {
@@ -1476,10 +1396,10 @@ function createObstacleElement(x, y, width, height, color) {
     return el;
 }
 
-// Public API: add a collidable rectangular obstacle to the map
+
 function addObstacle(x, y, width, height, options = {}) {
     const color = options.color || "rgba(0,0,0,0.15)";
-    const blocksProjectiles = options.blocksProjectiles !== false; // default true
+    const blocksProjectiles = options.blocksProjectiles !== false; 
     const el = createObstacleElement(x, y, width, height, color);
     gameArea.appendChild(el);
     const obstacle = { x, y, width, height, el, blocksProjectiles };
@@ -1491,7 +1411,7 @@ function rectsOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
     return !(ax + aw <= bx || ax >= bx + bw || ay + ah <= by || ay >= by + bh);
 }
 
-// Resolve player vs obstacle overlap by pushing player out along the smallest axis
+
 function resolvePlayerObstacleCollision(px, py, pw, ph, obstacle) {
     const ox = obstacle.x;
     const oy = obstacle.y;
@@ -1507,21 +1427,21 @@ function resolvePlayerObstacleCollision(px, py, pw, ph, obstacle) {
     const overlapY = Math.min(pBottom, oBottom) - Math.max(py, oy);
 
     if (overlapX < overlapY) {
-        // Push on X axis
+        
         if (px < ox) {
-            // player on left, push left
+            
             px -= overlapX;
         } else {
-            // player on right, push right
+            
             px += overlapX;
         }
     } else {
-        // Push on Y axis
+        
         if (py < oy) {
-            // player above, push up
+            
             py -= overlapY;
         } else {
-            // player below, push down
+            
             py += overlapY;
         }
     }
@@ -1529,7 +1449,7 @@ function resolvePlayerObstacleCollision(px, py, pw, ph, obstacle) {
     return { x: px, y: py };
 }
 
-// ---------- Spawning helpers to avoid obstacles ----------
+
 function overlapsAnyObstacle(x, y, w, h) {
     for (let i = 0; i < obstacles.length; i++) {
         const o = obstacles[i];
@@ -1539,9 +1459,9 @@ function overlapsAnyObstacle(x, y, w, h) {
 }
 
 function getValidSpawnRect(w, h, maxAttempts = 20) {
-    // Keep within arena with padding
+    
     const min = 40;
-    const max = 610; // 650 - 40
+    const max = 610; 
     for (let i = 0; i < maxAttempts; i++) {
         const ex = Math.random() * (max - min) + min;
         const ey = Math.random() * (max - min) + min;
@@ -1554,7 +1474,7 @@ function getValidSpawnRect(w, h, maxAttempts = 20) {
     return null;
 }
 
-// -------- Line of sight against obstacles (blocksProjectiles=true) --------
+
 function segmentsIntersect(p1x, p1y, p2x, p2y, q1x, q1y, q2x, q2y) {
     function orient(ax, ay, bx, by, cx, cy) {
         return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
@@ -1584,19 +1504,19 @@ function lineBlockedByObstacles(x1, y1, x2, y2) {
         const right = o.x + o.width;
         const top = o.y;
         const bottom = o.y + o.height;
-        // if either endpoint is inside the obstacle, treat as blocked
+        
         if (x1 >= left && x1 <= right && y1 >= top && y1 <= bottom) return true;
         if (x2 >= left && x2 <= right && y2 >= top && y2 <= bottom) return true;
-        // check intersection with each rectangle edge
-        if (segmentsIntersect(x1, y1, x2, y2, left, top, right, top)) return true;      // top
-        if (segmentsIntersect(x1, y1, x2, y2, right, top, right, bottom)) return true;  // right
-        if (segmentsIntersect(x1, y1, x2, y2, right, bottom, left, bottom)) return true;// bottom
-        if (segmentsIntersect(x1, y1, x2, y2, left, bottom, left, top)) return true;    // left
+        
+        if (segmentsIntersect(x1, y1, x2, y2, left, top, right, top)) return true;      
+        if (segmentsIntersect(x1, y1, x2, y2, right, top, right, bottom)) return true;  
+        if (segmentsIntersect(x1, y1, x2, y2, right, bottom, left, bottom)) return true;
+        if (segmentsIntersect(x1, y1, x2, y2, left, bottom, left, top)) return true;    
     }
     return false;
 }
 
-// -------- Damage helpers --------
+
 function applyDamage(enemy, damageAmount) {
     const hpBefore = enemy.enemyHP;
     enemy.enemyHP -= damageAmount;
@@ -1630,15 +1550,15 @@ function showLastDamageAbovePlayer(damage) {
     } catch (e) {}
 }
 
-// Choose a detour waypoint around the first blocking obstacle between enemy and player
+
 function findDetourTarget(enemyX, enemyY, playerX, playerY) {
-    // Identify the first obstacle that blocks the segment
+    
     let blocker = null;
     for (let i = 0; i < obstacles.length; i++) {
         const o = obstacles[i];
         if (!o.blocksProjectiles) continue;
         const left = o.x, right = o.x + o.width, top = o.y, bottom = o.y + o.height;
-        // Any edge intersection => it's a blocker
+        
         const hit = segmentsIntersect(enemyX, enemyY, playerX, playerY, left, top, right, top) ||
                     segmentsIntersect(enemyX, enemyY, playerX, playerY, right, top, right, bottom) ||
                     segmentsIntersect(enemyX, enemyY, playerX, playerY, right, bottom, left, bottom) ||
@@ -1647,7 +1567,7 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
     }
     if (!blocker) return { x: playerX, y: playerY };
 
-    // Use expanded corners of the blocker as potential waypoints
+    
     const pad = 10;
     const corners = [
         { x: blocker.x - pad, y: blocker.y - pad },
@@ -1656,10 +1576,10 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
         { x: blocker.x + blocker.width + pad, y: blocker.y + blocker.height + pad }
     ];
 
-    // Keep within arena
+    
     const inBounds = (pt) => pt.x >= 0 && pt.x <= 650 && pt.y >= 0 && pt.y <= 650;
 
-    // Prefer corners visible from enemy; score by distance to player plus small step cost
+    
     let best = null;
     for (let i = 0; i < corners.length; i++) {
         const c = corners[i];
@@ -1671,7 +1591,7 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
             if (!best || score < best.score) best = { x: c.x, y: c.y, score };
         }
     }
-    // If none visible, just pick the corner with the lowest score ignoring visibility
+    
     if (!best) {
         for (let i = 0; i < corners.length; i++) {
             const c = corners[i];
@@ -1685,22 +1605,22 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
     return best ? { x: best.x, y: best.y } : { x: playerX, y: playerY };
 }
 
-//showGame
+
 let elem = document.documentElement;
 
-/* View in fullscreen */
+
 function openFullscreen() {
   if (elem.requestFullscreen) {
     elem.requestFullscreen();
-  } else if (elem.webkitRequestFullscreen) { /* Safari */
+  } else if (elem.webkitRequestFullscreen) { 
     elem.webkitRequestFullscreen();
-  } else if (elem.msRequestFullscreen) { /* IE11 */
+  } else if (elem.msRequestFullscreen) { 
     elem.msRequestFullscreen();
   }
 }
-// Game loop
 
-//function to create rooms
+
+
 
 function startRoom(x, IGTimer) {
     if (IGTimer == 0) {
@@ -1724,7 +1644,7 @@ function startRoom(x, IGTimer) {
         startGameFromMenu();
         
     } else {
-        //use to set enemy spawns per level
+        
         
         if (x == 0) {
             if (currCamplevel == 1) {
@@ -1732,7 +1652,7 @@ function startRoom(x, IGTimer) {
 
                     if (IGTimer == 150) {
                            
-                                // schedule spawn with portal
+                                
                                 EnemySpawnCampaign('dom', 80, 400);
                                 spawntime = 0;
         
@@ -1768,7 +1688,7 @@ function startRoom(x, IGTimer) {
                 if (CampEnemyCount <= 15  && CampEnemyCount >= 11) {
                     if (IGTimer == 150) {
                            
-                                // schedule spawn with portal
+                                
                         EnemySpawnCampaign('dom', 80, 400);
                         spawntime = 0;
         
@@ -1803,7 +1723,7 @@ function startRoom(x, IGTimer) {
                 if (CampEnemyCount <= 10   && CampEnemyCount >= 6) {
                     if (IGTimer == 150) {
                            
-                                // schedule spawn with portal
+                                
                         EnemySpawnCampaign('dom', 80, 400);
                         spawntime = 0;
         
@@ -1836,22 +1756,10 @@ function startRoom(x, IGTimer) {
                 }
                 
             }
-        } /*else if (x == 2) {
-            if (timerd%250 == 0) {
-                    const spawn = getValidSpawnRect(50, 50);
-                    if (spawn) {
-                        EnemySpawnCampaign('zuk');
-                        spawntime = 0;
-                    } else {
-                        // No valid spawn found (likely crowded with obstacles); skip this spawn attempt
-                        console.warn('No valid spawn found for roboticsRoom spawner; skipping spawn this tick.');
-                    }
-                }
-        }
-                */
+        } 
     }
 
-    // Update enemy-fired projectiles
+    
     if (enemyProjectiles.length > 0) {
         const areaWidth = 650;
         const areaHeight = 650;
@@ -1860,12 +1768,12 @@ function startRoom(x, IGTimer) {
             p.y += p.dy;
             p.el.style.left = `${p.x}px`;
             p.el.style.top = `${p.y}px`;
-            // border check
+            
             if (p.x < 0 || p.x > areaWidth || p.y < 0 || p.y > areaHeight) {
                 p.el.remove();
                 return false;
             }
-            // obstacle collision
+            
             for (let k = 0; k < obstacles.length; k++) {
                 const o = obstacles[k];
                 if (!o.blocksProjectiles) continue;
@@ -1877,7 +1785,7 @@ function startRoom(x, IGTimer) {
                     return false;
                 }
             }
-            // collision with player
+            
             try {
                 const playerRect = player.getBoundingClientRect();
                 const projRect = p.el.getBoundingClientRect();
@@ -1890,7 +1798,7 @@ function startRoom(x, IGTimer) {
                     invinc = true;
                     setTimeout(() => { invinc = false; }, iFrames);
                     p.el.remove();
-                    return false;//shift
+                    return false;
                 }
             } catch (e) {}
             return true;
@@ -1898,24 +1806,24 @@ function startRoom(x, IGTimer) {
     }
 
 }
-//click
+
 
 function startCutscene(image, durationMs, text, bg) {
-    // image: string or array of character-image urls
-    // durationMs: ms per slide (total duration for single image)
-    // text: string or array (if array, matched to images)
-    // bg: optional background image url or background-position keyword ('left','right','center')
+    
+    
+    
+    
     try {
-        // normalize inputs
+        
         const slides = Array.isArray(image) ? image.slice() : [image];
         const texts = Array.isArray(text) ? text.slice() : slides.map(() => (text || ""));
         const delay = Math.max(200, Number(durationMs) || 2000);
 
-        // remove any existing cutscene overlay
+        
         const existing = document.getElementById('cutsceneOverlay');
         if (existing) existing.remove();
 
-        // container that covers the viewport
+        
         const overlay = document.createElement('div');
         overlay.id = 'cutsceneOverlay';
         overlay.style.position = 'fixed';
@@ -1931,7 +1839,7 @@ function startCutscene(image, durationMs, text, bg) {
         overlay.style.pointerEvents = 'auto';
         overlay.style.overflow = 'hidden';
 
-        // background handling: if bg looks like an image path, use it as background; otherwise use as position
+        
         if (bg) {
             const bgStr = String(bg);
             if (/\.(png|jpg|jpeg|webp|gif)$/i.test(bgStr) || bgStr.indexOf('url(') !== -1) {
@@ -1946,7 +1854,7 @@ function startCutscene(image, durationMs, text, bg) {
             overlay.style.backgroundColor = 'rgba(0,0,0,0.6)';
         }
 
-        // character image element (bottom-left by default)
+        
         const charEl = document.createElement('img');
         charEl.id = 'cutsceneChar';
         charEl.style.position = 'absolute';
@@ -1960,7 +1868,7 @@ function startCutscene(image, durationMs, text, bg) {
         charEl.style.pointerEvents = 'none';
         overlay.appendChild(charEl);
 
-        // text box at bottom center
+        
         const textBox = document.createElement('div');
         textBox.id = 'cutsceneText';
         textBox.style.position = 'absolute';
@@ -1980,10 +1888,8 @@ function startCutscene(image, durationMs, text, bg) {
         textBox.style.pointerEvents = 'none';
         overlay.appendChild(textBox);
 
-        // clicking overlay skips the cutscene
-        /*overlay.addEventListener('click', () => {
-            try { overlay.remove(); } catch (e) {}
-        });*/
+        
+        
 
         document.body.appendChild(overlay);
 
@@ -1994,7 +1900,7 @@ function startCutscene(image, durationMs, text, bg) {
             if (removed) return;
             const img = slides[i];
             const t = texts[i] || "";
-            // fade out, change, fade in
+            
             charEl.style.opacity = '0';
             setTimeout(() => {
                 if (img) {
@@ -2008,7 +1914,7 @@ function startCutscene(image, durationMs, text, bg) {
             }, 250);
         };
 
-        // schedule sequence
+        
         const timers = [];
         const total = slides.length;
         for (let i = 0; i < total; i++) {
@@ -2017,13 +1923,13 @@ function startCutscene(image, durationMs, text, bg) {
                 showSlide(i);
             }, when));
         }
-        // final remove after last slide
+        
         timers.push(setTimeout(() => {
             try { overlay.remove(); } catch (e) {}
             removed = true;
         }, total * delay));
 
-        // return an object allowing manual control if caller wants it
+        
         return {
             stop: () => {
                 timers.forEach(t => clearTimeout(t));
@@ -2036,7 +1942,6 @@ function startCutscene(image, durationMs, text, bg) {
         return null;
     }
 }
-// ...existing code...
 
 
 
@@ -2044,13 +1949,14 @@ function startCutscene(image, durationMs, text, bg) {
 
 
 
-// Centralized enemy death handler. Does DOM removal, scoring, counters and a 5% chance to drop a heal pickup.
+
+
 function handleEnemyDeath(enemy) {
     try { enemy.el.remove(); } catch (e) {}
-    // Base score
+    
     score += 250 * Mult;
-    // Extra handling based on type
-    //console.log("Enemy File name: "+enemy.fil)
+    
+    
     if (enemy.fileName == "Zuk.png") {
         score += 250 * Mult;
         tankCount = Math.max(0, tankCount - 1);
@@ -2067,7 +1973,7 @@ function handleEnemyDeath(enemy) {
         chargerCount = Math.max(0, chargerCount - 1);
     }
 
-    // 5% chance to drop a health pickup at the enemy's location. Defer to avoid mutating arrays mid-iteration.
+    
     if (Math.random() < 0.05) {
         const hx = enemy.x || 0;
         const hy = enemy.y || 0;
@@ -2081,11 +1987,11 @@ function handleEnemyDeath(enemy) {
     }
 }
 
-// Enemy spawn with portal animation and delay (fade-in then fade-out over ~600ms total)
+
 function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
-    // New signature: EnemySpawnCampaign(type, delayMs = 600)
-    // `type` is a string selector: 'dom','ranged','zuk','shower','heal','score'
-    // Map the type into the concrete parameters used to create the entity
+    
+    
+    
     let damage = 0;
     let enemyHP = 0;
     let speed = 0;
@@ -2099,7 +2005,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
     }
 
 
-    //console.log(CampEnemyCount);
+    
 
 
     switch (t) {
@@ -2149,7 +2055,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
         ey = eny;
     }
 
-    // Create a portal visual at the spawn point
+    
     const portal = document.createElement('div');
     portal.style.position = 'absolute';
     portal.style.left = `${ex}px`;
@@ -2166,13 +2072,13 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
     portal.style.pointerEvents = 'none';
     gameArea.appendChild(portal);
 
-    // Fade in then fade out, spawn when fade-out completes
+    
     setTimeout(() => { portal.style.opacity = '1'; }, 10);
-    // fade out after half the delay
+    
     setTimeout(() => { portal.style.opacity = '0'; }, 10 + Math.max(0, delayMs / 2));
     setTimeout(() => {
         try { portal.remove(); } catch (e) {}
-        // Create the entity
+        
         if (fileName === 'HealPickup') {
             enemies.push(new HealPickup(ex, ey));
             healthCount++;
@@ -2182,13 +2088,13 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
             scoreBoostCount = Math.max(0, scoreBoostCount + 1);
             enemyCount++;
         } else {
-            // Special-case: Ranged variant that looks like Dom.png
+            
             if (fileName === 'Cheng.png') {
                 enemies.push(new RangedCharger(ex, ey, speed, enemyHP, damage, 'Cheng.png', width, height));
             } else {
                 enemies.push(new Charger(ex, ey, speed, enemyHP, damage, fileName, width, height));
             }
-            // classify counters
+            
             if (fileName == 'Zuk.png') {
                 tankCount = Math.max(0, tankCount + 1);
             } else if (fileName == 'Shower.jpg') {
@@ -2206,7 +2112,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
 
 
 
-//CampEnemyCount
+
 
 function lovedayRoom() {
     TheyDontStopComing.play();
@@ -2235,7 +2141,7 @@ function lovedayRoom() {
     addObstacle(320, 225, 10, 300, { color: "white" });
 
 }
-//"player"
+
 function roboticsRoom() {
     ATMOC.play();
     ATMOC.loop = true;
@@ -2267,7 +2173,7 @@ function englishRoom() {
     gameArea.style.backgroundImage = "url('MRFONGROOM.png')"
 
     addObstacle(80, 210, 65, 330, { color: "#F8DFA1" }); 
-    //addObstacle(490, 210, 65, 330, { color: "#F8DFA1" }); 
+    
 
     addObstacle(490, 210, 65, 140, { color: "#F8DFA1" }); 
 
@@ -2286,28 +2192,9 @@ function englishRoom() {
     addObstacle(540+12, 60+13.5, 5, 5, { color: "#eeeeee" }); 
     addObstacle(497.5-20, 575, 120, 65, { color: "#434343"}); 
     addObstacle(80, 0, 65, 65, { color: "#F8DFA1" }); 
-    //addObstacle(0, 575, 90, 65, { color: "#434343", blocksProjectiles: false }); 
+    
 
-    /*
-     addObstacle(0, 50, 50, 550, { color: "#F8DFA1" }); 
-    for (let i = 0; i < 9; i++) {
-        addObstacle(12.5, 70+60*i, 25, 20, { color: "#000000" }); 
-    }
-    addObstacle(600, 50, 50, 550, { color: "#F8DFA1" }); 
-    for (let i = 0; i < 9; i++) {
-        addObstacle(612.5, 70+60*i, 25, 20, { color: "#000000" }); 
-    }
-    addObstacle(140, 100, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 100, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(140, 270, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 270, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(140, 440, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 440, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(75, 450, 40, 40, { color: "#333333", blocksProjectiles: false });
-    addObstacle(540, 280, 40, 40, { color: "#333333", blocksProjectiles: false });
-    addObstacle(470, 135, 35, 20, { color: "#000000" }); 
-    addObstacle(150, 600, 500, 50, { color: "#32527B" });
-    */
+    
     
 }
 
@@ -2324,50 +2211,31 @@ function physicsRoom() {
     addObstacle(0, 290+170, 160, 65, { color: "#F8DFA1" }); 
     addObstacle(245, 340+170, 160, 65, { color: "#F8DFA1" }); 
     addObstacle(490, 290+170, 160, 65, { color: "#F8DFA1" });  
-    //addObstacle(490, 210, 65, 330, { color: "#F8DFA1" }); 
+    
 
     
-    //addObstacle(0, 575, 90, 65, { color: "#434343", blocksProjectiles: false }); 
+    
 
-    /*
-     addObstacle(0, 50, 50, 550, { color: "#F8DFA1" }); 
-    for (let i = 0; i < 9; i++) {
-        addObstacle(12.5, 70+60*i, 25, 20, { color: "#000000" }); 
-    }
-    addObstacle(600, 50, 50, 550, { color: "#F8DFA1" }); 
-    for (let i = 0; i < 9; i++) {
-        addObstacle(612.5, 70+60*i, 25, 20, { color: "#000000" }); 
-    }
-    addObstacle(140, 100, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 100, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(140, 270, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 270, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(140, 440, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 440, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(75, 450, 40, 40, { color: "#333333", blocksProjectiles: false });
-    addObstacle(540, 280, 40, 40, { color: "#333333", blocksProjectiles: false });
-    addObstacle(470, 135, 35, 20, { color: "#000000" }); 
-    addObstacle(150, 600, 500, 50, { color: "#32527B" });
-    */
+    
     
 }
 
 
 
-//Math.min
+
 let lastFrameTime = 0;
 const fps = 60;
 const frameDuration = 1000 / fps;
 scoreBoostCount = 0;
 attackingDelay = 0
-//CampEnemy
+
 function update(timestamp) {
   try {
 
 
     if (!gameStarted) {
             requestAnimationFrame(update);
-            return; // Exit early if the game hasn't started
+            return; 
     }
 
 
@@ -2460,7 +2328,7 @@ function update(timestamp) {
             player.src = "Player3.png"
         }
 
-        // Increment message timers only while messages are present
+        
         try {
             const sbMsg = document.getElementById("SBMessage");
             if (sbMsg) {
@@ -2518,38 +2386,38 @@ function update(timestamp) {
         MoveChanceTimer++ 
         if (MoveChanceTimer>120) {
             MoveChance = Math.random();
-           // console.log("Reset!")
+           
             MoveChanceTimer = 0;
         }
         
         if (keysPressed["1"] && CurrWeap != 1) {
             CurrWeap = 1;
-            attack = false; // cancel any current firing
-            // reset cooldowns; only apply load time for shotgun (15 frames)
+            attack = false; 
+            
             Atdelay = 15;
             attackingDelay = 20000;
             }
             
         if (keysPressed["2"] && CurrWeap != 2) {
             CurrWeap = 2;
-            attack = false; // cancel any current firing
-            // reset cooldowns; only apply load time for calc gun (5 frames)
+            attack = false; 
+            
             Atdelay = 5;
             attackingDelay = 20000;
             }
 
         if (keysPressed["3"] && CurrWeap != 3) {
             CurrWeap = 3;
-            attack = false; // cancel any current firing
-            // reset cooldowns; only apply load time for calc gun (5 frames)
+            attack = false; 
+            
             Atdelay = 30;
             attackingDelay = 20000;
             }
 
         if (keysPressed["c"] && CurrWeap != 0) {
             CurrWeap = 0;
-            attack = false; // cancel any current firing
-            // reset cooldowns; only apply load time for calc gun (5 frames)
+            attack = false; 
+            
             Atdelay = 15;
             attackingDelay = 20000;
             }
@@ -2574,14 +2442,14 @@ function update(timestamp) {
 
         if (keysPressed[" "] && attack == false && Atdelay <= 0) {
             attack = true;
-           // console.log("attack!")
+           
             FirstAttack = true;
             attackingDelay = 0;
         }
 
         if (mouseHeld && !attack && Atdelay <= 0) {
                 attack = true;
-              //  console.log("Mouse click attack!");
+              
                 FirstAttack = true;
                 attackingDelay = 0;
         }
@@ -2694,39 +2562,39 @@ function update(timestamp) {
     if (dx < 0) {
         if (dy < 0 ) {
             movdirection = "nw";
-            //console.log(movdirection)
+            
         } else if (dy > 0) {
             movdirection = "sw";
-            //console.log(movdirection)
+            
         } else {
             movdirection = "w";
-           // console.log(movdirection)
+           
         }
     } else if (dx > 0) {
         if (dy < 0 ) {
             movdirection = "ne";
-           // console.log(movdirection)
+           
         } else if (dy > 0) {
             movdirection = "se";
-           // console.log(movdirection)
+           
         } else {
             movdirection = "e";
-           // console.log(movdirection)
+           
         }
     } else {
         if (dy < 0) {
             movdirection = "n";
-           // console.log(movdirection)
+           
         } else if (dy > 0) {
             movdirection = "s";
-           // console.log(movdirection)
+           
         }
     }
 
     x += dx;
     y += dy;
 
-    //dash
+    
     const angleRad = Math.atan2(mouseY - y, mouseX - x);
     let angleDeg = 0;
     if (angleRad * (180 / Math.PI)+90 < 0 ) {
@@ -2756,7 +2624,7 @@ function update(timestamp) {
         Mobilecrosshair.style.top = changeTop + "px";
     }
 
-    //console.log("angle: "+angleDeg)
+    
     if (angleDeg >= 337.5 || angleDeg < 22.5) {
         direction = "n"
     } else if (angleDeg >= 22.5 && angleDeg < 67.5) {
@@ -2787,9 +2655,9 @@ function update(timestamp) {
         }
         player.style.transform = `translate(-50%, -50%) rotate(${angleDeg+180}deg)`;
     }
-    // Resolve player vs obstacles
+    
     if (obstacles.length > 0) {
-        // player is 65x65 and positioned with center at (x,y)
+        
         let px = x - 25;
         let py = y - 25;
         const pw = 50;
@@ -2810,47 +2678,47 @@ function update(timestamp) {
 
     player.style.left = `${x}px`;
     player.style.top = `${y}px`;
-    //player.src = "Player.png";
-    //player.style.transform = `translate(-50%, -50%) rotate(${directionAngles[direction]}deg)`;
+    
+    
 
-//rifle
-    // --- Charger Spawning ---
+
+    
     if (spawntime > 50 && RoomType != 0) {
         spawnEnemy = Math.random()*100*(2/difficulty)
-        if (spawnEnemy < 3 && spawnEnemy > 2.4 && chargerCount<7) { // ~.6% chance per frame
-                    // Attempt to schedule a Charger spawn with portal
+        if (spawnEnemy < 3 && spawnEnemy > 2.4 && chargerCount<7) { 
+                    
                     if (EnemySpawnCampaign('ranged')) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy < 1 && chargerCount<7) { // ~1% chance per frame
-                    // Attempt to schedule a Charger spawn with portal
+        if (spawnEnemy < 1 && chargerCount<7) { 
+                    
                     if (EnemySpawnCampaign('dom')) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy <1.3 && spawnEnemy > 1 && healthCount<2 && elapsed > 600) { // ~.3% chance per frame
-                    // Schedule a heal pickup spawn via portal visual
+        if (spawnEnemy <1.3 && spawnEnemy > 1 && healthCount<2 && elapsed > 600) { 
+                    
                     if (EnemySpawnCampaign('heal')) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy < 1.6 && spawnEnemy > 1.3 && tankCount<3 && Wave>1) { // ~.3% chance per frame
+        if (spawnEnemy < 1.6 && spawnEnemy > 1.3 && tankCount<3 && Wave>1) { 
                     if (EnemySpawnCampaign('zuk')) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy <2 && spawnEnemy > 1.9 && showerCount<2 && Wave>2) { // ~1% chance per frame
+        if (spawnEnemy <2 && spawnEnemy > 1.9 && showerCount<2 && Wave>2) { 
                     if (EnemySpawnCampaign('shower')) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy < 2.1 && spawnEnemy > 2 && scoreBoostCount<1) { // ~1% chance per frame
+        if (spawnEnemy < 2.1 && spawnEnemy > 2 && scoreBoostCount<1) { 
                     if (EnemySpawnCampaign('score')) {
                         spawntime = 0;
                     }
         }
-//proj
+
     }
     if (playerhp >= 80+level*20) {
         playerhp = 80+level*20
@@ -2858,8 +2726,8 @@ function update(timestamp) {
     elapsed++
     spawntime++
 
-    // --- Enemy Movement ---
-    // Track which enemies are colliding
+    
+    
 
     let colliding = Array(enemies.length).fill(false);
     for (let i = 0; i < enemies.length; i++) {
@@ -2874,7 +2742,7 @@ function update(timestamp) {
         ) {
           colliding[i] = true;
           colliding[j] = true;
-          // Push them apart
+          
           let dx = e1.x - e2.x;
           let dy = e1.y - e2.y;
           let dist = Math.hypot(dx, dy);
@@ -2891,7 +2759,7 @@ function update(timestamp) {
         }
       }
     }
-    // Only move enemies that are not colliding
+    
    enemies.forEach((enemy, idx) => {
        if (!colliding[idx] && (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank)) {
             const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
@@ -2904,7 +2772,7 @@ function update(timestamp) {
                 targetY = detour.y;
             }
             enemy.moveToward(targetX, targetY);
-            // Resolve enemy vs obstacles after movement
+            
             if (obstacles.length > 0 && enemy.width && enemy.height) {
                 for (let k = 0; k < obstacles.length; k++) {
                     const o = obstacles[k];
@@ -2930,7 +2798,7 @@ function update(timestamp) {
 
         if (touching) {
             if (enemy instanceof HealPickup) {
-                playerhp = Math.min(playerhp + 5+Math.floor(10/(0.9+Wave/10)), 100); // heal 30, max 100
+                playerhp = Math.min(playerhp + 5+Math.floor(10/(0.9+Wave/10)), 100); 
                 sanity += 3;
                 if (sanity > 100) {
                     sanity = 100;
@@ -2938,7 +2806,7 @@ function update(timestamp) {
                 enemy.el.remove();
                 enemies.splice(idx, 1);
                 healthCount = Math.max(healthCount - 1, 0);
-                // Remove any existing message before creating a new one
+                
                 try { const existing = document.getElementById("HealthMessage"); if (existing) existing.remove(); } catch (e) {}
                 newMessage = document.createElement("div");
                 newMessage.id = "HealthMessage";
@@ -2954,7 +2822,7 @@ function update(timestamp) {
                 setTimeout(() => {
                     try { const m = document.getElementById("HealthMessage"); if (m) m.remove(); } catch (e) {}
                 }, 1200);
-                // Flash grey on heal
+                
                 setFlash("rgba(128, 128, 128, 0.25)", 120);
             } else if (enemy instanceof ScoreBoost) {
                 
@@ -2963,7 +2831,7 @@ function update(timestamp) {
                 enemy.el.remove();
                 enemies.splice(idx, 1);
                 scoreBoostCount = Math.max(scoreBoostCount - 1, 0);
-                // Remove any existing message before creating a new one
+                
                 try { const existing = document.getElementById("SBMessage"); if (existing) existing.remove(); } catch (e) {}
                 newMessage = document.createElement("div");
                 newMessage.id = "SBMessage";
@@ -2977,7 +2845,7 @@ function update(timestamp) {
                     try { const m = document.getElementById("SBMessage"); if (m) m.remove(); } catch (e) {}
                 }, 1200);
 
-                // Yellow overlay for duration
+                
                 startBoostOverlay(360 * (1000/60));
 
                 
@@ -2990,10 +2858,10 @@ function update(timestamp) {
                         playerhp = 0;
                         playSound(deathSound);
                     }
-                    //console.log("Player HP:", playerhp);
+                    
                     invinc = true;
                     playSound(ouch);
-                    // Flash red on damage
+                    
                     setFlash("rgba(255, 0, 0, 0.25)", 120);
                     setTimeout(() => {
                         invinc = false;
@@ -3028,7 +2896,7 @@ function update(timestamp) {
             tankCount = 0;
             timerd = 0;
             transitioning = true;
-            // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
+            
             try {
                 obstacles.forEach(o => { if (o && o.el) o.el.remove(); });
             } catch (e) { }
@@ -3038,31 +2906,31 @@ function update(timestamp) {
         }
     } catch (e) {}
 
-//death
-    // --- Enemy-Enemy Collision ---
+
+    
     
     for (let i = 0; i < enemies.length; i++) {
       for (let j = i + 1; j < enemies.length; j++) {
         const e1 = enemies[i];
         const e2 = enemies[j];
-        // Simple AABB collision
+        
         if (
           e1.x < e2.x + chargerSize &&
           e1.x + chargerSize > e2.x &&
           e1.y < e2.y + chargerSize &&
           e1.y + chargerSize > e2.y
         ) {
-          // Push them apart
+          
           let dx = e1.x - e2.x;
           let dy = e1.y - e2.y;
           let dist = Math.hypot(dx, dy);
           if (dist === 0) dist = 1;
-          let push = 10; // pixels to push apart
+          let push = 10; 
           e1.x += (dx / dist) * push;
           e1.y += (dy / dist) * push;
           e2.x -= (dx / dist) * push;
           e2.y -= (dy / dist) * push;
-          // Update DOM positions
+          
           e1.el.style.left = `${e1.x}px`;
           e1.el.style.top = `${e1.y}px`;
           e2.el.style.left = `${e2.x}px`;
@@ -3070,7 +2938,7 @@ function update(timestamp) {
         }
       }
     }
-   // console.log("X:", x, "Y:", y);
+   
     document.getElementById("Score").innerText =  score;
     if (RoomType == 0) {
         document.getElementById("Score").innerText =  score+" / "+(Math.floor(level*2500*level/2));
@@ -3082,7 +2950,7 @@ function update(timestamp) {
  
     }
     document.getElementById("sanity").innerText =  sanity+" %";
-    // Level
+    
     try {
         switch (CurrWeap) {
             case 0: document.getElementById("weapon").innerText = "M. Pencil"; break;
@@ -3090,14 +2958,14 @@ function update(timestamp) {
             case 2: document.getElementById("weapon").innerText = "Shauniper"; break;
             case 3: document.getElementById("weapon").innerText = "Asshaunt Rifle"; break;
         }
-        //document.getElementById("weapon").innerText = CurrWeap == 1 ? "Shauntgun" : "Shauniper";
+        
     } catch (e) {}
-    // Dash recharge percent (0-100)
+    
     try {
         const dashPct = Math.min(100, Math.floor((Math.min(dashtimer, 60) / 60) * 100));
         document.getElementById("dash").innerText = dashPct + " %";
     } catch (e) {}
-    //damageEnemies
+    
 
     if (!transitioning && score >= Math.floor(level*2500*level/2) && RoomType == 0) { 
                     level++; 
@@ -3113,15 +2981,15 @@ function update(timestamp) {
                 setTimeout(() => {
                     try { const m = document.getElementById("SBMessage"); if (m) m.remove(); } catch (e) {}
                 }, 1200);
-                   // alert("Level up! You are now level "+level); 
+                   
                     playerhp = 100+level*20; 
-                  //  for (let k in keysPressed) { keysPressed[k] = false; } 
+                  
     }
 
     try {
         const shanEl = document.getElementById("ShanImage");
         if (shanEl) {
-            // choose sprite by sanity as before
+            
             if (sanity <= 33) {
                 shanEl.src = "ShanDisappointed.webp";
             } else if (sanity <= 66) {
@@ -3130,21 +2998,21 @@ function update(timestamp) {
                 shanEl.src = "HappyShan.webp";
             }
 
-            // compute tint intensity from HP (0 = no tint, 1 = full tint)
+            
             const maxHp = 80 + level * 20;
             const hpRatio = Math.max(0, Math.min(1, playerhp / maxHp));
             const tint = Math.max(0, Math.min(1, 1 - hpRatio));
 
-            // smooth transition and visual effect: sepia + saturation + hue shift + inset red glow
+            
             shanEl.style.transition = "filter 150ms linear, box-shadow 150ms linear";
             shanEl.style.filter = `sepia(${tint}) saturate(${1 + tint * 3}) hue-rotate(-20deg) brightness(${1 - tint * 0.15})`;
             shanEl.style.boxShadow = `inset 0 0 ${10 + tint * 40}px rgba(255,0,0,${0.25 * tint})`;
         }
     } catch (e) {}
-    //
+    
     if (attack && FirstAttack) {
-        FirstAttack = false;//level
-        //Attacking
+        FirstAttack = false;
+        
     if (CurrWeap == 1 && sanity >= Math.floor(difficulty/2)+1) {    
             sanity -= Math.floor(difficulty/2)+1;
                 if (sanity < 0) {
@@ -3185,7 +3053,7 @@ function update(timestamp) {
                 const enemyRect = enemy.el.getBoundingClientRect();
                 const overlap = !(shotRect.right < enemyRect.left || shotRect.left > enemyRect.right || shotRect.bottom < enemyRect.top || shotRect.top > enemyRect.bottom);
                 if (overlap) {
-                    // Compute line from player center to enemy center in game coords
+                    
                     const playerCenterX = x;
                     const playerCenterY = y;
                     const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
@@ -3210,7 +3078,7 @@ function update(timestamp) {
 
             setTimeout(() => { el.remove(); }, 50);
         } else if (CurrWeap == 0) {
-            // Melee AoE: create a temporary black circle (50px radius) below the player
+            
             const radius = 80;
             const dia = radius * 2;
             const aoe = document.createElement('div');
@@ -3218,19 +3086,19 @@ function update(timestamp) {
             aoe.style.width = dia + 'px';
             aoe.style.height = dia + 'px';
             aoe.style.borderRadius = '50%';
-            // place slightly below player center so it appears under feet
+            
             const centerX = x;
             const centerY = y;
             aoe.style.left = `${centerX}px`;
             aoe.style.top = `${centerY}px`;
             aoe.style.transform = 'translate(-50%, -50%)';
-            //aoe.style.background = 'transparent';
+            
             aoe.style.background = 'transparent';
             aoe.style.opacity = '0.95';
             aoe.style.zIndex = 9998;
             gameArea.appendChild(aoe);
             MCSwoosh.play();
-            // Remove any enemies whose centers lie within radius and are not blocked by obstacles
+            
             let killed = false;
             enemies = enemies.filter((enemy) => {
                 const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
@@ -3240,11 +3108,11 @@ function update(timestamp) {
                 if (dist <= radius + enemyHalf) {
                     const blocked = lineBlockedByObstacles(centerX, centerY, enemyCenterX, enemyCenterY);
                     if (!blocked && !killed) {
-                        // apply AoE damage
+                        
                         const dmg = (100 + (1500 * ((100 - sanity) / 100) * ((100 - sanity) / 100))) * (1+(0.1*(level-1)));
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
-                        // If enemy died, remove it and mark a kill (only one kill per AoE)
+                        
                         killed = true;
                         if (enemy.enemyHP <= 0) {
                             CampEnemyCount--;
@@ -3252,12 +3120,12 @@ function update(timestamp) {
                             sanity = Math.min(100, sanity + 4);
                             return false;
                         } else {
-                            // Enemy wounded but still alive — update hp display and keep it in the list
+                            
                             try {
                                 if (enemy.hpText) enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
                             } catch (e) {}
-                            // don't set killed; allow further AoE hits to affect others
-                            return true; // keep this enemy in the array
+                            
+                            return true; 
                         }
                     }
                 }
@@ -3272,34 +3140,33 @@ function update(timestamp) {
             if (sanity < 0) {
                 sanity = 0;
             }
-            // Spawn a projectile 20x3 that flies until collision
+            
             const projEl = document.createElement("div");
             projEl.style.position = "absolute";
-            // make the projectile slightly bigger so background images are visible
+            
             projEl.style.width = "28px";
             projEl.style.height = "8px";
-            //projEl.style.background = "black";
+            
             projEl.style.borderRadius = "2px";
-            // Use an existing projectile-like asset; 'SnipProj.png' wasn't present in the repo
-            // so use ShotgunShot.png as a visible fallback. If you add a small projectile
-            // sprite, replace the URL here.
+            
+            
+            
             projEl.style.backgroundImage = "url('SP.png')";
-            // correctly set background sizing/position so the image is visible
+            
             projEl.style.backgroundSize = "cover";
             projEl.style.backgroundRepeat = "no-repeat";
             projEl.style.backgroundPosition = "center";
-            // fallback color if image fails to load
-            /*projEl.style.backgroundColor = "black";
-            projEl.style.boxShadow = "0 0 6px rgba(255,255,255,0.15)";*/
+            
+            
             playSound(CalcgunSound);
-            // start slightly in front of player
-             //const dirVec = {x: ((mouseX - x)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2)), y: ((mouseY - y)/Math.sqrt((mouseX - x)**2 + (mouseY - y)**2))};
+            
+             
             let AngleShot =  angleDeg;
             let trueAngle = AngleShot;
             let shotX = Math.cos((trueAngle-90)* Math.PI / 180);
             let shotY = Math.sin((trueAngle-90)* Math.PI / 180);
             const dirVec = {x: shotX, y: shotY};
-            //console.log("gunx: "+AngleShot)
+            
             const startX = x + dirVec.x * 35;
             const startY = y + dirVec.y * 35;
             projEl.style.left = `${startX}px`;
@@ -3313,30 +3180,27 @@ function update(timestamp) {
             if (sanity < 0) {
                 sanity = 0;
             }
-            // Spawn a projectile 20x3 that flies until collision
+            
             const projEl = document.createElement("div");
             projEl.style.position = "absolute";
-            // make the projectile slightly bigger so background images are visible
+            
             projEl.style.width = "24px";
             projEl.style.height = "4px";
-            //projEl.style.background = "black";
+            
             projEl.style.borderRadius = "2px";
-            // Use an existing projectile-like asset; 'SnipProj.png' wasn't present in the repo
-            // so use ShotgunShot.png as a visible fallback. If you add a small projectile
-            // sprite, replace the URL here.
+            
+            
+            
             projEl.style.background = "orange";
-            // correctly set background sizing/position so the image is visible
-            /*projEl.style.backgroundSize = "cover";
-            projEl.style.backgroundRepeat = "no-repeat";
-            projEl.style.backgroundPosition = "center";*/
-            // fallback color if image fails to load
-            /*projEl.style.backgroundColor = "black";
-            projEl.style.boxShadow = "0 0 6px rgba(255,255,255,0.15)";*/
+            
+            
+            
+            
             playSound(RifleSound);
-            //shaun
-            // start slightly in front of player
+            
+            
            
-            const spread = 8; //spread of weapon in degrees
+            const spread = 8; 
             chance = (Math.random()-0.5) * (spread*2);
             let posx = mouseX - x;
             let posy = mouseY - y;
@@ -3345,7 +3209,7 @@ function update(timestamp) {
             let shotX = Math.cos((trueAngle-90)* Math.PI / 180);
             let shotY = Math.sin((trueAngle-90)* Math.PI / 180);
             const dirVec = {x: shotX, y: shotY};
-            //console.log("gunx: "+AngleShot)
+            
             const startX = x + dirVec.x * 35;
             const startY = y + dirVec.y * 35;
             projEl.style.left = `${startX}px`;
@@ -3355,7 +3219,7 @@ function update(timestamp) {
             projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
             Projweapon = CurrWeap;
         } else {
-            attack = false; // cancel attack if not enough sanity
+            attack = false; 
                 try { const existing = document.getElementById("WeaponMessage"); if (existing) existing.remove(); } catch (e) {}
                 newMessage = document.createElement("div");
                 newMessage.id = "WeaponMessage";
@@ -3363,12 +3227,12 @@ function update(timestamp) {
                 newMessage.innerHTML = "Not enough sanity to attack! Press C to regain!";
                 SBmessagetimer = 0;
                 if (messagesContainer) messagesContainer.appendChild(newMessage);
-            //SBMessage
+            
         }
     }
 
-    //dash
-    // Arena
+    
+    
     if (projectiles.length > 0) {
         const areaWidth = 650;
         const areaHeight = 650;
@@ -3385,12 +3249,12 @@ function update(timestamp) {
             p.y += p.dy * projectileSpeed;
             p.el.style.left = `${p.x}px`;
             p.el.style.top = `${p.y}px`;
-            // border check
+            
             if (p.x < 0 || p.x > areaWidth || p.y < 0 || p.y > areaHeight) {
                 p.el.remove();
                 return false;
             }
-            // obstacle collision (if configured to block)
+            
             for (let k = 0; k < obstacles.length; k++) {
                 const o = obstacles[k];
                 if (!o.blocksProjectiles) continue;
@@ -3402,8 +3266,8 @@ function update(timestamp) {
                     return false;
                 }
             }
-            //setTimeout
-            // enemy collision
+            
+            
             const projRect = p.el.getBoundingClientRect();
             for (let i = 0; i < enemies.length; i++) {
                 const enemy = enemies[i];
@@ -3423,10 +3287,10 @@ function update(timestamp) {
                         
                     }
                     p.el.remove();
-                    return false; // remove projectile on hit
+                    return false; 
                 }
             }
-            return true; // keep flying
+            return true; 
         });
     }
     
@@ -3456,15 +3320,15 @@ if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare)
         NextLevelSquare(550, 80);
     }
 }
-//dash
-//fps
-//console.log("CampEnemyCount:", CampEnemyCount, "camplevel:", camplevel, "currCamplevel:", currCamplevel);
+
+
+
 
 
 
 if (playerhp <= 0) {
     deathSound.volume = 1;
-    // Reset everything
+    
     playerhp = 100;
     activateTimerReset = false;
     setTimeout(() => {
@@ -3472,7 +3336,7 @@ if (playerhp <= 0) {
         time = Math.floor(elapsed/60)
         totalFrames = 0;
         FPSChecked = 0;
-        //FPS
+        
         level = 1;
         x = 280;
         y = 280;
@@ -3494,9 +3358,9 @@ if (playerhp <= 0) {
             for (let key in keysPressed) {
                 keysPressed[key] = false;
             }
-            // start
+            
             enemies.forEach(enemy => enemy.el.remove());
-            enemies = [];//timer
+            enemies = [];
             chargerCount = 0;
             healthCount = 0;
             enemyCount = 0;
@@ -3506,8 +3370,8 @@ if (playerhp <= 0) {
             timerd = 0;
             transitioning = false;
             framespassed = 0;
-            //if (score)
-            // Remove all obstacle DOM elements and clear obstacle list so rooms don't persist after death
+            
+            
             try {
                 obstacles.forEach(o => { if (o && o.el) o.el.remove(); });
             } catch (e) { }
@@ -3537,7 +3401,7 @@ if (playerhp <= 0) {
             gameStarted = false;
             showMainMenu();
     }, 100);
-    } //level up
+    } 
     
     if (sanity <= 33) {
         document.getElementById("ShanImage").src = "ShanDisappointed.webp";
@@ -3553,17 +3417,17 @@ if (playerhp <= 0) {
   }
   
 }
-//Wave++
-requestAnimationFrame(update);
-//score
 
-// --------------- Main Menu wiring ---------------
+requestAnimationFrame(update);
+
+
+
 let gameStarted = false;
-let difficultyLevel = 1; // 1-4
-let difficulty = 1; // alias used in spawn formulas
+let difficultyLevel = 1; 
+let difficulty = 1; 
 
 function showGameUI() {
-    //openFullscreen();
+    
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
     const opt = document.getElementById("optionsMenu");
@@ -3633,8 +3497,8 @@ function showMainMenu() {
     backgroundMusic.play()
     backgroundMusic.loop = true;
 }
-//fpsc
-// --------------- Screen Flash Helpers ---------------
+
+
 let boostOverlayActive = false;
 let boostOverlayTimeout = null;
 
@@ -3644,7 +3508,7 @@ function setFlash(color, durationMs = 150) {
     el.style.display = "block";
     el.style.background = color;
     setTimeout(() => {
-        // If boost is active, keep yellow; else clear
+        
         if (boostOverlayActive) {
             el.style.background = "rgba(255, 255, 0, 0.2)";
         } else {
@@ -3671,7 +3535,7 @@ function startBoostOverlay(durationMs) {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-//loveday
+
 
 
 class LevelSquare {
@@ -3705,7 +3569,7 @@ function NextLevelSquare(x, y) {
     el.style.userSelect = 'none';
     nextlevelsquare = new LevelSquare(x, y);
     
-    // allow manual positioning by dragging
+    
     gameArea.appendChild(el);
 }
 
@@ -3731,23 +3595,23 @@ function LastLevelSquare(x, y) {
     el.style.userSelect = 'none';
     lastlevelsquare = new LevelSquare(x, y);
 
-    // Append to the DOM
+    
     gameArea.appendChild(el);
 }
-//startGame
-//Loveday
+
+
 
 async function startGameFromMenu() {
     document.getElementById("ScoreTitle").innerHTML = "Score";
     document.getElementById("WaveTitle").innerHTML = "Wave";
-    //RoomType = 0;
+    
     if (RoomType == 0 && camplevel == 1) {
         level = 1;
         console.log("Room Type:", RoomType);
         document.getElementById("ScoreTitle").innerHTML = "XP";
         document.getElementById("WaveTitle").innerHTML = "Level";
 
-        // Play cutscenes sequentially
+        
         startCutscene("ShanPFP.png", 3000, "Shanvanth: Must do calculus... ARGH", "LovedayBack.jpg");
         await sleep(3000);
         startCutscene("DomPFP.png", 2000, "Dominic: Shaun... shut it. ", "LovedayBack.jpg");
@@ -3763,15 +3627,15 @@ async function startGameFromMenu() {
         startCutscene("", 4500, "Dominic: Shaun..?", "BlackScreen.jpg");
         await sleep(4500);
         console.log("Level:",level);
-        // Initialize the first room
+        
         currCamplevel = 1;
-        CampEnemyCount = 20; // Set the number of enemies for the first level
+        CampEnemyCount = 20; 
     } else if (RoomType === 0 && camplevel === 2) {
         console.log("Room Type:", RoomType);
         document.getElementById("ScoreTitle").innerHTML = "XP";
         document.getElementById("WaveTitle").innerHTML = "Level";
         console.log("Level:",level);
-        // Play cutscenes sequentially
+        
         startCutscene("ShanPFP.png", 3000, "Huhhhhh?", "LovedayBack.jpg");
         await sleep(3000);
 
@@ -3779,8 +3643,8 @@ async function startGameFromMenu() {
 
         startCutscene("ShanPFP.png", 3000, "wdaddqd", "LovedayBack.jpg");
         await sleep(3000);
-        // Additional logic for the next campaign level can go here
-        CampEnemyCount = 10; // Example: Set the number of enemies for the next level
+        
+        CampEnemyCount = 10; 
     }
     if (RoomType === 0) {
         switch (currCamplevel) {
@@ -3806,7 +3670,7 @@ async function startGameFromMenu() {
 }
 
 CampEnemyCount = 999999999999;
-//level = 1;
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const playBtn = document.getElementById("playButton");
@@ -3838,15 +3702,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (helpBtn) helpBtn.addEventListener("click", () => {
            window.open("help.html", "_blank");
 
-        //alert("Controls:\nWASD or Arrow Keys to move\nSpace to shoot\nShift to dash. You will hear a chime when cooldown is over\nP to pause.\nCalculus books are score boosters. Shaunulators heal you and give sanity.\n1, 2, 3, or scroll wheel to toggle weapons. 1 for the Shauntgun, 2 for the Shauniper, 3 for the Asshaunt Rifle.\nC for melee pencil to regain sanity. You gain sanity per kill.\n\nSanity affects damage! Sanity is sacrificed every shot.\nSurvive as many waves as you can!");
-    });//alert
+        
+    });
     if (scoresBtn) scoresBtn.addEventListener("click", () => {
         const hs = localStorage.getItem(Filename+"HS") || 0;
         const maxtime = localStorage.getItem(Filename+"Time") || 0;
         const maxwave = localStorage.getItem(Filename+"Wave") || 0;
         alert("High Score: "+hs+"\nLongest Time Survived: "+maxtime+" seconds\nHighest Wave Reached: "+maxwave);
     });
-    // Override play to open difficulty menu instead
+    
     if (playBtn) playBtn.addEventListener("click", (e) => {
         e.preventDefault();
         if (mainMenu) mainMenu.style.display = "none";
@@ -3949,18 +3813,18 @@ document.addEventListener("DOMContentLoaded", () => {
     difficulty = 0;
     function chooseDifficulty(level) {
         difficultyLevel = level;
-        difficulty = level; // keep both in sync for existing formulas
+        difficulty = level; 
         diffMenu.style.display = "none";
         mapmenu.style.display = "flex";
-        // Randomly choose a map for now
-        //const map = Math.random() < 0.5 ? 1 : 2;
-        //chooseMap(map);
+        
+        
+        
         if (m0) m0.addEventListener("click", () => chooseMap(0));
         if (m1) m1.addEventListener("click", () => chooseMap(1));
         if (m2) m2.addEventListener("click", () => chooseMap(2));
         if (m3) m3.addEventListener("click", () => chooseMap(3));
         if (m4) m4.addEventListener("click", () => chooseMap(4));
-        //startGameFromMenu();
+        
     }
 
     function chooseMap(map) {
@@ -4023,7 +3887,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
     if (m3) m3.addEventListener("mouseenter", () => setMDesc("Difficulty: Medium.<br>Description: A semi open room with desks and chairs all over. Shanvanth must face his lunch room's actual purpose."));
     if (m4) m4.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: Shanvanth's physics room, turned into a colloseum. Ms. Labrash's Table plan now gets in the way of Shanvanth's shots and movements, who will struggle to survive."));
-    //const clearmapDesc = () => setMDesc("");
+    
     const clearmapDesc = () => setMDesc("");
     if (m0) m0.addEventListener("mouseleave", clearmapDesc);
     if (m1) m1.addEventListener("mouseleave", clearmapDesc);
@@ -4042,7 +3906,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
 });
 
-// Gate the loop to wait for menu
+
 const originalUpdate = update;
     update = function(timestamp) {
     if (!gameStarted) {
@@ -4052,14 +3916,13 @@ const originalUpdate = update;
     originalUpdate(timestamp);
 };
 
-    // Expose a very small API intentionally: only what's needed externally
+    
     window.ShansLastStand = {
         showMainMenu: showMainMenu,
         showGameUI: showGameUI
     };
 
-    // Prevent accidental/hostile overwrite from console
+    
     try { Object.freeze(window.ShansLastStand); } catch (e) {}
 
 })();
-//timerd
