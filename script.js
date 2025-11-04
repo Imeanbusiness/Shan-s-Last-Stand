@@ -390,6 +390,22 @@ function showDamage(x, y, damage) {
 }
 
 function MusicVolume(volume) {
+    if (volume == 0 && browserType == "Safari") {
+        backgroundMusic.muted = true;
+        TheyDontStopComing.muted = true;
+        ATMOC.muted = true;
+        RITW.muted = true;
+        PILINGBODIES.muted = true;
+        console.log("Muted the music for Safari!");
+        return;
+    } else if (volume == 1 && browserType == "Safari") {
+        backgroundMusic.muted = false;
+        TheyDontStopComing.muted = false;
+        ATMOC.muted = false;
+        RITW.muted = false;
+        PILINGBODIES.muted = false;
+        return;
+    }
     backgroundMusic.volume = volume;
     TheyDontStopComing.volume = volume;
     ATMOC.volume = volume;
@@ -398,6 +414,31 @@ function MusicVolume(volume) {
 }
 
 function SFXVolume(volume) {
+    if (volume == 0 && browserType == "Safari") {
+        ouch.muted = true;
+        ShotgunSound.muted = true;
+        CalcgunSound.muted = true;
+        deathSound.muted = true;
+        domDeath.muted = true;
+        chengDeath.muted = true;
+        ZukDeath.muted = true;
+        dashCharged.muted = true;
+        MCSwoosh.muted = true;
+        RifleSound.muted = true;
+        return;
+    } else if (volume == 1 && browserType == "Safari") {
+        ouch.muted = false;
+        ShotgunSound.muted = false;
+        CalcgunSound.muted = false;
+        deathSound.muted = false;
+        domDeath.muted = false;
+        chengDeath.muted = false;
+        ZukDeath.muted = false;
+        dashCharged.muted = false;
+        MCSwoosh.muted = false;
+        RifleSound.muted = false;
+        return;
+    }
     ouch.volume = volume;
     ShotgunSound.volume = volume;
     CalcgunSound.volume = volume;
@@ -816,6 +857,7 @@ window.onload = function() {
         pencilButton.style.fontSize = "40px";
         switchButton.style.fontSize = "50px";
         document.getElementById("playerHUD").style.fontSize = (14*BodyZoom)+"px";
+        /*
         this.document.getElementById("HealthTitle").style.fontSize = (17*BodyZoom)+"px"
         this.document.getElementById("WeaponTitle").style.fontSize = (17*BodyZoom)+"px"
         this.document.getElementById("AmmoTitle").style.fontSize = (17*BodyZoom)+"px"
@@ -828,6 +870,7 @@ window.onload = function() {
         this.document.getElementById("sanity").style.fontSize = (14*BodyZoom)+"px"
         this.document.getElementById("wave").style.fontSize = (14*BodyZoom)+"px"
         this.document.getElementById("score").style.fontSize = (14*BodyZoom)+"px"
+        */
         
 
     }
