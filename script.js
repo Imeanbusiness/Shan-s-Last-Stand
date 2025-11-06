@@ -848,7 +848,7 @@ window.onload = function() {
         pencilButton.style.fontSize = "40px";
         switchButton.style.fontSize = "50px";
         
-         let BodyZoomZOOM = BodyZoom * 1.3;
+         let BodyZoomZOOM = BodyZoom * 2;
         this.document.getElementById("HealthTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
         this.document.getElementById("WeaponTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
         this.document.getElementById("AmmoTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
