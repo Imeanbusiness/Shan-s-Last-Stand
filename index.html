@@ -123,7 +123,31 @@
       </div>
     </div>
 
-    </audio>
-  <script src="script.js"></script>
+    <!-- Game overlay system -->
+    <div id="pauseMenu" class="game-overlay">
+        <div class="game-overlay-content">
+            <h2>Game Paused</h2>
+            <p>Return to main menu?</p>
+            <button id="resumeButton">Resume</button>
+            <button id="quitButton">Quit to Menu</button>
+        </div>
+    </div>
+    <div id="deathMenu" class="game-overlay">
+        <div class="game-overlay-content">
+            <h2 id = "dmTitle">Game Over</h2>
+            <p id="deathStats"></p>
+            <p id="highScoreStats"></p>
+            <button id="restartButton">Return to Menu</button>
+        </div>
+    </div>
+    <div id="arenaMenu" class="game-overlay">
+        <div class="game-overlay-content">
+            <h2>Area Cleared!</h2>
+            <p>Proceed to the next area?</p>
+            <button id="nextAreaButton">Continue</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
     'use strict';
     
     
-    
+    //FPSCount
     
     
     const player = document.getElementById("player");
@@ -202,7 +202,7 @@ document.addEventListener("mousemove", (e) => {
 });
 
 gameArea.addEventListener("mousemove", (e) => {
-     if (!gameArea) return;
+     if (!gameArea && !gameStarted) return;
      gameArea.requestPointerLock();
     try {
         const rect = gameArea.body.getBoundingClientRect();
@@ -260,6 +260,36 @@ document.addEventListener("mouseup", () => {
     let MoveChance = 0;
     let MoveChanceTimer = 0;
     let FPSChecked = 0;
+    
+    let viewportWidth;
+    let viewportHeight;
+    let WindowPixels;
+    let intendedWindowSize;
+
+    let pausedGame = false;
+    
+    
+    let BodyZoom;
+    
+    body.style.width = viewportWidth/BodyZoom + "px";
+    body.style.height = viewportHeight/BodyZoom + "px";
+    
+    
+    
+    const joystick = document.getElementById("movementJoystick");
+    const knob = document.getElementById("movementJoystickInner");
+    const Aimingjoystick = document.getElementById("aimingJoystick");
+    const AimingKnob = document.getElementById("aimingJoystickInner");
+
+    let centerKnob;
+    let centerAimingKnob;
+    let maxRadius;
+    let deadzone;
+
+    let knobmarginX;
+    let knobmarginY;
+    let AimingknobmarginX;
+    let AimingknobmarginY;
 
 
     let joystickAimingDeg = 0;
@@ -361,7 +391,7 @@ document.addEventListener("mouseup", () => {
     
 
 const browserType = getBrowserType();
-
+//pause
 
 function showDamage(x, y, damage) {
     const dmgEl = document.createElement("div");
@@ -521,16 +551,16 @@ window.onload = function() {
         }
     }
 }, { passive: false }); 
-     const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    const WindowPixels = viewportHeight * viewportWidth;
-    const intendedWindowSize = 1920 * 1080;
+    viewportWidth = window.innerWidth;
+    viewportHeight = window.innerHeight;
+    WindowPixels = viewportHeight * viewportWidth;
+    intendedWindowSize = 1920 * 1080;
 
     console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
     console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
     
 
-    const BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
+    BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
 
     body.style.width = viewportWidth/BodyZoom + "px";
     body.style.height = viewportHeight/BodyZoom + "px";
@@ -540,16 +570,16 @@ window.onload = function() {
 
     document.body.style.zoom = BodyZoom;
     document.body.backgroundSize = "cover";
-     const joystick = document.getElementById("movementJoystick");
-    const knob = document.getElementById("movementJoystickInner");
 
     
 
     let activePointerId = null;
 
-    const maxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; 
-    const deadzone = 17*BodyZoom; 
+    maxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; 
+    deadzone = 17*BodyZoom; 
     console.log(`Joystick maxRadius: ${maxRadius}px`);
+
+    
     
 
     function getKnobRelativePosition() {
@@ -566,8 +596,8 @@ window.onload = function() {
     
     let holdingKnob = false;
     
-    let knobmarginX = -40 * BodyZoom;
-    let knobmarginY = -40 * BodyZoom;
+    knobmarginX = -40 * BodyZoom;
+    knobmarginY = -40 * BodyZoom;
     if (browserType == "Safari") {
         
         
@@ -576,9 +606,7 @@ window.onload = function() {
     
     let JoystickAngle = 0;
     
-    const centerKnob = getKnobRelativePosition();
-    
-
+    centerKnob = getKnobRelativePosition();
     
 
     function knobPosition(x, y) {
@@ -715,15 +743,14 @@ window.onload = function() {
 
 
 
-    const Aimingjoystick = document.getElementById("aimingJoystick");
-    const AimingKnob = document.getElementById("aimingJoystickInner");
+    
 
     
 
     let activePointerId2 = null;
 
-    const AimingmaxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; 
-    const Aimingdeadzone = 17*BodyZoom; 
+    let AimingmaxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; 
+    let Aimingdeadzone = 17*BodyZoom; 
     console.log(`Aiming Joystick maxRadius: ${maxRadius}px`);
     
 
@@ -742,12 +769,12 @@ window.onload = function() {
     console.log("Initial knob position:", getAimingKnobRelativePosition());
     let holdingAimingKnob = false;
     
-    let AimingknobmarginX = -40 * BodyZoom;
-    let AimingknobmarginY = -40 * BodyZoom;
+    AimingknobmarginX = -40 * BodyZoom;
+    AimingknobmarginY = -40 * BodyZoom;
 
     
 
-    const centerAimingKnob = getAimingKnobRelativePosition();
+    centerAimingKnob = getAimingKnobRelativePosition();
     
     function AimingknobPosition(x, y) {
         AimingKnob.style.top = y+50+"%"
@@ -940,30 +967,49 @@ const keysPressed = {};
 let enemies = [];
 
 
-function pauseGame() {
-    if (isGameActive) {
-        if(confirm("Game Paused. Return to main menu?")) {
-            playerhp = -99999
-        }
-        for (let key in keysPressed) {
-            keysPressed[key] = false;
-        }
-        try {
-            const healthMsg = document.getElementById("HealthMessage");
-            if (healthMsg) healthMsg.remove();
+function showOverlay(id) {
+    const overlay = document.getElementById(id);
+    if (!overlay) return;
+    overlay.style.display = 'flex';
+    gameStarted = false; // pause game loop
+    
+    // Clear any pressed keys
+    for (let key in keysPressed) {
+        keysPressed[key] = false;
+    }
+    try {
+        const healthMsg = document.getElementById("HealthMessage");
+        if (healthMsg) healthMsg.remove();
 
-            const sbMsg = document.getElementById("SBMessage");
-            if (sbMsg) sbMsg.remove();
+        const sbMsg = document.getElementById("SBMessage");
+        if (sbMsg) sbMsg.remove();
 
-            const wpMsg = document.getElementById("WeaponMessage");
-            if (wpMsg) sbMsg.remove();
-        } catch (e) {
+        const wpMsg = document.getElementById("WeaponMessage");
+        if (wpMsg) wpMsg.remove();
+    } catch (e) {}
+}
 
-        }
+function hideOverlay(id) {
+    const overlay = document.getElementById(id);
+    if (!overlay) return;
+    overlay.style.display = 'none';
+    if (id !== 'deathMenu') { // Don't resume if dead
+        gameStarted = true; // resume game loop
     }
 }
 
+function pauseGame() {
+    if (isGameActive) {
+        try {
+            document.exitPointerLock();
+        } catch (e) {
+            console.log(e);
+        }
+        showOverlay('pauseMenu');
+    }
+}
 
+//
 
 document.addEventListener("keydown", e => {
     keysPressed[e.key.toLowerCase()] = true;
@@ -1368,9 +1414,6 @@ async function FPSCount() {
         }
         totalFrames += Math.max((0, (framespassed-1)*frameCheckTime));
         FPSChecked += 1;
-        console.log(totalFrames);
-        console.log(elapsed);
-        console.log((Math.round((totalFrames/(FPSChecked)) *10)/10));
         document.getElementById("FPSCounter").innerHTML = "FPS: "+Math.max((0, (framespassed-1)*frameCheckTime))+"<br>Average FPS: "+(Math.round((totalFrames/(FPSChecked)) *10)/10);
 
         
@@ -1474,7 +1517,7 @@ function getValidSpawnRect(w, h, maxAttempts = 20) {
     return null;
 }
 
-
+// -------- Line of sight against obstacles (blocksProjectiles=true) --------
 function segmentsIntersect(p1x, p1y, p2x, p2y, q1x, q1y, q2x, q2y) {
     function orient(ax, ay, bx, by, cx, cy) {
         return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
@@ -1507,16 +1550,16 @@ function lineBlockedByObstacles(x1, y1, x2, y2) {
         
         if (x1 >= left && x1 <= right && y1 >= top && y1 <= bottom) return true;
         if (x2 >= left && x2 <= right && y2 >= top && y2 <= bottom) return true;
-        
-        if (segmentsIntersect(x1, y1, x2, y2, left, top, right, top)) return true;      
-        if (segmentsIntersect(x1, y1, x2, y2, right, top, right, bottom)) return true;  
-        if (segmentsIntersect(x1, y1, x2, y2, right, bottom, left, bottom)) return true;
-        if (segmentsIntersect(x1, y1, x2, y2, left, bottom, left, top)) return true;    
+        // check intersection with each rectangle edge
+        if (segmentsIntersect(x1, y1, x2, y2, left, top, right, top)) return true;      // top
+        if (segmentsIntersect(x1, y1, x2, y2, right, top, right, bottom)) return true;  // right
+        if (segmentsIntersect(x1, y1, x2, y2, right, bottom, left, bottom)) return true;// bottom
+        if (segmentsIntersect(x1, y1, x2, y2, left, bottom, left, top)) return true;    // left
     }
     return false;
 }
 
-
+// -------- Damage helpers --------
 function applyDamage(enemy, damageAmount) {
     const hpBefore = enemy.enemyHP;
     enemy.enemyHP -= damageAmount;
@@ -1550,15 +1593,15 @@ function showLastDamageAbovePlayer(damage) {
     } catch (e) {}
 }
 
-
+// Choose a detour waypoint around the first blocking obstacle between enemy and player
 function findDetourTarget(enemyX, enemyY, playerX, playerY) {
-    
+    // Identify the first obstacle that blocks the segment
     let blocker = null;
     for (let i = 0; i < obstacles.length; i++) {
         const o = obstacles[i];
         if (!o.blocksProjectiles) continue;
         const left = o.x, right = o.x + o.width, top = o.y, bottom = o.y + o.height;
-        
+        // Any edge intersection => it's a blocker
         const hit = segmentsIntersect(enemyX, enemyY, playerX, playerY, left, top, right, top) ||
                     segmentsIntersect(enemyX, enemyY, playerX, playerY, right, top, right, bottom) ||
                     segmentsIntersect(enemyX, enemyY, playerX, playerY, right, bottom, left, bottom) ||
@@ -1567,7 +1610,7 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
     }
     if (!blocker) return { x: playerX, y: playerY };
 
-    
+    // Use expanded corners of the blocker as potential waypoints
     const pad = 10;
     const corners = [
         { x: blocker.x - pad, y: blocker.y - pad },
@@ -1579,7 +1622,7 @@ function findDetourTarget(enemyX, enemyY, playerX, playerY) {
     
     const inBounds = (pt) => pt.x >= 0 && pt.x <= 650 && pt.y >= 0 && pt.y <= 650;
 
-    
+    // Prefer corners visible from enemy; score by distance to player plus small step cost
     let best = null;
     for (let i = 0; i < corners.length; i++) {
         const c = corners[i];
@@ -2305,6 +2348,118 @@ function update(timestamp) {
       crosshair.style.transform = "translate(-50%, -50%)";
     crosshair.style.left = mouseX+"px";
     crosshair.style.top = mouseY+"px";
+
+
+
+
+
+
+
+
+
+
+
+    viewportWidth = window.innerWidth;
+    viewportHeight = window.innerHeight;
+    WindowPixels = viewportHeight * viewportWidth;
+    intendedWindowSize = 1920 * 1080;
+
+    console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
+    console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
+    
+
+    BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
+
+    body.style.width = viewportWidth/BodyZoom + "px";
+    body.style.height = viewportHeight/BodyZoom + "px";
+
+
+
+
+    document.body.style.zoom = BodyZoom;
+    document.body.backgroundSize = "cover";
+    maxRadius = Math.min(200*BodyZoom, 200*BodyZoom) / 2; 
+    deadzone = 17*BodyZoom; 
+
+    knobmarginX = -40 * BodyZoom;
+    knobmarginY = -40 * BodyZoom;
+    
+    AimingknobmarginX = -40 * BodyZoom;
+    AimingknobmarginY = -40 * BodyZoom;
+
+    function getKnobRelativePositionWithJoystick() {
+        joystick.getBoundingClientRect();
+        const rect = joystick.getBoundingClientRect();
+        let x = rect.left - knobmarginX;
+        let y = rect.top - knobmarginY;
+        if (browserType == "Safari") {
+            x *= BodyZoom;
+            y *= BodyZoom;
+        }
+        return { x, y };
+    }
+
+    function getAimingKnobRelativePositionWithJoystick() {
+        Aimingjoystick.getBoundingClientRect();
+        const rect = Aimingjoystick.getBoundingClientRect();
+        let x = rect.left - AimingknobmarginX;
+        let y = rect.top - AimingknobmarginY;
+        if (browserType == "Safari") {
+            x *= BodyZoom;
+            y *= BodyZoom;
+        }
+        return { x, y };
+    }
+
+    centerKnob = getKnobRelativePositionWithJoystick();
+    centerAimingKnob = getAimingKnobRelativePositionWithJoystick();
+
+    //centerKnob = joystick.getBoundingClientRect();
+    console.log(centerAimingKnob)   ;
+    if (viewportHeight > viewportWidth && device == "phone") {
+        dashButton.style.top = "10%";
+        joystick.style.bottom = "2%";
+        Aimingjoystick.style.bottom = "2%";
+        pencilButton.style.top = "75%";
+        switchButton.style.top = "75%";
+        pencilButton.style.left = "26%";
+        switchButton.style.right = "26%";
+        attackButton.style.top = "8%";
+    } else {
+        dashButton.style.top = "20%";
+        joystick.style.bottom = "5%";
+        Aimingjoystick.style.bottom = "5%";
+        pencilButton.style.top = "45%";
+        switchButton.style.top = "45%";
+        pencilButton.style.left = "10%";
+        switchButton.style.right = "12%";
+        attackButton.style.top = "13%";
+    }
+
+    if (device == "phone" && browserType == "Safari") {
+        pauseButton.style.fontSize = "25px";
+        attackButton.style.fontSize = "75px";
+        dashButton.style.fontSize = "60px";
+        pencilButton.style.fontSize = "40px";
+        switchButton.style.fontSize = "50px";
+        
+         let BodyZoomZOOM = BodyZoom * 2;
+        document.getElementById("HealthTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
+        document.getElementById("WeaponTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
+        document.getElementById("AmmoTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
+        document.getElementById("SanityTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
+        document.getElementById("WaveTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
+        document.getElementById("ScoreTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
+        document.getElementById("HP").style.fontSize = (14*BodyZoomZOOM)+"px"
+        document.getElementById("weapon").style.fontSize = (12*BodyZoomZOOM)+"px"
+        document.getElementById("shots").style.fontSize = (14*BodyZoomZOOM)+"px"
+        document.getElementById("sanity").style.fontSize = (14*BodyZoomZOOM)+"px"
+        document.getElementById("wave").style.fontSize = (14*BodyZoomZOOM)+"px"
+        document.getElementById("Score").style.fontSize = (14*BodyZoomZOOM)+"px"
+        
+        
+
+    }
 
         if (Boost==true && BoostTime <= 360) {
             Mult = 2
@@ -3314,11 +3469,14 @@ try {
 } catch (e) {}
 
 if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare) {
-    alert("Arena cleared. Proceed to the next area.");
-    camplevel++;
-    if (currCamplevel === 1) {
-        NextLevelSquare(550, 80);
-    }
+    showOverlay('arenaMenu');
+    document.getElementById('nextAreaButton').onclick = () => {
+        hideOverlay('arenaMenu');
+        camplevel++;
+        if (currCamplevel === 1) {
+            NextLevelSquare(550, 80);
+        }
+    };
 }
 
 
@@ -3327,7 +3485,11 @@ if (!transitioning && CampEnemyCount <= 0 && RoomType === 0 && !nextlevelsquare)
 
 
 if (playerhp <= 0) {
+    //pause
+    gameStarted = false;
+    document.exitPointerLock();
     deathSound.volume = 1;
+    
     
     playerhp = 100;
     activateTimerReset = false;
@@ -3389,18 +3551,32 @@ if (playerhp <= 0) {
             if (Wave > localStorage.getItem(Filename+"Wave")) {
                 localStorage.setItem(Filename+"Wave", Wave);
             }
-            alert("You Died! Returning to main menu. Your final score was: " + score+"\nYou survived for "+time+" seconds and reached wave "+Wave+".");
+            document.getElementById("dmTitle").innerHTML = "YOU DIED.";
+            // Update death stats
+            document.getElementById('deathStats').innerHTML = 
+                `Final Score: ${score}<br>` +
+                `Survived: ${time} seconds<br>` +
+                `Wave: ${Wave}`;
+                
+                document.exitPointerLock();
             let SHS = localStorage.getItem(Filename+"SHS");
             if (SHS == "true") {
-
-                alert("High Score: "+localStorage.getItem(Filename+"HS")+"\nLongest Time Survived: "+localStorage.getItem(Filename+"Time")+" seconds\nHighest Wave Reached: "+localStorage.getItem(Filename+"Wave"));
+                document.getElementById('highScoreStats').innerHTML = 
+                    `High Score: ${localStorage.getItem(Filename+"HS")}<br>` +
+                    `Best Time: ${localStorage.getItem(Filename+"Time")} seconds<br>` +
+                    `Highest Wave: ${localStorage.getItem(Filename+"Wave")}`;
             }
-            score = 0;
-            elapsed = 0;
-            Wave =0;
-            gameStarted = false;
-            showMainMenu();
-    }, 100);
+            
+            showOverlay('deathMenu');
+            document.getElementById('restartButton').onclick = () => {
+                hideOverlay('deathMenu');
+                score = 0;
+                elapsed = 0;
+                Wave = 0;
+                gameStarted = false;
+                showMainMenu();
+            };
+    }, 1);
     } 
     
     if (sanity <= 33) {
@@ -3673,6 +3849,16 @@ CampEnemyCount = 999999999999;
 
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Set up overlay menu handlers
+    document.getElementById('resumeButton').onclick = () => {
+        hideOverlay('pauseMenu');
+        gameStarted = true;
+    };
+    
+    document.getElementById('quitButton').onclick = () => {
+        hideOverlay('pauseMenu');
+        playerhp = -99999; // This will trigger the death sequence which resets everything
+    };
     const playBtn = document.getElementById("playButton");
     const helpBtn = document.getElementById("helpButton");
     const scoresBtn = document.getElementById("highScoresButton");
@@ -3705,10 +3891,26 @@ document.addEventListener("DOMContentLoaded", () => {
         
     });
     if (scoresBtn) scoresBtn.addEventListener("click", () => {
-        const hs = localStorage.getItem(Filename+"HS") || 0;
-        const maxtime = localStorage.getItem(Filename+"Time") || 0;
-        const maxwave = localStorage.getItem(Filename+"Wave") || 0;
-        alert("High Score: "+hs+"\nLongest Time Survived: "+maxtime+" seconds\nHighest Wave Reached: "+maxwave);
+        document.getElementById("dmTitle").innerHTML = "STATS"
+         let SHS = localStorage.getItem(Filename+"SHS");
+         document.getElementById('deathStats').innerHTML = "";
+        if (SHS == "true") {
+            document.getElementById('highScoreStats').innerHTML = 
+                `High Score: ${localStorage.getItem(Filename+"HS")}<br>` +
+                `Best Time: ${localStorage.getItem(Filename+"Time")} seconds<br>` +
+                `Highest Wave: ${localStorage.getItem(Filename+"Wave")}`;
+        } else {
+            document.getElementById('highScoreStats').innerHTML = 
+                `High Score: ${0}<br>` +
+                `Best Time: ${0} seconds<br>` +
+                `Highest Wave: ${0}`;
+        }
+        
+        showOverlay('deathMenu');
+        document.getElementById('restartButton').onclick = () => {
+            hideOverlay('deathMenu');
+            
+        };
     });
     
     if (playBtn) playBtn.addEventListener("click", (e) => {
