@@ -3894,7 +3894,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("dmTitle").innerHTML = "STATS"
          let SHS = localStorage.getItem(Filename+"SHS");
          document.getElementById('deathStats').innerHTML = "";
-        if (SHS == "true") {
+        if (true) {
             document.getElementById('highScoreStats').innerHTML = 
                 `High Score: ${localStorage.getItem(Filename+"HS")}<br>` +
                 `Best Time: ${localStorage.getItem(Filename+"Time")} seconds<br>` +
