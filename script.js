@@ -4047,7 +4047,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function reallyChooseThat() {
-        if (confirm("Are you sure you want to choose this difficulty? It's not even remotely fair!")) {
+        console.log(device);
+        if (device != "phone" && device != "tablet") {
+            if (confirm("Are you sure you want to choose this difficulty? It's not even remotely fair!")) {
+                chooseDifficulty(4);
+            }
+
+        } else {
             chooseDifficulty(4);
         }
     }
