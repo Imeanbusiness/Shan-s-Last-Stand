@@ -3,7 +3,7 @@
     
     
     //FPSCount
-    
+    //bodyzoom
     
     const player = document.getElementById("player");
     const gameArea = document.getElementById("gameArea");
@@ -135,7 +135,10 @@ attackButton.addEventListener("touchcancel", function(e) {
 
 
 pauseButton.addEventListener("click", () => {
-    pauseGame();
+    if (isGameActive() && gameStarted) {
+        pauseGame();
+
+    }
 });
 
 const pencilButton = document.getElementById("pencilButton");
@@ -579,7 +582,19 @@ window.onload = function() {
     deadzone = 17*BodyZoom; 
     console.log(`Joystick maxRadius: ${maxRadius}px`);
 
-    
+    try {
+        if (browserType == "Safari" && 'zoom' in document.body.style) {
+            document.body.style.transform = '';
+            document.body.style.zoom = zoom;
+        } else {
+            document.body.style.zoom = '';
+            document.body.style.transformOrigin = '0 0';
+            document.body.style.transform = `scale(${zoom})`;
+        }
+    } catch (e) {
+        // silent fallback
+        try { document.body.style.zoom = zoom; } catch (err) {}
+    }
     
 
     function getKnobRelativePosition() {
@@ -1014,10 +1029,10 @@ function pauseGame() {
 document.addEventListener("keydown", e => {
     keysPressed[e.key.toLowerCase()] = true;
     
-    if (e.key === "p" && isGameActive()) {
+    if (e.key === "p" && isGameActive() && gameStarted) {
         pauseGame();
     }
-    if (e.key === "Escape" && isGameActive()) {
+    if (e.key === "Escape" && isGameActive() && gameStarted) {
         pauseGame();
     }
 
