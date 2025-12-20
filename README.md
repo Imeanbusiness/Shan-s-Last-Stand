@@ -339,8 +339,18 @@ Note: All stats assume you are in "Derivatives are doable..." difficulty, the no
 
 - Fixed viewport issues that were hiding UI
 
-### 1.2.1 [Current]
+### 1.2.1
 
 - Mobile port on Safari fix
 
 - Added average FPS Counter
+
+### 1.2.2 [Current]
+
+- Fixed pause menu bugs.
+
+- Added 30 FPS cap for worse devices.
+
+- Added loading screen to avoid weird loading issues
+
+- Balancer changes to the Shauntgun and Shauniper!

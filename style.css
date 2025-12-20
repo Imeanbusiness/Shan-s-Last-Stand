@@ -9,6 +9,45 @@ html {
 }
 
 
+#LoadingDisplay {
+  /* Make the loading overlay reliably cover the entire viewport */
+  position: fixed;
+  inset: 0;             /* top:0; right:0; bottom:0; left:0; */
+  width: 100%;
+  height: 100%;
+  z-index: 10000000;    /* ensure it's above other UI */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: auto; /* block underlying interactions while loading */
+  background: rgba(0,0,0); /* optional: dim background while loading */
+  color: white;
+}
+
+.LoadingText {
+  /* Shorthand animation property: name, duration, timing, delay, iteration-count, direction */
+  animation: fadeInOut 1s ease-in-out infinite alternate;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0.4; /* Start completely transparent */
+  }
+  100% {
+    opacity: 1; /* End fully visible */
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1; /* Start completely transparent */
+  }
+  100% {
+    opacity: 0; /* End fully visible */
+  }
+}
+
+
 html, body {
   -ms-overflow-style: none; 
   scrollbar-width: none; 

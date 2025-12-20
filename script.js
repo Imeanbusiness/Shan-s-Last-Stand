@@ -1,3 +1,6 @@
+let fps = 60;
+let frameDuration = 1000 / fps;
+
 (function(){
     'use strict';
     
@@ -81,18 +84,6 @@ gameArea.appendChild(Mobilecrosshair);
 
 const pauseButton = document.getElementById("pauseButton");
 const attackButton = document.getElementById("attackButton");
-
-
-const upleftButton = document.getElementById("upleftButton");
-const uprightButton = document.getElementById("uprightButton");
-const downleftButton = document.getElementById("downleftButton");
-const downrightButton = document.getElementById("downrightButton");
-
-
-const upButton = document.getElementById("upButton");
-const downButton = document.getElementById("downButton");
-const leftButton = document.getElementById("leftButton");
-const rightButton = document.getElementById("rightButton");
 
 
 
@@ -234,7 +225,7 @@ document.addEventListener("mouseup", () => {
     const RiflegunCooldown = 67;
     const MCCooldown = 300;
     const iFrames = 1000;
-    const BaseSpeed = 5.5;
+    const BaseSpeed = 5.5 * 60/fps;
     let Projweapon = "";
     
     let sanity = 50;
@@ -411,7 +402,10 @@ function showDamage(x, y, damage) {
 
     
     let pos = 0;
-    const floatUp = setInterval(() => {
+
+
+
+    let floatUp = setInterval(() => {
         pos += 1;
         dmgEl.style.top = `${y - pos}px`;
         dmgEl.style.opacity = 1 - pos / 30;
@@ -486,6 +480,15 @@ function SFXVolume(volume) {
 
 
 window.onload = function() {
+
+    if (!localStorage.getItem(Filename+"hasVisited2")) {
+        localStorage.setItem(Filename+"hasVisited2", "true");
+        localStorage.setItem(Filename+"FPSCap", "60")
+    } else {
+        fps = parseInt(localStorage.getItem(Filename+"FPSCap"));
+        frameDuration = 1000 / fps;
+        console.log(fps);
+    }
 
     if (!localStorage.getItem(Filename+"hasVisited")) {
         localStorage.setItem(Filename+"hasVisited", "true");
@@ -907,6 +910,25 @@ window.onload = function() {
         
 
     }
+
+
+    
+    for (let i = 0; i < 61; i++) {
+        setTimeout(() => {
+            document.getElementById("LoadingDisplay").style.opacity = (60-i)/60;
+            console.log((60-i)/60)
+            if (i == 60) {
+                document.getElementById("LoadingDisplay").style.display = "none";
+            }
+            
+        }, 16*i)
+        
+    }
+
+
+
+
+
 }
 
 window.addEventListener("click", () => {
@@ -929,7 +951,7 @@ let CampEnemyCount = -1;
 
 let x = 280;
 let y = 280;
-let speed = 5;
+let speed = 5.5 * 60/fps;
 let direction = "n";
 let lockdirection = "n";
 let movdirection = "n";
@@ -1307,7 +1329,7 @@ class RangedCharger {
         const dx = targetX - startX;
         const dy = targetY - startY;
         const dist = Math.hypot(dx, dy) || 1;
-        const speed = 11*difficulty/3; 
+        const speed = (11*difficulty/3)*60/fps; 
         const vx = (dx / dist) * speed;
         const vy = (dy / dist) * speed;
         
@@ -1681,6 +1703,12 @@ function openFullscreen() {
 
 
 function startRoom(x, IGTimer) {
+    fps = parseInt(localStorage.getItem(Filename+"FPSCap"));
+        frameDuration = 1000 / fps;
+        console.log(fps);
+
+
+        console.log(speed);
     if (IGTimer == 0) {
         enemies.forEach(enemy => enemy.el.remove());
         enemies = [];
@@ -2113,6 +2141,10 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
         ey = eny;
     }
 
+    if (fps == 30) {
+        speed*=2;
+    }
+
     
     const portal = document.createElement('div');
     portal.style.position = 'absolute';
@@ -2282,8 +2314,7 @@ function physicsRoom() {
 
 
 let lastFrameTime = 0;
-const fps = 60;
-const frameDuration = 1000 / fps;
+
 scoreBoostCount = 0;
 attackingDelay = 0
 
@@ -2305,7 +2336,9 @@ function update(timestamp) {
 
       let dx = 0, dy = 0;
 
-        
+
+      
+
       sanityTimer++;
       if (difficulty == 1) {
         if (sanityTimer >= 90) {
@@ -2458,7 +2491,7 @@ function update(timestamp) {
         pencilButton.style.fontSize = "40px";
         switchButton.style.fontSize = "50px";
         
-         let BodyZoomZOOM = BodyZoom * 2;
+         let BodyZoomZOOM = BodyZoom * 1.6;
         document.getElementById("HealthTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
         document.getElementById("WeaponTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
         document.getElementById("AmmoTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
@@ -2564,7 +2597,7 @@ function update(timestamp) {
             CurrWeap = 1;
             attack = false; 
             
-            Atdelay = 15;
+            Atdelay = 15/(60/fps);
             attackingDelay = 20000;
             }
             
@@ -2572,7 +2605,7 @@ function update(timestamp) {
             CurrWeap = 2;
             attack = false; 
             
-            Atdelay = 5;
+            Atdelay = 5/(60/fps);
             attackingDelay = 20000;
             }
 
@@ -2580,7 +2613,7 @@ function update(timestamp) {
             CurrWeap = 3;
             attack = false; 
             
-            Atdelay = 30;
+            Atdelay = 30/(60/fps);
             attackingDelay = 20000;
             }
 
@@ -2588,7 +2621,7 @@ function update(timestamp) {
             CurrWeap = 0;
             attack = false; 
             
-            Atdelay = 15;
+            Atdelay = 15/(60/fps);
             attackingDelay = 20000;
             }
                 
@@ -2596,16 +2629,16 @@ function update(timestamp) {
         attackingDelay++
         
         
-        if (attack && attackingDelay >= MCCooldown/1000 * 60 && CurrWeap == 0) {
+        if (attack && attackingDelay >= MCCooldown/1000 * fps && CurrWeap == 0) {
             attack = false 
         }
-        if (attack && attackingDelay >= ShotgunCooldown/1000 * 60 && CurrWeap == 1) {
+        if (attack && attackingDelay >= ShotgunCooldown/1000 * fps && CurrWeap == 1) {
             attack = false 
         }
-        if (attack && attackingDelay >= CalcgunCooldown/1000 * 60 && CurrWeap == 2) {
+        if (attack && attackingDelay >= CalcgunCooldown/1000 * fps && CurrWeap == 2) {
             attack = false 
         }
-        if (attack && attackingDelay >= RiflegunCooldown/1000 * 60 && CurrWeap == 3) {
+        if (attack && attackingDelay >= RiflegunCooldown/1000 * fps && CurrWeap == 3) {
             attack = false 
         }
 
@@ -2628,7 +2661,7 @@ function update(timestamp) {
         
 
 
-    dashtimer++;
+    dashtimer+=60/fps;
     framespassed++;
     FPSCount();
 
@@ -2645,6 +2678,9 @@ function update(timestamp) {
     
     if (keysPressed["shift"] && dashtimer >= 60 && !dashing) {
         speed = 20;
+        if (fps == 30) {
+            speed *= 2;
+        }
         dashing = true;
         dashtimer = 0;
         dashCharge = false;
@@ -2721,7 +2757,11 @@ function update(timestamp) {
         dy = dy*0.8;
     }
 
-    
+    if (!dashing) {
+        dx *= 60/fps
+        dy *= 60/fps
+
+    }
 
 
     if (dx !== 0 && dy !== 0) {
@@ -2853,7 +2893,7 @@ function update(timestamp) {
 
 
     
-    if (spawntime > 50 && RoomType != 0) {
+    if (spawntime > 50/(60/fps) && RoomType != 0) {
         spawnEnemy = Math.random()*100*(2/difficulty)
         if (spawnEnemy < 3 && spawnEnemy > 2.4 && chargerCount<7) { 
                     
@@ -3016,7 +3056,7 @@ function update(timestamp) {
                 }, 1200);
 
                 
-                startBoostOverlay(360 * (1000/60));
+                startBoostOverlay(360 * (1000/fps));
 
                 
 
@@ -3132,7 +3172,7 @@ function update(timestamp) {
     } catch (e) {}
     
     try {
-        const dashPct = Math.min(100, Math.floor((Math.min(dashtimer, 60) / 60) * 100));
+        const dashPct = Math.min(100, Math.floor((Math.min(dashtimer, fps) / fps) * 100));
         document.getElementById("dash").innerText = dashPct + " %";
     } catch (e) {}
     
@@ -3231,7 +3271,7 @@ function update(timestamp) {
                     const blocked = lineBlockedByObstacles(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
                     if (!blocked) {
                        
-                        const dmg = (900) * (1+(0.1*(level-1)));
+                        const dmg = (1100) * (1+(0.1*(level-1)));
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
                         if (enemy.enemyHP <= 0) {
@@ -3333,12 +3373,12 @@ function update(timestamp) {
              
             let AngleShot =  angleDeg;
             let trueAngle = AngleShot;
-            let shotX = Math.cos((trueAngle-90)* Math.PI / 180);
-            let shotY = Math.sin((trueAngle-90)* Math.PI / 180);
+            let shotX = Math.cos((trueAngle-90)* Math.PI / 180) * 60/fps;
+            let shotY = Math.sin((trueAngle-90)* Math.PI / 180) * 60/fps;
             const dirVec = {x: shotX, y: shotY};
             
-            const startX = x + dirVec.x * 35;
-            const startY = y + dirVec.y * 35;
+            const startX = x + (dirVec.x * 35)/(60/fps);
+            const startY = y + (dirVec.y * 35)/(60/fps);
             projEl.style.left = `${startX}px`;
             projEl.style.top = `${startY}px`;
             projEl.style.transform = `rotate(${angleDeg+90}deg)`;
@@ -3376,12 +3416,12 @@ function update(timestamp) {
             let posy = mouseY - y;
             let AngleShot =  angleDeg;
             let trueAngle = AngleShot+chance;
-            let shotX = Math.cos((trueAngle-90)* Math.PI / 180);
-            let shotY = Math.sin((trueAngle-90)* Math.PI / 180);
+            let shotX = Math.cos((trueAngle-90)* Math.PI / 180)  * 60/fps;
+            let shotY = Math.sin((trueAngle-90)* Math.PI / 180) * 60/fps;
             const dirVec = {x: shotX, y: shotY};
             
-            const startX = x + dirVec.x * 35;
-            const startY = y + dirVec.y * 35;
+            const startX = x + (dirVec.x * 35)/(60/fps);
+            const startY = y + (dirVec.y * 35)/(60/fps);
             projEl.style.left = `${startX}px`;
             projEl.style.top = `${startY}px`;
             projEl.style.transform = `rotate(${trueAngle-90}deg)`;
@@ -3409,7 +3449,7 @@ function update(timestamp) {
         const calcDamage = (enemy) => {
             if (Projweapon == 2) {
     
-                enemy.enemyHP -= Math.floor((700+(700 * 0.5)) * (1+(0.1*(level-1))));
+                enemy.enemyHP -= Math.floor(((1400)) * (1+(0.1*(level-1))));
             } else if (Projweapon == 3) {
                 enemy.enemyHP -= Math.floor((300) * (1+(0.1*(level-1))));
             }
@@ -3510,7 +3550,7 @@ if (playerhp <= 0) {
     activateTimerReset = false;
     setTimeout(() => {
         
-        time = Math.floor(elapsed/60)
+        time = Math.floor(elapsed/fps)
         totalFrames = 0;
         FPSChecked = 0;
         
@@ -3572,8 +3612,12 @@ if (playerhp <= 0) {
                 `Final Score: ${score}<br>` +
                 `Survived: ${time} seconds<br>` +
                 `Wave: ${Wave}`;
-                
-                document.exitPointerLock();
+                try {
+                    document.exitPointerLock();
+
+                } catch (e) {
+
+                }
             let SHS = localStorage.getItem(Filename+"SHS");
             if (SHS == "true") {
                 document.getElementById('highScoreStats').innerHTML = 
@@ -3900,6 +3944,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const o1 = document.getElementById("options1");
     const o2 = document.getElementById("options2");
     const o3 = document.getElementById("options3");
+    const o4 = document.getElementById("options4");
     if (helpBtn) helpBtn.addEventListener("click", () => {
            window.open("help.html", "_blank");
 
@@ -3957,6 +4002,16 @@ document.addEventListener("DOMContentLoaded", () => {
             o3.innerHTML = "Show High Score: ON";
         } else {
             o3.innerHTML = "Show High Score: OFF";
+        }
+
+        if (localStorage.getItem(Filename+"FPSCap") == "30") {
+            o4.innerHTML = "FPS Cap: 30";
+            fps = 30;
+            frameDuration = 1000 / fps;
+        } else {
+            o4.innerHTML = "FPS Cap: 60";
+            fps = 60;
+            frameDuration = 1000 / fps;
         }
     });
 
@@ -4023,6 +4078,18 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             localStorage.setItem(Filename+"SHS", "true");
             o3.innerHTML = "Show High Score: ON";
+        }
+        console.log("Show High Score set to:", localStorage.getItem(Filename+"SHS"));
+    });
+
+    if (o4) o4.addEventListener("click", () => {
+        let SHSON = localStorage.getItem(Filename+"FPSCap");
+        if (SHSON == "30") {
+            localStorage.setItem(Filename+"FPSCap", "60");
+            o4.innerHTML = "FPS Cap: 60";
+        } else {
+            localStorage.setItem(Filename+"FPSCap", "30");
+            o4.innerHTML = "FPS Cap: 30";
         }
         console.log("Show High Score set to:", localStorage.getItem(Filename+"SHS"));
     });

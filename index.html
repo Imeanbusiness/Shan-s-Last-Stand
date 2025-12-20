@@ -9,6 +9,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 </head>
 <body oncontextmenu="return false;">
+
+
+  <div id="LoadingDisplay" style="z-index: 99999;"><h1 class = "LoadingText">Loading...</h1></div>
+
   <button id="pencilButton" style="display:none;">✏️</button>
   <button id="dashButton" style="display:none;">⚡︎</button>
   <button id="switchButton" style="display:none;">⇆</button>
@@ -16,11 +20,11 @@
   <button id="pauseButton" style="display:none;">| |</button>
 
 
-  <div id="movementJoystick">
+  <div id="movementJoystick" style = "display:none;">
     <div id = "movementJoystickInner"></div>
   </div>
 
-  <div id="aimingJoystick">
+  <div id="aimingJoystick" style = "display:none;">
     <div id = "aimingJoystickInner"></div>
   </div>
 
@@ -69,6 +73,7 @@
         <button id="options1">Music: ON</button>
         <button id="options2">SFX: ON</button>
         <button id="options3">Show High Score: ON</button>
+        <button id="options4">FPS Cap: 60</button>
       </div>
       <button id="backToMain3">Back</button>
     </div>
