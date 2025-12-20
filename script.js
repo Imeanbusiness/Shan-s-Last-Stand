@@ -4189,10 +4189,12 @@ document.addEventListener("DOMContentLoaded", () => {
     if (o1) o1.addEventListener("mouseenter", () => setOptDesc("Toggle background music on or off. Turns off both the menu and in-game music."));
     if (o2) o2.addEventListener("mouseenter", () => setOptDesc("Toggle sound effects on or off. Includes Death sounds, weapon sounds, enemy sounds, and the dash chime."));
     if (o3) o3.addEventListener("mouseenter", () => setOptDesc("Toggle whether to show your high score at the end of each game."));
+    if (o4) o4.addEventListener("mouseenter", () => setOptDesc("Toggle FPS Cap from 60 to 30. If you're consistently running under 50 fps, or you are playing at a lower power mode, you should play on 30 fps. Play on 60 fps for the best experience."));
     const clearOptDesc = () => setOptDesc("");
     if (o1) o1.addEventListener("mouseleave", clearOptDesc);
     if (o2) o2.addEventListener("mouseleave", clearOptDesc);
     if (o3) o3.addEventListener("mouseleave", clearOptDesc);
+    if (o4) o4.addEventListener("mouseleave", clearOptDesc);
     
 });
 
