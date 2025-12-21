@@ -89,7 +89,7 @@ Enemies deal damage on contact, or through the projectiles that they hurl at you
 
 ## Weapons
 
-Note: All stats assume you are in "Derivatives are doable..." difficulty, the normal difficulty, at level 1 with 50% sanity.
+Note: All stats assume you are in "Derivatives are doable..." difficulty, the normal difficulty, at level 1 with 50% sanity. All values in brackets (+/- value) are new balance changes.
 
 - Hotkey: Button to switch to weapon.
 
@@ -135,13 +135,13 @@ Note: All stats assume you are in "Derivatives are doable..." difficulty, the no
 
 - Sanity Usage: 2%
 
-- Base Damage: 900
+- Base Damage: 1100 (+200)
 
 - Weapon Ready Time: 250 ms
 
 - Weapon Fire Rate: 54.55 RPM (0.90 RPS)
 
-- Base DPS: 810
+- Base DPS: 990 (+180)
 
 - Range: Short
 
@@ -155,13 +155,13 @@ Note: All stats assume you are in "Derivatives are doable..." difficulty, the no
 
 - Sanity Usage: 4%
 
-- Base Damage: 1050
+- Base Damage: 1400 (+350)
 
 - Weapon Ready Time: 83 ms
 
 - Weapon Fire Rate: 40 RPM (0.67 RPS)
 
-- Base DPS: 700
+- Base DPS: 938 (+238)
 
 - Range: Very Long
 
