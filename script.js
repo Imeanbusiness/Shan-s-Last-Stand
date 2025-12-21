@@ -1162,7 +1162,7 @@ class RangedCharger {
         this.width = width;
         this.height = height;
     this.fireCooldown = 0; 
-    this.fireInterval = (90 / (difficulty/3)) * (30/fps); 
+    this.fireInterval = (90 / (difficulty/3)) * (fps/60); 
         
         this.el = document.createElement('div');
         this.el.style.position = 'absolute';
@@ -2540,7 +2540,7 @@ function update(timestamp) {
 
     }
 
-        if (Boost==true && BoostTime <= 360) {
+        if (Boost==true && BoostTime <= 360 * (fps/60)) {
             Mult = 2
             BoostTime++
         } else {
@@ -2588,7 +2588,7 @@ function update(timestamp) {
             }
         } catch (e) {}
 
-        if (SBmessagetimer >= 60) {
+        if (SBmessagetimer >= 60*(fps/60)) {
             try {
     
                 const sbMsg = document.getElementById("SBMessage");
@@ -3087,7 +3087,7 @@ function update(timestamp) {
                 }, 1200);
 
                 
-                startBoostOverlay(360 * (1000/fps));
+                startBoostOverlay(360 * (1000/(fps*(60/fps))));
 
                 
 
