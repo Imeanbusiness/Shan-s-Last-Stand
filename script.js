@@ -1162,7 +1162,7 @@ class RangedCharger {
         this.width = width;
         this.height = height;
     this.fireCooldown = 0; 
-    this.fireInterval = 90 / (difficulty/3); 
+    this.fireInterval = (90 / (difficulty/3)) * (30/fps); 
         
         this.el = document.createElement('div');
         this.el.style.position = 'absolute';
@@ -1318,6 +1318,18 @@ class RangedCharger {
 
 
                 this.el.style.transform = `rotate(${angleDeg + 90 + 180}deg)`;
+                if (this.x < 25) {
+                    this.x = 25
+                }
+                if (this.x > 625) {
+                    this.x = 625
+                }
+                if (this.y <25) {
+                    this.y = 25
+                }
+                if (this.y > 625) {
+                    this.y = 625
+                }
             }
 
         }
@@ -1724,9 +1736,9 @@ function openFullscreen() {
 function startRoom(x, IGTimer) {
     fps = parseInt(localStorage.getItem(Filename+"FPSCap"));
         frameDuration = 1000 / fps;
-        console.log(fps);
+        
 
-
+        IGTimer *= 60/fps;
         console.log(speed);
     if (IGTimer == 0) {
         enemies.forEach(enemy => enemy.el.remove());
@@ -2913,7 +2925,7 @@ function update(timestamp) {
 
     
     if (spawntime > 50/(60/fps) && RoomType != 0) {
-        spawnEnemy = Math.random()*100*(2/difficulty)
+        spawnEnemy = Math.random()*100*(2/difficulty)*(fps/60)
         if (spawnEnemy < 3 && spawnEnemy > 2.4 && chargerCount<7) { 
                     
                     if (EnemySpawnCampaign('ranged')) {
@@ -4132,7 +4144,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function chooseMap(map) {
         RoomType = map;
-        if (map == 1) {
+        if (map == 0) {
+            alert("Sorry, the campaign is still being worked on right now!")
+            return;
+        } else if (map == 1) {
             lovedayRoom();
         } else if (map == 2) {
             roboticsRoom();
