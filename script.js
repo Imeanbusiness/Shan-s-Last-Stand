@@ -919,6 +919,25 @@ window.onload = function() {
             console.log((60-i)/60)
             if (i == 60) {
                 document.getElementById("LoadingDisplay").style.display = "none";
+                viewportWidth = window.innerWidth;
+                viewportHeight = window.innerHeight;
+                WindowPixels = viewportHeight * viewportWidth;
+                intendedWindowSize = 1920 * 1080;
+
+                console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
+                console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
+                
+
+                BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
+
+                body.style.width = viewportWidth/BodyZoom + "px";
+                body.style.height = viewportHeight/BodyZoom + "px";
+
+
+
+
+                document.body.style.zoom = BodyZoom;
+                document.body.backgroundSize = "cover";
             }
             
         }, 16*i)
