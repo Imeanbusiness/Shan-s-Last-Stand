@@ -309,10 +309,15 @@ document.addEventListener("mouseup", () => {
 
     function playSound(sound) {
         
-        if (browserType =="Safari") {
+        if (browserType =="Safari" && device=="phone") {
             sound.play();
             return;
         }
+        if (browserType =="Safari" && device=="tablet") {
+            sound.play();
+            return;
+        }
+
         let SFXON = localStorage.getItem(Filename+"SFX");
         if (SFXON != "true") return;
         const newAudioInstance = sound.cloneNode(); 
@@ -894,18 +899,18 @@ window.onload = function() {
         switchButton.style.fontSize = "50px";
         
          let BodyZoomZOOM = BodyZoom * 2;
-        this.document.getElementById("HealthTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
-        this.document.getElementById("WeaponTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
-        this.document.getElementById("AmmoTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
-        this.document.getElementById("SanityTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
-        this.document.getElementById("WaveTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
-        this.document.getElementById("ScoreTitle").style.fontSize = (17*BodyZoomZOOM)+"px"
-        this.document.getElementById("HP").style.fontSize = (14*BodyZoomZOOM)+"px"
-        this.document.getElementById("weapon").style.fontSize = (12*BodyZoomZOOM)+"px"
-        this.document.getElementById("shots").style.fontSize = (14*BodyZoomZOOM)+"px"
-        this.document.getElementById("sanity").style.fontSize = (14*BodyZoomZOOM)+"px"
-        this.document.getElementById("wave").style.fontSize = (14*BodyZoomZOOM)+"px"
-        this.document.getElementById("Score").style.fontSize = (14*BodyZoomZOOM)+"px"
+        this.document.getElementById("HealthTitle").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("WeaponTitle").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("AmmoTitle").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("SanityTitle").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("WaveTitle").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("ScoreTitle").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("HP").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("weapon").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("shots").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("sanity").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("wave").style.transform = "scale("+BodyZoom+")" 
+        this.document.getElementById("Score").style.transform = "scale("+BodyZoom+")" 
         
         
 
