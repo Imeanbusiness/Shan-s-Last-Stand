@@ -1,6 +1,42 @@
 let fps = 60;
 let frameDuration = 1000 / fps;
 
+function StartTheGame() {
+    document.getElementById("mainMenu").style.display = "flex";
+    for (let i = 0; i < 61; i++) {
+        setTimeout(() => {
+            document.getElementById("mainMenu").style.opacity = i/60;
+            document.getElementById("ClickToPlay").style.opacity = (60-i)/60;
+            console.log((60-i)/60)
+            if (i == 60) {
+                document.getElementById("ClickToPlay").style.display = "none";
+                viewportWidth = window.innerWidth;
+                viewportHeight = window.innerHeight;
+                WindowPixels = viewportHeight * viewportWidth;
+                intendedWindowSize = 1920 * 1080;
+
+                console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
+                console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
+                
+
+                BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
+
+                body.style.width = viewportWidth/BodyZoom + "px";
+                body.style.height = viewportHeight/BodyZoom + "px";
+
+
+
+
+                document.body.style.zoom = BodyZoom;
+                document.body.backgroundSize = "cover";
+            }
+            
+        }, 16*i)
+        
+    }
+    
+}
+
 (function(){
     'use strict';
     
@@ -293,7 +329,7 @@ document.addEventListener("mouseup", () => {
     const ouch = new Audio('Ouch.mp3'); 
     const ShotgunSound = new Audio('ShotgunSound.mp3');
     const CalcgunSound = new Audio('Pew.mp3');
-    const backgroundMusic = new Audio("shaunsshotgun.mp3");
+    const backgroundMusic = new Audio("TheLastStand.mp3");
     const deathSound = new Audio("ShanDeath.mp3");
     const domDeath = new Audio("DomDeath.mp3");
     const chengDeath = new Audio("ChengDeath.mp3");
@@ -1643,10 +1679,11 @@ function applyDamage(enemy, damageAmount) {
 let lastDamageTimeout = null;
 function showLastDamageAbovePlayer(damage) {
     try {
-        let el = document.getElementById("LastDamage");
+        let sid = Math.random() * 100000000;
+        let el = document.getElementById("LastDamage"+sid);
         if (!el) {
             el = document.createElement("div");
-            el.id = "LastDamage";
+            el.id = "LastDamage" + sid;
             el.style.position = "absolute";
             el.style.color = "#ffd700";
             el.style.fontWeight = "bold";
@@ -1656,12 +1693,12 @@ function showLastDamageAbovePlayer(damage) {
             gameArea.appendChild(el);
         }
         el.innerText = Math.floor(damage);
-        el.style.left = `${x}px`;
-        el.style.top = `${y - 80}px`;
+        el.style.left = `${x+20 - Math.random()* 40}px`;
+        el.style.top = `${y - Math.random()* 80}px`;
         el.style.opacity = 1;
-        if (lastDamageTimeout) clearTimeout(lastDamageTimeout);
+       //if (lastDamageTimeout) clearTimeout(lastDamageTimeout);
         lastDamageTimeout = setTimeout(() => {
-            try { const n = document.getElementById("LastDamage"); if (n) n.remove(); } catch (e) {}
+            try { const n = document.getElementById("LastDamage"+sid); if (n) n.remove(); } catch (e) {}
         }, 600);
     } catch (e) {}
 }
@@ -2133,22 +2170,22 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
     switch (t) {
         case 'dom':
             damage = 4 * difficulty / 2;
-            enemyHP = Math.floor((350 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            enemyHP = Math.floor((600 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = Math.floor(3 * difficulty / 3);
             fileName = 'Dom.png'; width = 40; height = 40; break;
         case 'ranged':
             damage = Math.floor(5 * difficulty / 2);
-            enemyHP = Math.floor((250 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            enemyHP = Math.floor((500 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 3.5 * difficulty / 3;
             fileName = 'Cheng.png'; width = 40; height = 40; break;
         case 'zuk':
             damage = Math.floor(6 * difficulty / 2);
-            enemyHP = Math.floor((700 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            enemyHP = Math.floor((1200 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 0.75 * difficulty / 3;
             fileName = 'Zuk.png'; width = 60; height = 60; break;
         case 'shower':
             damage = Math.floor(16 * difficulty / 2);
-            enemyHP = Math.floor((3000 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            enemyHP = Math.floor((4500 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 0.2 * difficulty / 3;
             fileName = 'Shower.jpg'; width = 70; height = 70; break;
         case 'heal':
@@ -3264,6 +3301,96 @@ function update(timestamp) {
                 if (sanity < 0) {
                     sanity = 0;
                 }
+                
+                
+                
+                
+                playSound(ShotgunSound);
+                
+                
+                for (let i = 0; i < 10; i++) {
+                    const projEl = document.createElement("div");
+                    projEl.style.position = "absolute";
+                    
+                    projEl.style.width = "5px";
+                    projEl.style.height = "5px";
+                    
+                    projEl.style.borderRadius = "3px";
+                    
+                    const shotgunVelocity = 45 + Math.random()*10;
+                    
+                    projEl.style.background = "	#686868";
+                    const spread = 15; 
+                    chance = (Math.random()-0.5) * (spread*2);
+                    let posx = mouseX - x;
+                    let posy = mouseY - y;
+                    let AngleShot =  angleDeg;
+                    let trueAngle = AngleShot+chance;
+                    let shotX = Math.cos((trueAngle-90)* Math.PI / 180)  * 60/fps;
+                    let shotY = Math.sin((trueAngle-90)* Math.PI / 180) * 60/fps;
+                    const dirVec = {x: shotX, y: shotY};
+                    
+                    const startX = x + (dirVec.x * shotgunVelocity)/(60/fps);
+                    const startY = y + (dirVec.y * shotgunVelocity)/(60/fps);
+                    projEl.style.left = `${startX}px`;
+                    projEl.style.top = `${startY}px`;
+                    projEl.style.transform = `rotate(${trueAngle-90}deg)`;
+                    gameArea.appendChild(projEl);
+                    projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
+                    Projweapon = CurrWeap;
+
+                }
+                const radius = 80;
+            const dia = radius * 2;
+            const aoe = document.createElement('div');
+            aoe.style.position = 'absolute';
+            aoe.style.width = dia + 'px';
+            aoe.style.height = dia + 'px';
+            aoe.style.borderRadius = '50%';
+            
+            const centerX = x;
+            const centerY = y;
+            aoe.style.left = `${centerX}px`;
+            aoe.style.top = `${centerY}px`;
+            aoe.style.transform = 'translate(-50%, -50%)';
+            
+            aoe.style.background = 'transparent';
+            aoe.style.opacity = '0.95';
+            aoe.style.zIndex = 9998;
+            gameArea.appendChild(aoe);
+            
+            let killed = false;
+            enemies = enemies.filter((enemy) => {
+                const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
+                const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
+                const dist = Math.hypot(enemyCenterX - centerX, enemyCenterY - centerY);
+                const enemyHalf = enemy.width ? Math.max(enemy.width, enemy.height)/2 : 20;
+                if (dist <= radius + enemyHalf) {
+                    const blocked = lineBlockedByObstacles(centerX, centerY, enemyCenterX, enemyCenterY);
+                    if (!blocked && !killed) {
+                        
+                        const dmg = 1200 * (1+(0.1*(level-1)));
+                        const dealt = applyDamage(enemy, dmg);
+                        showLastDamageAbovePlayer(dealt);
+                        
+                        killed = true;
+                        if (enemy.enemyHP <= 0) {
+                            CampEnemyCount--;
+                            handleEnemyDeath(enemy);
+                            return false;
+                        } else {
+                            
+                            try {
+                                if (enemy.hpText) enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+                            } catch (e) {}
+                            
+                            return true; 
+                        }
+                    }
+                }
+                return true;
+            });
+            /*
             const el = document.createElement("div");
             el.style.position = "absolute";
             el.style.transform = `translate(-50%, -50%) rotate(${directionAnglesShots[direction]+270}deg)`;
@@ -3319,7 +3446,8 @@ function update(timestamp) {
                 }
                 return true;
             });
-            if (score >= Wave*2500 && RoomType != 0) { Wave++; }
+            */
+            //if (score >= Wave*2500 && RoomType != 0) { Wave++; }
             
 
             setTimeout(() => { el.remove(); }, 50);
@@ -3355,7 +3483,7 @@ function update(timestamp) {
                     const blocked = lineBlockedByObstacles(centerX, centerY, enemyCenterX, enemyCenterY);
                     if (!blocked && !killed) {
                         
-                        const dmg = (100 + (1500 * ((100 - sanity) / 100) * ((100 - sanity) / 100))) * (1+(0.1*(level-1)));
+                        const dmg = (400 + (2000 * ((100 - sanity) / 100) * ((100 - sanity) / 100))) * (1+(0.1*(level-1)));
                         const dealt = applyDamage(enemy, dmg);
                         showLastDamageAbovePlayer(dealt);
                         
@@ -3485,9 +3613,11 @@ function update(timestamp) {
         const calcDamage = (enemy) => {
             if (Projweapon == 2) {
     
-                enemy.enemyHP -= Math.floor(((1400)) * (1+(0.1*(level-1))));
+                enemy.enemyHP -= Math.floor(((1500)) * (1+(0.1*(level-1))));
             } else if (Projweapon == 3) {
-                enemy.enemyHP -= Math.floor((300) * (1+(0.1*(level-1))));
+                enemy.enemyHP -= Math.floor((350) * (1+(0.1*(level-1))));
+            } else if (Projweapon == 1) {
+                enemy.enemyHP -= Math.floor((120) * (1+(0.1*(level-1))));
             }
         };
         projectiles = projectiles.filter((p) => {
@@ -3698,7 +3828,7 @@ let difficultyLevel = 1;
 let difficulty = 1; 
 
 function showGameUI() {
-    
+    document.getElementById("background-video").style.display = "none";
     const menu = document.getElementById("mainMenu");
     const diff = document.getElementById("difficultyMenu");
     const opt = document.getElementById("optionsMenu");
@@ -3732,6 +3862,7 @@ function showGameUI() {
 }
 
 function showMainMenu() {
+    document.getElementById("background-video").style.display = "flex";
     if (device == "phone" || device == "tablet") {
         document.getElementById("pauseButton").style.display = "none";
         document.getElementById("attackButton").style.display = "none";

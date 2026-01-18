@@ -11,7 +11,21 @@
 <body oncontextmenu="return false;">
 
 
+
+  <video autoplay muted loop id="background-video">
+    <source src="FireByrne.mp4" type="video/mp4">
+  </video>
+
+
   <div id="LoadingDisplay" style="z-index: 99999;"><h1 class = "LoadingText">Loading...</h1></div>
+
+  <div id="ClickToPlay" style="z-index: 99998;" onclick="StartTheGame()">
+    <h1 class = "superTitle">Shanvanth's Last Stand</h1>
+    <h1>&nbsp;</h1>
+    <h1>&nbsp;</h1>
+    <h1>&nbsp;</h1>
+    <p class = "playtext">Click To Play</p>
+  </div>
 
   <button id="pencilButton" style="display:none;">✏️</button>
   <button id="dashButton" style="display:none;">⚡︎</button>
@@ -43,9 +57,9 @@
   </div>
   -->
   <p id = "FPSCounter">FPS: 0</p>
-  <div id="mainMenu">
+  <div id="mainMenu" style="display:none;">
     <div class="menuContent">
-      <h1>Shanvanth's Last Stand</h1>
+      <h1 class = "title">Shanvanth's Last Stand</h1>
       <button id="playButton">Play</button>
       <button id="helpButton">How to Play</button>
       <button id="highScoresButton">High Scores</button>
@@ -55,7 +69,8 @@
   <div id="difficultyMenu" style="display:none;">
     <div id="difficultyDesc"></div>
     <div class="menuContent">
-      <h2>Select Difficulty</h2>
+      <h1 class = "title">Shanvanth's Last Stand</h1>
+      <h3>Select Difficulty</h3>
       <div class="difficultyButtons">
         <button id="difficulty1">I can't handle limits!</button>
         <button id="difficulty2">Derivatives are doable...</button>
@@ -68,7 +83,8 @@
   <div id="optionsMenu" style="display:none;">
     <div id="optionsDesc"></div>
     <div class="menuContent">
-      <h2>Options</h2>
+      <h1 class = "title">Shanvanth's Last Stand</h1>
+      <h3>Options</h3>
       <div class="optionsButtons">
         <button id="options1">Music: ON</button>
         <button id="options2">SFX: ON</button>
@@ -81,7 +97,8 @@
   <div id="mapMenu" style="display:none;">
     <div id="mapDesc"></div>
     <div class="menuContent">
-      <h2>Select Map</h2>
+      <h1 class = "title">Shanvanth's Last Stand</h1>
+      <h3>Select Map</h3>
       <div class="difficultyButtons">
         <button id="map0">Campaign</button>
         <button id="map1">Calculus Classroom</button>
