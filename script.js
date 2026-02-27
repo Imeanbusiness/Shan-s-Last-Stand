@@ -197,7 +197,7 @@ const switchButton = document.getElementById("switchButton");
 switchButton.addEventListener("touchstart", function(e) {
     e.preventDefault();
     CurrWeap++;
-    if ( CurrWeap > 3) CurrWeap = 1;
+    if ( CurrWeap > 4) CurrWeap = 1;
 
 }, { passive: false });
    
@@ -259,6 +259,7 @@ document.addEventListener("mouseup", () => {
     const ShotgunCooldown = 1100; 
     const CalcgunCooldown = 1500;
     const RiflegunCooldown = 67;
+    const PencilShredderCooldown = 100;
     const MCCooldown = 300;
     const iFrames = 1000;
     const BaseSpeed = 5.5 * 60/fps;
@@ -339,6 +340,8 @@ document.addEventListener("mouseup", () => {
     const TheyDontStopComing = new Audio("TheyDontStopComing.mp3");
     const ATMOC = new Audio("ATMOC.mp3");
     const RITW = new Audio("RITW.mp3");
+    const ChugSFX = new Audio("ChugSFX.mp3");
+    const Vrm = new Audio("Vrm.mp3");
     const PILINGBODIES = new Audio("PilingBodies.mp3");
     const RifleSound = new Audio("RifleSound.mp3");
 
@@ -485,6 +488,8 @@ function SFXVolume(volume) {
     if (volume == 0 && browserType == "Safari") {
         ouch.muted = true;
         ShotgunSound.muted = true;
+        Vrm.muted = true;
+        ChugSFX.muted = true;
         CalcgunSound.muted = true;
         deathSound.muted = true;
         domDeath.muted = true;
@@ -498,6 +503,8 @@ function SFXVolume(volume) {
         ouch.muted = false;
         ShotgunSound.muted = false;
         CalcgunSound.muted = false;
+        Vrm.muted = false;
+        ChugSFX.muted = false;
         deathSound.muted = false;
         domDeath.muted = false;
         chengDeath.muted = false;
@@ -593,8 +600,8 @@ window.onload = function() {
                 } else if (e.deltaY > 0) {
         
         CurrWeap++;
-        if (CurrWeap > 3) {
-            CurrWeap = 3;
+        if (CurrWeap > 4) {
+            CurrWeap = 4;
         }
     }
 }, { passive: false }); 
@@ -2603,6 +2610,9 @@ function update(timestamp) {
         if (CurrWeap == 3 && !attack) {
             player.src = "Player3.png"
         }
+        if (CurrWeap == 4 && !attack) {
+            player.src = "Player4.png"
+        }
 
         
         try {
@@ -2690,6 +2700,14 @@ function update(timestamp) {
             attackingDelay = 20000;
             }
 
+        if (keysPressed["4"] && CurrWeap != 4) {
+            CurrWeap = 4;
+            attack = false; 
+            
+            Atdelay = 15/(60/fps);
+            attackingDelay = 20000;
+            }
+
         if (keysPressed["c"] && CurrWeap != 0) {
             CurrWeap = 0;
             attack = false; 
@@ -2712,6 +2730,9 @@ function update(timestamp) {
             attack = false 
         }
         if (attack && attackingDelay >= RiflegunCooldown/1000 * fps && CurrWeap == 3) {
+            attack = false 
+        }
+        if (attack && attackingDelay >= PencilShredderCooldown/1000 * fps && CurrWeap == 4) {
             attack = false 
         }
 
@@ -2935,6 +2956,8 @@ function update(timestamp) {
             player.src = "PlayerAttacking2.png";
         } else if (CurrWeap == 3) {
             player.src = "PlayerAttacking3.png";
+        } else if (CurrWeap == 4) {
+            player.src = "PlayerAttacking4.png";
         }
         player.style.transform = `translate(-50%, -50%) rotate(${angleDeg+180}deg)`;
     }
@@ -3240,6 +3263,7 @@ function update(timestamp) {
             case 1: document.getElementById("weapon").innerText = "Shauntgun"; break;
             case 2: document.getElementById("weapon").innerText = "Shauniper"; break;
             case 3: document.getElementById("weapon").innerText = "Asshaunt Rifle"; break;
+            case 4: document.getElementById("weapon").innerText = "Pencil Shredder"; break;
         }
         
     } catch (e) {}
@@ -3390,66 +3414,6 @@ function update(timestamp) {
                 }
                 return true;
             });
-            /*
-            const el = document.createElement("div");
-            el.style.position = "absolute";
-            el.style.transform = `translate(-50%, -50%) rotate(${directionAnglesShots[direction]+270}deg)`;
-            el.style.left = `${x}px`;
-            el.style.top = `${y}px`;
-            if (direction == "n") { el.style.left = `${x}px`; el.style.top = `${y-50}px`; }
-            if (direction == "ne") { el.style.left = `${x+40}px`; el.style.top = `${y-50}px`; }
-            if (direction == "e") { el.style.left = `${x+55}px`; el.style.top = `${y-7}px`; }
-            if (direction == "se") { el.style.left = `${x+40}px`; el.style.top = `${y+50}px`; }
-            if (direction == "s") { el.style.left = `${x}px`; el.style.top = `${y+55}px`; }
-            if (direction == "sw") { el.style.left = `${x-50}px`; el.style.top = `${y+50}px`; }
-            if (direction == "w") { el.style.left = `${x-55}px`; el.style.top = `${y-7}px`; }
-            if (direction == "nw") { el.style.left = `${x-50}px`; el.style.top = `${y-50}px`; }
-            el.style.height = "85px";
-            el.style.width = "130px";
-            el.id = "ShotgunShot";
-            el.style.backgroundImage = "url('ShotgunShot.png')";
-            el.style.backgroundSize = "cover";
-            ShotgunSound.play();
-            gameArea.appendChild(el);
-            switch (direction) {
-                case "n": el.style.left = `${x}px`; el.style.top = `${y-70}px`; break;
-                case "ne": el.style.left = `${x+45}px`; el.style.top = `${y-60}px`; break;
-                case "e": el.style.left = `${x+75}px`; el.style.top = `${y-7}px`; break;
-                case "se": el.style.left = `${x+50}px`; el.style.top = `${y+60}px`; break;
-                case "s": el.style.left = `${x}px`; el.style.top = `${y+75}px`; break;
-                case "sw": el.style.left = `${x-50}px`; el.style.top = `${y+55}px`; break;
-                case "w": el.style.left = `${x-65}px`; el.style.top = `${y-7}px`; break;
-                case "nw": el.style.left = `${x-50}px`; el.style.top = `${y-50}px`; break;
-            }
-            const shotRect = el.getBoundingClientRect();
-            enemies = enemies.filter((enemy) => {
-                const enemyRect = enemy.el.getBoundingClientRect();
-                const overlap = !(shotRect.right < enemyRect.left || shotRect.left > enemyRect.right || shotRect.bottom < enemyRect.top || shotRect.top > enemyRect.bottom);
-                if (overlap) {
-                    
-                    const playerCenterX = x;
-                    const playerCenterY = y;
-                    const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
-                    const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
-                    const blocked = lineBlockedByObstacles(playerCenterX, playerCenterY, enemyCenterX, enemyCenterY);
-                    if (!blocked) {
-                       
-                        const dmg = (1100) * (1+(0.1*(level-1)));
-                        const dealt = applyDamage(enemy, dmg);
-                        showLastDamageAbovePlayer(dealt);
-                        if (enemy.enemyHP <= 0) {
-                            CampEnemyCount--;
-                            handleEnemyDeath(enemy);
-                            return false;
-                        }
-                    }
-                }
-                return true;
-            });
-            */
-            //if (score >= Wave*2500 && RoomType != 0) { Wave++; }
-            
-
             setTimeout(() => { el.remove(); }, 50);
         } else if (CurrWeap == 0) {
             
@@ -3592,6 +3556,101 @@ function update(timestamp) {
             gameArea.appendChild(projEl);
             projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
             Projweapon = CurrWeap;
+        } else if (CurrWeap == 4 && sanity >= 2) {
+                      sanity -= 2;
+                if (sanity < 0) {
+                    sanity = 0;
+                }
+                
+                
+                
+                
+                playSound(ChugSFX);
+                playSound(Vrm);
+                
+                for (let i = 0; i < 15; i++) {
+                    const projEl = document.createElement("div");
+                    projEl.style.position = "absolute";
+                    
+                    projEl.style.width = "6px";
+                    projEl.style.height = "6px";
+                    
+                    projEl.style.borderRadius = "3.2px";
+                    
+                    const shotgunVelocity = 35 + Math.random()*12;
+                    
+                    projEl.style.background = "#C99C73";
+                    const spread = 18; 
+                    chance = (Math.random()-0.5) * (spread*2);
+                    let posx = mouseX - x;
+                    let posy = mouseY - y;
+                    let AngleShot =  angleDeg;
+                    let trueAngle = AngleShot+chance;
+                    let shotX = Math.cos((trueAngle-90)* Math.PI / 180)  * 60/fps;
+                    let shotY = Math.sin((trueAngle-90)* Math.PI / 180) * 60/fps;
+                    const dirVec = {x: shotX, y: shotY};
+                    
+                    const startX = x + (dirVec.x * shotgunVelocity)/(60/fps);
+                    const startY = y + (dirVec.y * shotgunVelocity)/(60/fps);
+                    projEl.style.left = `${startX}px`;
+                    projEl.style.top = `${startY}px`;
+                    projEl.style.transform = `rotate(${trueAngle-90}deg)`;
+                    gameArea.appendChild(projEl);
+                    projectiles.push({ x: startX, y: startY, dx: dirVec.x, dy: dirVec.y, el: projEl });
+                    Projweapon = CurrWeap;
+
+                }
+                const radius = 50;
+            const dia = radius * 2;
+            const aoe = document.createElement('div');
+            aoe.style.position = 'absolute';
+            aoe.style.width = dia + 'px';
+            aoe.style.height = dia + 'px';
+            aoe.style.borderRadius = '50%';
+            
+            const centerX = x;
+            const centerY = y;
+            aoe.style.left = `${centerX}px`;
+            aoe.style.top = `${centerY}px`;
+            aoe.style.transform = 'translate(-50%, -50%)';
+            
+            aoe.style.background = 'transparent';
+            aoe.style.opacity = '0.95';
+            aoe.style.zIndex = 9998;
+            gameArea.appendChild(aoe);
+            
+            let killed = false;
+            enemies = enemies.filter((enemy) => {
+                const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
+                const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
+                const dist = Math.hypot(enemyCenterX - centerX, enemyCenterY - centerY);
+                const enemyHalf = enemy.width ? Math.max(enemy.width, enemy.height)/2 : 20;
+                if (dist <= radius + enemyHalf) {
+                    const blocked = lineBlockedByObstacles(centerX, centerY, enemyCenterX, enemyCenterY);
+                    if (!blocked && !killed) {
+                        
+                        const dmg = 7500 * (1+(0.1*(level-1)));
+                        const dealt = applyDamage(enemy, dmg);
+                        showLastDamageAbovePlayer(dealt);
+                        
+                        killed = true;
+                        if (enemy.enemyHP <= 0) {
+                            CampEnemyCount--;
+                            handleEnemyDeath(enemy);
+                            return false;
+                        } else {
+                            
+                            try {
+                                if (enemy.hpText) enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+                            } catch (e) {}
+                            
+                            return true; 
+                        }
+                    }
+                }
+                return true;
+            });
+            setTimeout(() => { el.remove(); }, 50);
         } else {
             attack = false; 
                 try { const existing = document.getElementById("WeaponMessage"); if (existing) existing.remove(); } catch (e) {}
@@ -3616,6 +3675,8 @@ function update(timestamp) {
                 enemy.enemyHP -= Math.floor(((1500)) * (1+(0.1*(level-1))));
             } else if (Projweapon == 3) {
                 enemy.enemyHP -= Math.floor((350) * (1+(0.1*(level-1))));
+            } else if (Projweapon == 4) {
+                enemy.enemyHP -= Math.floor((50) * (1+(0.1*(level-1))));
             } else if (Projweapon == 1) {
                 enemy.enemyHP -= Math.floor((120) * (1+(0.1*(level-1))));
             }
