@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="utf-8">
-  <link rel="icon" type="images/x-icon" href="ShanDisappointed.webp">
+  <link rel="icon" type="images/x-icon" href="Assets/Images/ShanDisappointed.webp">
   <title>Shanvanth's Last Stand</title>
   <link href="style.css" rel="stylesheet" type="text/css" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,13 +13,13 @@
 
 
   <video autoplay muted loop id="background-video">
-    <source src="FireByrne.mp4" type="video/mp4">
+    <source src="Assets/Images/FireByrne.mp4" type="video/mp4">
   </video>
 
 
   <div id="LoadingDisplay" style="z-index: 99999;"><h1 class = "LoadingText">Loading...</h1></div>
 
-  <div id="ClickToPlay" style="z-index: 99998;" onclick="StartTheGame()">
+  <div id="ClickToPlay" style="z-index: 99998; display:none;" onclick="StartTheGame()">
     <h1 class = "superTitle">Shanvanth's Last Stand</h1>
     <h1>&nbsp;</h1>
     <h1>&nbsp;</h1>
@@ -105,12 +105,13 @@
         <button id="map2">Robotics Room</button>
         <button id="map3">English Classroom</button>
         <button id="map4">Physics Classroom</button>
+        <button id="map5">Pysch Classroom</button>
       </div>
       <button id="backToMain2">Back</button>
     </div>
   </div>
   <div id="gameArea" style="display:none;">
-    <img src="Player.png" id="player">
+    <img src="Assets/Images/Player.png" id="player">
     <div id="screenFlash" style="display:none;"></div>
   </div>
   <div id="playerHUD" style="display:none;">
@@ -128,7 +129,7 @@
       <p id="shots" class = "HudVar">25/50</p>
     </div>
     <div class = "Score">
-      <img src="NormalShan.webp" id="ShanImage" style = "width:100px; height:100px;">
+        <img src="Assets/Images/NormalShan.webp" id="ShanImage" style = "width:100px; height:100px;">
     </div>
     <div class = "Sanity">
       <p class = "HudTitle" id = "SanityTitle">Sanity:</p>

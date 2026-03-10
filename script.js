@@ -37,6 +37,84 @@ function StartTheGame() {
     
 }
 
+function preloadImages(imagePaths) {
+    const promises = imagePaths.map(path => {
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = path;
+        });
+    });
+    return Promise.all(promises);
+}
+
+const imagePaths = [
+    'Assets/Images/20251008_104436.jpg',
+    'Assets/Images/ApocoByrne.png',
+    'Assets/Images/AttackingRead.png',
+    'Assets/Images/Background.webp',
+    'Assets/Images/BlackScreen.jpg',
+    'Assets/Images/BlackScreen.png',
+    'Assets/Images/BurntTires.jpg',
+    'Assets/Images/Byrne.jpg',
+    'Assets/Images/Calc.png',
+    'Assets/Images/Calc.webp',
+    'Assets/Images/CalcBook.jpg',
+    'Assets/Images/Chair.png',
+    'Assets/Images/Cheng.jpg',
+    'Assets/Images/Cheng.png',
+    'Assets/Images/DarkWood.jpg',
+    'Assets/Images/Dom.png',
+    'Assets/Images/DomPFP.jpg',
+    'Assets/Images/DomPFP.png',
+    'Assets/Images/grayWood.jpg',
+    'Assets/Images/HappyShan.webp',
+    'Assets/Images/HudPicture.png',
+    'Assets/Images/LovedayBack.jpg',
+    'Assets/Images/LovedayClass.png',
+    'Assets/Images/Macbook.jpg',
+    'Assets/Images/Macbook.png',
+    'Assets/Images/Mason.png',
+    'Assets/Images/Matrix.png',
+    'Assets/Images/MCPencil.png',
+    'Assets/Images/MobileGameplay.jpg',
+    'Assets/Images/MonitorLeft.png',
+    'Assets/Images/MonitorRight.png',
+    'Assets/Images/MoxonRoom.png',
+    'Assets/Images/MRFONGROOM.png',
+    'Assets/Images/NormalShan.webp',
+    'Assets/Images/Oak.jpg',
+    'Assets/Images/PencilShredder.png',
+    'Assets/Images/PhysicsClass.png',
+    'Assets/Images/Player.png',
+    'Assets/Images/Player2.png',
+    'Assets/Images/Player3.png',
+    'Assets/Images/Player4.png',
+    'Assets/Images/PlayerAttacking.png',
+    'Assets/Images/PlayerAttacking2.png',
+    'Assets/Images/PlayerAttacking3.png',
+    'Assets/Images/PlayerAttacking4.png',
+    'Assets/Images/PlayerAttackingMC.png',
+    'Assets/Images/PlayerHUDBG.jpg',
+    'Assets/Images/PlayerMC.png',
+    'Assets/Images/Portal.webp',
+    'Assets/Images/Projector.png',
+    'Assets/Images/Robotikroom.png',
+    'Assets/Images/ShanAssaultRifle.png',
+    'Assets/Images/ShanDisappointed.webp',
+    'Assets/Images/ShanPencil.png',
+    'Assets/Images/ShanPlay.png',
+    'Assets/Images/Shauniper.png',
+    'Assets/Images/Shauntgun.png',
+    'Assets/Images/ShotgunShot.png',
+    'Assets/Images/ShotgunShot.webp',
+    'Assets/Images/Shower.jpg',
+    'Assets/Images/SP.png',
+    'Assets/Images/Wheels.png',
+    'Assets/Images/Zuk.png'
+];
+
 (function(){
     'use strict';
     
@@ -327,23 +405,25 @@ document.addEventListener("mouseup", () => {
     let RoomType = 0;
 
     
-    const ouch = new Audio('Ouch.mp3'); 
-    const ShotgunSound = new Audio('ShotgunSound.mp3');
-    const CalcgunSound = new Audio('Pew.mp3');
-    const backgroundMusic = new Audio("TheLastStand.mp3");
-    const deathSound = new Audio("ShanDeath.mp3");
-    const domDeath = new Audio("DomDeath.mp3");
-    const chengDeath = new Audio("ChengDeath.mp3");
-    const ZukDeath = new Audio("ZukDeath.mp3");
-    const dashCharged = new Audio("DashCharge.mp3");
-    const MCSwoosh = new Audio("MCSwoosh.mp3");
-    const TheyDontStopComing = new Audio("TheyDontStopComing.mp3");
-    const ATMOC = new Audio("ATMOC.mp3");
-    const RITW = new Audio("RITW.mp3");
-    const ChugSFX = new Audio("ChugSFX.mp3");
-    const Vrm = new Audio("Vrm.mp3");
-    const PILINGBODIES = new Audio("PilingBodies.mp3");
-    const RifleSound = new Audio("RifleSound.mp3");
+    const ouch = new Audio('Assets/Music/Ouch.mp3'); 
+    const ShotgunSound = new Audio('Assets/Music/ShotgunSound.mp3');
+    const CalcgunSound = new Audio('Assets/Music/Pew.mp3');
+    const backgroundMusic = new Audio("Assets/Music/TheLastStand.mp3");
+    const masonDeath = new Audio("Assets/Music/MasonDeath.mp3");
+    const deathSound = new Audio("Assets/Music/ShanDeath.mp3");
+    const domDeath = new Audio("Assets/Music/DomDeath.mp3");
+    const chengDeath = new Audio("Assets/Music/ChengDeath.mp3");
+    const ZukDeath = new Audio("Assets/Music/ZukDeath.mp3");
+    const dashCharged = new Audio("Assets/Music/DashCharge.mp3");
+    const MCSwoosh = new Audio("Assets/Music/MCSwoosh.mp3");
+    const TheyDontStopComing = new Audio("Assets/Music/TheyDontStopComing.mp3");
+    const ATMOC = new Audio("Assets/Music/ATMOC.mp3");
+    const SAD = new Audio("Assets/Music/SeekAndDestroy.mp3");
+    const RITW = new Audio("Assets/Music/RITW.mp3");
+    const ChugSFX = new Audio("Assets/Music/ChugSFX.mp3");
+    const Vrm = new Audio("Assets/Music/Vrm.mp3");
+    const PILINGBODIES = new Audio("Assets/Music/PilingBodies.mp3");
+    const RifleSound = new Audio("Assets/Music/RifleSound.mp3");
 
 
     function playSound(sound) {
@@ -465,6 +545,7 @@ function MusicVolume(volume) {
         backgroundMusic.muted = true;
         TheyDontStopComing.muted = true;
         ATMOC.muted = true;
+        SAD.muted = true;
         RITW.muted = true;
         PILINGBODIES.muted = true;
         console.log("Muted the music for Safari!");
@@ -472,6 +553,7 @@ function MusicVolume(volume) {
     } else if (volume == 1 && browserType == "Safari") {
         backgroundMusic.muted = false;
         TheyDontStopComing.muted = false;
+        SAD.muted = false;
         ATMOC.muted = false;
         RITW.muted = false;
         PILINGBODIES.muted = false;
@@ -480,6 +562,7 @@ function MusicVolume(volume) {
     backgroundMusic.volume = volume;
     TheyDontStopComing.volume = volume;
     ATMOC.volume = volume;
+    SAD.volume = volume;
     RITW.volume = volume;
     PILINGBODIES.volume = volume;
 }
@@ -493,6 +576,7 @@ function SFXVolume(volume) {
         CalcgunSound.muted = true;
         deathSound.muted = true;
         domDeath.muted = true;
+        masonDeath.muted = true;
         chengDeath.muted = true;
         ZukDeath.muted = true;
         dashCharged.muted = true;
@@ -507,6 +591,7 @@ function SFXVolume(volume) {
         ChugSFX.muted = false;
         deathSound.muted = false;
         domDeath.muted = false;
+        masonDeath.muted = false;
         chengDeath.muted = false;
         ZukDeath.muted = false;
         dashCharged.muted = false;
@@ -519,6 +604,7 @@ function SFXVolume(volume) {
     CalcgunSound.volume = volume;
     deathSound.volume = volume;
     domDeath.volume = volume;
+    masonDeath.volume = volume;
     chengDeath.volume = volume;
     ZukDeath.volume = volume;
     dashCharged.volume = volume;
@@ -624,6 +710,16 @@ window.onload = function() {
 
     document.body.style.zoom = BodyZoom;
     document.body.backgroundSize = "cover";
+
+    // Preload images
+    preloadImages(imagePaths).then(() => {
+        document.getElementById("LoadingDisplay").style.display = "none";
+        document.getElementById("ClickToPlay").style.display = "flex";
+    }).catch((error) => {
+        console.error('Failed to preload images:', error);
+        document.getElementById("LoadingDisplay").style.display = "none";
+        document.getElementById("ClickToPlay").style.display = "flex";
+    });
 
     
 
@@ -1198,6 +1294,86 @@ class Charger {
     }
 }
 
+class PinkyCharger {
+  constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
+    this.x = x;
+    this.y = y;
+    this.speed = speed;
+    this.enemyHP = enemyHP;
+    this.fileName = fileName;
+    this.damage =damage
+    this.width = width;
+    this.height = height;
+
+    this.baseSpeed = speed;
+
+    this.framesPassed = 0;
+    this.chargeInterval = (120 / (difficulty/3)) * (fps/60); 
+    this.chargeTime = (70 / (difficulty/3)) * (fps/60);
+    
+    this.el = document.createElement("div");
+    this.el.style.position = "absolute";
+    this.el.style.left = `${x}px`;
+    this.el.style.top = `${y}px`;
+    this.el.style.height = height+"px";
+    this.el.style.width = width+"px";
+    this.el.id = "enemy"+enemyCount;
+    this.el.style.backgroundImage = "url('"+fileName+"')";
+    this.el.style.backgroundSize = "cover";
+
+    
+    this.hpText = document.createElement("div");
+    this.hpText.style.position = "absolute";
+    this.hpText.style.top = "-15px"; 
+    this.hpText.style.left = "50%";
+    this.hpText.style.transform = "translateX(-50%)";
+    this.hpText.style.color = "red";
+    this.hpText.style.fontSize = "14px";
+    this.hpText.style.fontWeight = "bold";
+    this.hpText.style.textAlign = "center";
+    this.hpText.innerText = this.enemyHP;
+
+    this.el.appendChild(this.hpText);
+    gameArea.appendChild(this.el);
+  }
+
+    moveToward(targetX, targetY) {
+        let dx = targetX - this.x;
+        let dy = targetY - this.y;
+        let dist = Math.hypot(dx, dy);
+        if (dist > 0) {
+        this.x += (dx / dist) * this.speed;
+        this.y += (dy / dist) * this.speed;
+        this.el.style.left = `${this.x}px`;
+        this.el.style.top = `${this.y}px`;
+
+        
+        this.hpText.innerText = Math.ceil(this.enemyHP);
+
+        
+        let angleRad = Math.atan2(dy, dx); 
+        let angleDeg = angleRad * (180 / Math.PI); 
+        this.el.style.transform = `rotate(${angleDeg+90+180}deg)`;
+        }
+        this.framesPassed++;
+
+        if (this.framesPassed>=this.chargeInterval && this.framesPassed<=this.chargeInterval+this.chargeTime) {
+            if (this.speed != this.baseSpeed*4) {
+                
+                this.speed = this.baseSpeed*8;
+
+            }
+
+        } else if (this.framesPassed>this.chargeInterval+this.chargeTime) {
+            this.framesPassed = 0;
+        } else {
+            this.speed = this.baseSpeed;
+        }
+
+
+    }
+}
+
 
 class RangedCharger {
     constructor(x, y, speed, enemyHP, damage, fileName, width, height) {
@@ -1394,7 +1570,7 @@ class RangedCharger {
         proj.style.height = '15px';
         
         
-        proj.style.backgroundImage = 'url("Wheels.png")';
+        proj.style.backgroundImage = 'url("Assets/Images/Wheels.png")';
         proj.style.backgroundSize = "cover";
         proj.style.backgroundRepeat = "no-repeat";
         proj.style.backgroundPosition = "center";
@@ -1432,7 +1608,7 @@ class Tank {
     this.el.style.height = "80px";
     this.el.style.width = "80px";
     this.el.id = "enemy"+enemyCount;
-    this.el.style.backgroundImage = "url('Zuk.png')";
+    this.el.style.backgroundImage = "url('Assets/Images/Zuk.png')";
     this.el.style.backgroundSize = "cover";
 
     
@@ -1491,7 +1667,7 @@ class HealPickup {
     this.el.style.height = "45px";
     this.el.style.width = "45px";
     this.el.id = "enemy"+enemyCount;
-    this.el.style.backgroundImage = "url('Calc.png')";
+    this.el.style.backgroundImage = "url('Assets/Images/Calc.png')";
     this.el.style.backgroundSize = "cover";
     gameArea.appendChild(this.el);
   }
@@ -1511,7 +1687,7 @@ class ScoreBoost {
     this.el.style.height = "45px";
     this.el.style.width = "45px";
     this.el.id = "enemy"+enemyCount;
-    this.el.style.backgroundImage = "url('CalcBook.jpg')";
+    this.el.style.backgroundImage = "url('Assets/Images/CalcBook.jpg')";
     this.el.style.backgroundSize = "cover";
     gameArea.appendChild(this.el);
   }
@@ -1544,22 +1720,35 @@ async function FPSCount() {
 
 let obstacles = [];
 
-function createObstacleElement(x, y, width, height, color) {
+function createObstacleElement(x, y, width, height, color, backgroundimage) {
     const el = document.createElement("div");
     el.style.position = "absolute";
     el.style.left = `${x}px`;
     el.style.top = `${y}px`;
     el.style.width = `${width}px`;
     el.style.height = `${height}px`;
-    el.style.background = color || "rgba(0,0,0,0.15)";
+    
+    if (backgroundimage != "") {
+        el.style.backgroundImage = "url('"+backgroundimage+"')";
+        el.style.backgroundSize = "cover";
+        el.style.backgroundRepeat = "none";
+
+    } else {
+
+        el.style.background = color || "rgba(0,0,0,1)";
+    }
+    
+
+    
     return el;
 }
 
 
 function addObstacle(x, y, width, height, options = {}) {
-    const color = options.color || "rgba(0,0,0,0.15)";
+    const color = options.color || "rgba(0,0,0,1)";
+    const backgroundimage = options.backgroundimage || "";
     const blocksProjectiles = options.blocksProjectiles !== false; 
-    const el = createObstacleElement(x, y, width, height, color);
+    const el = createObstacleElement(x, y, width, height, color, backgroundimage);
     gameArea.appendChild(el);
     const obstacle = { x, y, width, height, el, blocksProjectiles };
     obstacles.push(obstacle);
@@ -1782,7 +1971,7 @@ function openFullscreen() {
 
 
 
-function startRoom(x, IGTimer) {
+function startRoom(mapNumber, IGTimer) {
     fps = parseInt(localStorage.getItem(Filename+"FPSCap"));
         frameDuration = 1000 / fps;
         
@@ -1794,7 +1983,8 @@ function startRoom(x, IGTimer) {
         enemies = [];
         document.getElementById("ScoreTitle").innerHTML = "Score";
         document.getElementById("WaveTitle").innerHTML = "Wave";
-        switch (x) {
+        
+        switch (mapNumber) {
             case 0: lovedayRoom();
             
                 break;
@@ -1806,13 +1996,19 @@ function startRoom(x, IGTimer) {
                 break;
             case 4: physicsRoom();
                 break;
+            case 5: moxonCenter();
+                break;
         }
         startGameFromMenu();
         
     } else {
+
+        if (mapNumber == 5 && IGTimer == 1) { //MoxonCenterFix
+            x = 200;
+
+        } 
         
-        
-        if (x == 0) {
+        if (mapNumber == 0) {
             if (currCamplevel == 1) {
                 if (CampEnemyCount <= 20 && CampEnemyCount >= 16) {
 
@@ -2123,14 +2319,18 @@ function handleEnemyDeath(enemy) {
     score += 250 * Mult;
     
     
-    if (enemy.fileName == "Zuk.png") {
+    if (enemy.fileName == "Assets/Images/Zuk.png") {
         score += 250 * Mult;
         tankCount = Math.max(0, tankCount - 1);
         try { playSound(ZukDeath); } catch (e) {}
-    } else if (enemy.fileName == "Shower.jpg") {
+    } else if (enemy.fileName == "Assets/Images/Mason.png") {
+        score += 375 * Mult;
+        tankCount = Math.max(0, tankCount - 1);
+        try { playSound(masonDeath); } catch (e) {}
+    } else if (enemy.fileName == "Assets/Images/Shower.jpg") {
         score += 750 * Mult;
         showerCount = Math.max(0, showerCount - 1);
-    } else if (enemy.fileName == "Cheng.png") {
+    } else if (enemy.fileName == "Assets/Images/Cheng.png") {
         score+= 125 * Mult;
         try { playSound(chengDeath); } catch (e) {}
         chargerCount = Math.max(0, chargerCount - 1);
@@ -2179,22 +2379,27 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
             damage = 4 * difficulty / 2;
             enemyHP = Math.floor((600 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = Math.floor(3 * difficulty / 3);
-            fileName = 'Dom.png'; width = 40; height = 40; break;
+            fileName = 'Assets/Images/Dom.png'; width = 40; height = 40; break;
+        case 'mason':
+            damage = 10 * difficulty / 2;
+            enemyHP = Math.floor((1200 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            speed = 0.6 * difficulty / 3;
+            fileName = 'Assets/Images/Mason.png'; width = 52; height = 52; break;
         case 'ranged':
             damage = Math.floor(5 * difficulty / 2);
             enemyHP = Math.floor((500 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 3.5 * difficulty / 3;
-            fileName = 'Cheng.png'; width = 40; height = 40; break;
+            fileName = 'Assets/Images/Cheng.png'; width = 40; height = 40; break;
         case 'zuk':
             damage = Math.floor(6 * difficulty / 2);
-            enemyHP = Math.floor((1200 * (0.9 + Wave/10) ** 2) * difficulty / 2);
+            enemyHP = Math.floor((1500 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 0.75 * difficulty / 3;
-            fileName = 'Zuk.png'; width = 60; height = 60; break;
+            fileName = 'Assets/Images/Zuk.png'; width = 60; height = 60; break;
         case 'shower':
             damage = Math.floor(16 * difficulty / 2);
             enemyHP = Math.floor((4500 * (0.9 + Wave/10) ** 2) * difficulty / 2);
             speed = 0.2 * difficulty / 3;
-            fileName = 'Shower.jpg'; width = 70; height = 70; break;
+            fileName = 'Assets/Images/Shower.jpg'; width = 70; height = 70; break;
         case 'heal':
         case 'healpickup':
             damage = 0; enemyHP = 0; speed = 0; fileName = 'HealPickup'; width = 45; height = 45; break;
@@ -2235,7 +2440,7 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
     portal.style.width = `${pSize}px`;
     portal.style.height = `${pSize}px`;
     portal.style.borderRadius = '50%';
-    portal.style.backgroundImage = "url('Portal.webp')";
+    portal.style.backgroundImage = "url('Assets/Images/Portal.webp')";
     portal.style.backgroundSize = 'cover';
     portal.style.opacity = '0';
     portal.style.transition = 'opacity 300ms ease-in-out';
@@ -2259,15 +2464,18 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
             enemyCount++;
         } else {
             
-            if (fileName === 'Cheng.png') {
-                enemies.push(new RangedCharger(ex, ey, speed, enemyHP, damage, 'Cheng.png', width, height));
-            } else {
+            if (fileName === 'Assets/Images/Cheng.png') {
+                enemies.push(new RangedCharger(ex, ey, speed, enemyHP, damage, 'Assets/Images/Cheng.png', width, height));
+            } else if (fileName === 'Assets/Images/Mason.png') {
+                enemies.push(new PinkyCharger(ex, ey, speed, enemyHP, damage, fileName, width, height));
+            }
+            else {
                 enemies.push(new Charger(ex, ey, speed, enemyHP, damage, fileName, width, height));
             }
             
-            if (fileName == 'Zuk.png') {
+            if (fileName == 'Assets/Images/Zuk.png' || fileName == 'Assets/Images/Mason.png') {
                 tankCount = Math.max(0, tankCount + 1);
-            } else if (fileName == 'Shower.jpg') {
+            } else if (fileName == 'Assets/Images/Shower.jpg') {
                 showerCount = Math.max(0, showerCount + 1);
             } else {
                 chargerCount = Math.max(0, chargerCount + 1);
@@ -2287,81 +2495,97 @@ function EnemySpawnCampaign(type, enx = -1, eny = -1, delayMs = 900) {
 function lovedayRoom() {
     TheyDontStopComing.play();
     TheyDontStopComing.loop = true;
-    gameArea.style.backgroundImage = "url('LovedayClass.png')"
-    addObstacle(0, 0, 40, 120, { color: "#947A54" });   
-    addObstacle(110, 80, 80, 40, { color: "#947A54" });   
-    addObstacle(190, 0, 40, 120, { color: "#947A54" }); 
+    gameArea.style.backgroundImage = "url('Assets/Images/LovedayClass.png')"
+    addObstacle(0, 0, 40, 140, { backgroundimage: "Assets/Images/DarkWood.jpg" });   
+    addObstacle(90, 100, 70, 40, { backgroundimage: "Assets/Images/DarkWood.jpg" });   
+    addObstacle(160, 60, 40, 80, { backgroundimage: "Assets/Images/DarkWood.jpg" }); 
     addObstacle(500, 100, 150, 50, { color: "grey" });
-    addObstacle(250, 200, 150, 350, { color: "#F8DFA1" }); 
+    addObstacle(250, 200, 150, 350, { backgroundimage: "Assets/Images/Oak.jpg" }); 
     
     for (let i = 0; i < 7; i++) {
-        addObstacle(262.5, 210+45*i, 25, 20, { color: "#000000" }); 
+        addObstacle(262.5, 210+45*i, 25, 20, { backgroundimage: "Assets/Images/MonitorRight.png" }); 
     }
     for (let i = 0; i < 7; i++) {
-        addObstacle(362.5, 210+45*i, 25, 20, { color: "#000000" }); 
+        addObstacle(362.5, 210+45*i, 25, 20, { backgroundimage: "Assets/Images/MonitorLeft.png" }); 
     }
-    addObstacle(0, 215, 50, 370, { color: "#F8DFA1" }); 
+    addObstacle(0, 215, 50, 370, { backgroundimage: "Assets/Images/Oak.jpg" }); 
     for (let i = 0; i < 7; i++) {
-        addObstacle(12.5, 230+45*i, 25, 20, { color: "#000000" }); 
+        addObstacle(12.5, 230+45*i, 25, 20, { backgroundimage: "Assets/Images/MonitorRight.png" }); 
     }
-    addObstacle(600, 215, 50, 370, { color: "#F8DFA1" }); 
+    addObstacle(600, 215, 50, 370, { backgroundimage: "Assets/Images/Oak.jpg" }); 
     for (let i = 0; i < 7; i++) {
-        addObstacle(612.5, 230+45*i, 25, 20, { color: "#000000" }); 
+        addObstacle(612.5, 230+45*i, 25, 20, { backgroundimage: "Assets/Images/MonitorLeft.png" }); 
     }
-    addObstacle(320, 225, 10, 300, { color: "white" });
+    addObstacle(320, 225, 10, 300, { color: "black" });
 
 }
 
-function roboticsRoom() {
+function roboticsRoom() { //roboticsRoom
     ATMOC.play();
     ATMOC.loop = true;
-    gameArea.style.backgroundImage = "url('Robotikroom.png')"
-     addObstacle(0, 50, 50, 550, { color: "#F8DFA1" }); 
+    gameArea.style.backgroundImage = "url('Assets/Images/Robotikroom.png')"
+     addObstacle(0, 50, 50, 550, { backgroundimage: "Assets/Images/Oak.jpg" }); 
     for (let i = 0; i < 9; i++) {
-        addObstacle(12.5, 70+60*i, 25, 20, { color: "#000000" }); 
+        addObstacle(12.5, 70+60*i, 25, 20, { backgroundimage: "Assets/Images/MonitorRight.png" }); 
     }
-    addObstacle(600, 50, 50, 550, { color: "#F8DFA1" }); 
+    addObstacle(600, 50, 50, 550, { backgroundimage: "Assets/Images/Oak.jpg" }); 
     for (let i = 0; i < 9; i++) {
-        addObstacle(612.5, 70+60*i, 25, 20, { color: "#000000" }); 
+        addObstacle(612.5, 70+60*i, 25, 20, { backgroundimage: "Assets/Images/MonitorLeft.png" }); 
     }
-    addObstacle(140, 100, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 100, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(140, 270, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 270, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(140, 440, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(375, 440, 145, 60, { color: "#F8DFA1" }); 
-    addObstacle(75, 450, 40, 40, { color: "#333333", blocksProjectiles: false });
-    addObstacle(540, 280, 40, 40, { color: "#333333", blocksProjectiles: false });
+    addObstacle(140, 100, 145, 60, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(375, 100, 145, 60, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(140, 270, 145, 60, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(375, 270, 145, 60, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(140, 440, 145, 60, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(375, 440, 145, 60, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(75-15, 450-15, 70, 70, { backgroundimage: "Assets/Images/Chair.png", blocksProjectiles: false });
+    addObstacle(540-15, 280-15, 70, 70, { backgroundimage: "Assets/Images/Chair.png", blocksProjectiles: false });
     addObstacle(470, 135, 35, 20, { color: "#000000" }); 
     addObstacle(150, 600, 500, 50, { color: "#32527B" });
     
 }
 
+function moxonRoom() { //actually moxons 
+    addObstacle(80, 0, 55, 120, { backgroundimage: "Assets/Images/DarkWood.jpg" }); 
+    SAD.play();
+    SAD.loop = true;
+    gameArea.style.backgroundImage = "url('Assets/Images/MoxonRoom.png')"
+    addObstacle(80, 240, 65, 65*2.5, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
+    addObstacle(80, 500, 490, 65, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
+    addObstacle(505, 240, 65, 65*4, { backgroundimage: "Assets/Images/grayWood.jpg" });
+    addObstacle(215, 255, 65, 130, { backgroundimage: "Assets/Images/grayWood.jpg" });
+    addObstacle(445, 60, 70, 70, { backgroundimage: "Assets/Images/Chair.png", blocksProjectiles: false });
+    addObstacle(135, 110, 70, 70, { backgroundimage: "Assets/Images/Chair.png", blocksProjectiles: false });
+    addObstacle(290, 250, 70, 60, { color: "black" });
+    addObstacle(327, 260, 30, 22, { backgroundimage: "Assets/Images/Projector.png" });
+    addObstacle(215, 340, 220, 65, { backgroundimage: "Assets/Images/grayWood.jpg" });
+    addObstacle(650-215-65, 255, 65, 130, { backgroundimage: "Assets/Images/grayWood.jpg" });
+}
+
 function englishRoom() {
     RITW.play();
     RITW.loop = true;
-    gameArea.style.backgroundImage = "url('MRFONGROOM.png')"
+    gameArea.style.backgroundImage = "url('Assets/Images/MRFONGROOM.png')"
 
-    addObstacle(80, 210, 65, 330, { color: "#F8DFA1" }); 
+    addObstacle(80, 210, 65, 330, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
     
 
-    addObstacle(490, 210, 65, 140, { color: "#F8DFA1" }); 
+    addObstacle(490, 210, 65, 140, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
 
-    addObstacle(490, 455, 65, 80, { color: "#F8DFA1" }); 
+    addObstacle(490, 455, 65, 80, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
 
-    addObstacle(215, 270, 200, 65, { color: "#F8DFA1" }); 
+    addObstacle(215, 270, 200, 65, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
     addObstacle(90, 260, 20, 25, { color: "#000000" }); 
 
     addObstacle(110, 430, 20, 25, { color: "#000000" }); 
 
-    addObstacle(215, 470, 200, 65, { color: "#F8DFA1" }); 
+    addObstacle(215, 470, 200, 65, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
     addObstacle(290, 490, 25, 20, { color: "#000000" }); 
-    addObstacle(415+12.5, 470+7.5, 50, 50, { color: "#000000", blocksProjectiles: false}); 
+    addObstacle(415+12.5-10, 470+7.5-10, 70, 70, { backgroundimage: "Assets/Images/Chair.png", blocksProjectiles: false}); 
     addObstacle(500, 0, 70, 130, { color: "#947A54" }); 
-    addObstacle(540, 60, 25, 32, { color: "#a7a7a7" }); 
-    addObstacle(540+12, 60+13.5, 5, 5, { color: "#eeeeee" }); 
-    addObstacle(497.5-20, 575, 120, 65, { color: "#434343"}); 
-    addObstacle(80, 0, 65, 65, { color: "#F8DFA1" }); 
+    addObstacle(540, 60, 25, 32, { backgroundimage: "Assets/Images/Macbook.png" }); 
+    addObstacle(497.5-20, 575, 120, 65, {  backgroundimage: "Assets/Images/PlayerHUDBG.jpg" }); 
+    addObstacle(80, 0, 65, 65, { backgroundimage: "Assets/Images/grayWood.jpg" }); 
     
 
     
@@ -2371,16 +2595,16 @@ function englishRoom() {
 function physicsRoom() {
     PILINGBODIES.play();
     PILINGBODIES.loop = true;
-    gameArea.style.backgroundImage = "url('PhysicsClass.png')"
+    gameArea.style.backgroundImage = "url('Assets/Images/PhysicsClass.png')"
 
     addObstacle(175, 120, 300, 80, { color: "#6699cc" }); 
     addObstacle(550, 0, 100, 70, { color: "#55342b" }); 
-    addObstacle(0, 290, 160, 65, { color: "#F8DFA1" }); 
-    addObstacle(245, 340, 160, 65, { color: "#F8DFA1" }); 
-    addObstacle(490, 290, 160, 65, { color: "#F8DFA1" });
-    addObstacle(0, 290+170, 160, 65, { color: "#F8DFA1" }); 
-    addObstacle(245, 340+170, 160, 65, { color: "#F8DFA1" }); 
-    addObstacle(490, 290+170, 160, 65, { color: "#F8DFA1" });  
+    addObstacle(0, 290, 160, 65, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(245, 340, 160, 65, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(490, 290, 160, 65, { backgroundimage: "Assets/Images/Oak.jpg" });
+    addObstacle(0, 290+170, 160, 65, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(245, 340+170, 160, 65, { backgroundimage: "Assets/Images/Oak.jpg" }); 
+    addObstacle(490, 290+170, 160, 65, { backgroundimage: "Assets/Images/Oak.jpg" });  
     
 
     
@@ -2599,19 +2823,19 @@ function update(timestamp) {
 
 
         if (CurrWeap == 0 && !attack) {
-            player.src = "PlayerMC.png"
+            player.src = "Assets/Images/PlayerMC.png"
         }
         if (CurrWeap == 1 && !attack) {
-            player.src = "Player.png"
+            player.src = "Assets/Images/Player.png"
         }
         if (CurrWeap == 2 && !attack) {
-            player.src = "Player2.png"
+            player.src = "Assets/Images/Player2.png"
         }
         if (CurrWeap == 3 && !attack) {
-            player.src = "Player3.png"
+            player.src = "Assets/Images/Player3.png"
         }
         if (CurrWeap == 4 && !attack) {
-            player.src = "Player4.png"
+            player.src = "Assets/Images/Player4.png"
         }
 
         
@@ -2680,7 +2904,7 @@ function update(timestamp) {
             CurrWeap = 1;
             attack = false; 
             
-            Atdelay = 15/(60/fps);
+            Atdelay = 15/(fps/60);
             attackingDelay = 20000;
             }
             
@@ -2688,7 +2912,7 @@ function update(timestamp) {
             CurrWeap = 2;
             attack = false; 
             
-            Atdelay = 5/(60/fps);
+            Atdelay = 5/(fps/60);
             attackingDelay = 20000;
             }
 
@@ -2696,7 +2920,7 @@ function update(timestamp) {
             CurrWeap = 3;
             attack = false; 
             
-            Atdelay = 30/(60/fps);
+            Atdelay = 30/(fps/60);
             attackingDelay = 20000;
             }
 
@@ -2704,7 +2928,7 @@ function update(timestamp) {
             CurrWeap = 4;
             attack = false; 
             
-            Atdelay = 15/(60/fps);
+            Atdelay = 15/(fps/60);
             attackingDelay = 20000;
             }
 
@@ -2712,7 +2936,7 @@ function update(timestamp) {
             CurrWeap = 0;
             attack = false; 
             
-            Atdelay = 15/(60/fps);
+            Atdelay = 15/(fps/60);
             attackingDelay = 20000;
             }
                 
@@ -2949,15 +3173,15 @@ function update(timestamp) {
     player.style.transform = `translate(-50%, -50%) rotate(${angleDeg+180}deg)`;       
     if (attack) {
         if (CurrWeap == 0) {
-            player.src = "PlayerAttackingMC.png";
+            player.src = "Assets/Images/PlayerAttackingMC.png";
         } else if (CurrWeap == 1) {
-            player.src = "PlayerAttacking.png";
+            player.src = "Assets/Images/PlayerAttacking.png";
         } else if (CurrWeap == 2) {
-            player.src = "PlayerAttacking2.png";
+            player.src = "Assets/Images/PlayerAttacking2.png";
         } else if (CurrWeap == 3) {
-            player.src = "PlayerAttacking3.png";
+            player.src = "Assets/Images/PlayerAttacking3.png";
         } else if (CurrWeap == 4) {
-            player.src = "PlayerAttacking4.png";
+            player.src = "Assets/Images/PlayerAttacking4.png";
         }
         player.style.transform = `translate(-50%, -50%) rotate(${angleDeg+180}deg)`;
     }
@@ -3014,7 +3238,7 @@ function update(timestamp) {
                         spawntime = 0;
                     }
         }
-        if (spawnEnemy <2 && spawnEnemy > 1.9 && showerCount<2 && Wave>2) { 
+        if (spawnEnemy <2 && spawnEnemy > 1.9 && showerCount<2 && Wave>3) { 
                     if (EnemySpawnCampaign('shower')) {
                         spawntime = 0;
                     }
@@ -3023,6 +3247,11 @@ function update(timestamp) {
                     if (EnemySpawnCampaign('score')) {
                         spawntime = 0;
                     }
+        }
+        if (spawnEnemy > 3 && spawnEnemy < 3.25 && tankCount<3 && Wave>2) {
+            if (EnemySpawnCampaign('mason')) {
+                spawntime = 0;
+            }
         }
 
     }
@@ -3067,7 +3296,7 @@ function update(timestamp) {
     }
     
    enemies.forEach((enemy, idx) => {
-       if (!colliding[idx] && (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank)) {
+       if (!colliding[idx] && (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank || enemy instanceof PinkyCharger)) {
             const enemyCenterX = enemy.x + (enemy.width ? enemy.width/2 : 0);
             const enemyCenterY = enemy.y + (enemy.height ? enemy.height/2 : 0);
             let targetX = x;
@@ -3157,7 +3386,7 @@ function update(timestamp) {
                 
 
                 
-            }  else if (enemy instanceof Charger || enemy instanceof RangedCharger) {
+            }  else if (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof PinkyCharger) {
                 if (!invinc) {
                     playerhp -= Math.floor((enemy.damage + Math.floor(Math.random() * 5)) * (0.9 + Wave / 10) ** 2);
                     if (playerhp <= 0) {
@@ -3298,11 +3527,11 @@ function update(timestamp) {
         if (shanEl) {
             
             if (sanity <= 33) {
-                shanEl.src = "ShanDisappointed.webp";
+                shanEl.src = "Assets/Images/ShanDisappointed.webp";
             } else if (sanity <= 66) {
-                shanEl.src = "NormalShan.webp";
+                shanEl.src = "Assets/Images/NormalShan.webp";
             } else {
-                shanEl.src = "HappyShan.webp";
+                shanEl.src = "Assets/Images/HappyShan.webp";
             }
 
             
@@ -3489,7 +3718,7 @@ function update(timestamp) {
             
             
             
-            projEl.style.backgroundImage = "url('SP.png')";
+            projEl.style.backgroundImage = "url('Assets/Images/SP.png')"
             
             projEl.style.backgroundSize = "cover";
             projEl.style.backgroundRepeat = "no-repeat";
@@ -3708,7 +3937,7 @@ function update(timestamp) {
             const projRect = p.el.getBoundingClientRect();
             for (let i = 0; i < enemies.length; i++) {
                 const enemy = enemies[i];
-                if (!(enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank)) continue;
+                if (!(enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank || enemy instanceof PinkyCharger)) continue;
                 const enemyRect = enemy.el.getBoundingClientRect();
                 const overlap = !(projRect.right < enemyRect.left || projRect.left > enemyRect.right || projRect.bottom < enemyRect.top || projRect.top > enemyRect.bottom);
                 if (overlap) {
@@ -3732,7 +3961,7 @@ function update(timestamp) {
     }
     
     enemies.forEach(enemy => {
-        if (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank) {
+        if (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank || enemy instanceof PinkyCharger) {
             enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
         }
     });
@@ -3866,11 +4095,11 @@ if (playerhp <= 0) {
     } 
     
     if (sanity <= 33) {
-        document.getElementById("ShanImage").src = "ShanDisappointed.webp";
+        document.getElementById("ShanImage").src = "Assets/Images/ShanDisappointed.webp";
     }else if (sanity <= 66) {
-        document.getElementById("ShanImage").src = "NormalShan.webp";
+        document.getElementById("ShanImage").src = "Assets/Images/NormalShan.webp";
     } else {
-        document.getElementById("ShanImage").src = "HappyShan.webp";
+        document.getElementById("ShanImage").src = "Assets/Images/HappyShan.webp";
     }
     
     requestAnimationFrame(update);
@@ -3955,6 +4184,8 @@ function showMainMenu() {
     RITW.currentTime = 0;
     RITW.pause();
     RITW.currentTime = 0;
+    SAD.pause();
+    SAD.currentTime = 0;
     PILINGBODIES.pause();
     PILINGBODIES.currentTime = 0;
     backgroundMusic.play()
@@ -4075,19 +4306,19 @@ async function startGameFromMenu() {
         document.getElementById("WaveTitle").innerHTML = "Level";
 
         
-        startCutscene("ShanPFP.png", 3000, "Shanvanth: Must do calculus... ARGH", "LovedayBack.jpg");
+        startCutscene("Assets/Images/ShanPFP.png", 3000, "Shanvanth: Must do calculus... ARGH", "Assets/Images/LovedayBack.jpg");
         await sleep(3000);
-        startCutscene("DomPFP.png", 2000, "Dominic: Shaun... shut it. ", "LovedayBack.jpg");
+        startCutscene("Assets/Images/DomPFP.png", 2000, "Dominic: Shaun... shut it. ", "Assets/Images/LovedayBack.jpg");
         await sleep(2000);
-        startCutscene("ShanPFP.png", 1000, "Shanvanth: I'm not.. I... ", "LovedayBack.jpg");
+        startCutscene("Assets/Images/ShanPFP.png", 1000, "Shanvanth: I'm not.. I... ", "Assets/Images/LovedayBack.jpg");
         await sleep(1000);
-        startCutscene("", 5000, "Shanvanth: This calculus... It's too easy... I must go back to the future!", "BlackScreen.jpg");
+        startCutscene("", 5000, "Shanvanth: This calculus... It's too easy... I must go back to the future!", "Assets/Images/BlackScreen.jpg");
         await sleep(5000);
-        startCutscene("", 2500, "Dominic: Uh... Shanvanth what are you doing??", "BlackScreen.jpg");
+        startCutscene("", 2500, "Dominic: Uh... Shanvanth what are you doing??", "Assets/Images/BlackScreen.jpg");
         await sleep(2500);
-        startCutscene("", 3500, "Shanvanth: WHY ARE THERE... SO MANY OF YOU... MUST KILL THEM ALL... ", "BlackScreen.jpg");
+        startCutscene("", 3500, "Shanvanth: WHY ARE THERE... SO MANY OF YOU... MUST KILL THEM ALL... ", "Assets/Images/BlackScreen.jpg");
         await sleep(3500);
-        startCutscene("", 4500, "Dominic: Shaun..?", "BlackScreen.jpg");
+        startCutscene("", 4500, "Dominic: Shaun..?", "Assets/Images/BlackScreen.jpg");
         await sleep(4500);
         console.log("Level:",level);
         
@@ -4099,12 +4330,12 @@ async function startGameFromMenu() {
         document.getElementById("WaveTitle").innerHTML = "Level";
         console.log("Level:",level);
         
-        startCutscene("ShanPFP.png", 3000, "Huhhhhh?", "LovedayBack.jpg");
+        startCutscene("Assets/Images/ShanPFP.png", 3000, "Huhhhhh?", "Assets/Images/LovedayBack.jpg");
         await sleep(3000);
 
 
 
-        startCutscene("ShanPFP.png", 3000, "wdaddqd", "LovedayBack.jpg");
+        startCutscene("Assets/Images/ShanPFP.png", 3000, "wdaddqd", "Assets/Images/LovedayBack.jpg");
         await sleep(3000);
         
         CampEnemyCount = 10; 
@@ -4169,6 +4400,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const m2 = document.getElementById("map2");
     const m3 = document.getElementById("map3");
     const m4 = document.getElementById("map4");
+    const m5 = document.getElementById("map5");
     const o1 = document.getElementById("options1");
     const o2 = document.getElementById("options2");
     const o3 = document.getElementById("options3");
@@ -4336,6 +4568,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (m2) m2.addEventListener("click", () => chooseMap(2));
         if (m3) m3.addEventListener("click", () => chooseMap(3));
         if (m4) m4.addEventListener("click", () => chooseMap(4));
+        if (m5) m5.addEventListener("click", () => chooseMap(5));
         
     }
 
@@ -4352,6 +4585,8 @@ document.addEventListener("DOMContentLoaded", () => {
             englishRoom();
         } else if (map == 4) {
             physicsRoom();
+        } else if (map == 5) {
+            moxonRoom();
         }
         camplevel = 1;
         startGameFromMenu();
@@ -4408,6 +4643,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
     if (m3) m3.addEventListener("mouseenter", () => setMDesc("Difficulty: Medium.<br>Description: A semi open room with desks and chairs all over. Shanvanth must face his lunch room's actual purpose."));
     if (m4) m4.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: Shanvanth's physics room, turned into a colloseum. Ms. Labrash's Table plan now gets in the way of Shanvanth's shots and movements, who will struggle to survive."));
+    if (m5) m5.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy.<br>Description: Shanvanth digs more into his mind... is something.. wrong with him? A semi open map, something seriously wrong must have happened in here..."));
     
     const clearmapDesc = () => setMDesc("");
     if (m0) m0.addEventListener("mouseleave", clearmapDesc);
@@ -4415,6 +4651,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (m2) m2.addEventListener("mouseleave", clearmapDesc);
     if (m3) m3.addEventListener("mouseleave", clearmapDesc);
     if (m4) m4.addEventListener("mouseleave", clearmapDesc);
+    if (m5) m5.addEventListener("mouseleave", clearmapDesc);
 
 
     if (o1) o1.addEventListener("mouseenter", () => setOptDesc("Toggle background music on or off. Turns off both the menu and in-game music."));
