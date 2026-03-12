@@ -895,7 +895,7 @@ window.onload = function() {
 
 
 
-
+    document.getElementById("TrueLoadingText").innerHTML = "Loading Scaling...";
 
     
 
@@ -1046,6 +1046,7 @@ window.onload = function() {
         
 
     }
+    
     function loadInGame() {
         for (let i = 0; i < 61; i++) {
             setTimeout(() => {
@@ -1079,6 +1080,8 @@ window.onload = function() {
     }
         
     }
+
+    document.getElementById("TrueLoadingText").innerHTML = "Loading Assets...";
     preloadImages(imagePaths).then(() => {
         loadInGame();
     }).catch((error) => {

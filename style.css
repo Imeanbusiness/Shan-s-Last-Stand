@@ -69,6 +69,12 @@ html {
   color: white;
 }
 
+.LoadingTextContainer {
+
+  display: grid;
+  grid-template-rows: 80px 50px;
+}
+
 .LoadingText {
   /* Shorthand animation property: name, duration, timing, delay, iteration-count, direction */
   animation: fadeInOut 1s ease-in-out infinite alternate;
