@@ -712,14 +712,6 @@ window.onload = function() {
     document.body.backgroundSize = "cover";
 
     // Preload images
-    preloadImages(imagePaths).then(() => {
-        document.getElementById("LoadingDisplay").style.display = "none";
-        document.getElementById("ClickToPlay").style.display = "flex";
-    }).catch((error) => {
-        console.error('Failed to preload images:', error);
-        document.getElementById("LoadingDisplay").style.display = "none";
-        document.getElementById("ClickToPlay").style.display = "flex";
-    });
 
     
 
@@ -1054,39 +1046,48 @@ window.onload = function() {
         
 
     }
+    function loadInGame() {
+        for (let i = 0; i < 61; i++) {
+            setTimeout(() => {
+                document.getElementById("LoadingDisplay").style.opacity = (60-i)/60;
+                console.log((60-i)/60)
+                if (i == 60) {
+                    document.getElementById("LoadingDisplay").style.display = "none";
+                    viewportWidth = window.innerWidth;
+                    viewportHeight = window.innerHeight;
+                    WindowPixels = viewportHeight * viewportWidth;
+                    intendedWindowSize = 1920 * 1080;
+    
+                    console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
+                    console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
+                    
+    
+                    BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
+    
+                    body.style.width = viewportWidth/BodyZoom + "px";
+                    body.style.height = viewportHeight/BodyZoom + "px";
+    
+    
+    
+    
+                    document.body.style.zoom = BodyZoom;
+                    document.body.backgroundSize = "cover";
+                }
+                
+            }, 16*i)
+
+    }
+        
+    }
+    preloadImages(imagePaths).then(() => {
+        loadInGame();
+    }).catch((error) => {
+        console.error('Failed to preload images:', error);
+        loadInGame();
+    });
 
 
     
-    for (let i = 0; i < 61; i++) {
-        setTimeout(() => {
-            document.getElementById("LoadingDisplay").style.opacity = (60-i)/60;
-            console.log((60-i)/60)
-            if (i == 60) {
-                document.getElementById("LoadingDisplay").style.display = "none";
-                viewportWidth = window.innerWidth;
-                viewportHeight = window.innerHeight;
-                WindowPixels = viewportHeight * viewportWidth;
-                intendedWindowSize = 1920 * 1080;
-
-                console.log("Viewport Size: " + viewportWidth + "x" + viewportHeight);
-                console.log(Math.sqrt((WindowPixels / intendedWindowSize)));
-                
-
-                BodyZoom = Math.sqrt((WindowPixels / intendedWindowSize)) * 1.2;
-
-                body.style.width = viewportWidth/BodyZoom + "px";
-                body.style.height = viewportHeight/BodyZoom + "px";
-
-
-
-
-                document.body.style.zoom = BodyZoom;
-                document.body.backgroundSize = "cover";
-            }
-            
-        }, 16*i)
-        
-    }
 
 
 
