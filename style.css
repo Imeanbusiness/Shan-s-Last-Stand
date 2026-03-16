@@ -42,7 +42,7 @@ html {
   inset: 0;             /* top:0; right:0; bottom:0; left:0; */
   width: 100%;
   height: 100%;
-  z-index: 10000000;    /* ensure it's above other UI */
+  z-index: 10000000000;    /* ensure it's above other UI */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -317,6 +317,20 @@ body {
 #mapDesc {
     position: absolute;
   left: 65%;
+  top: 50%;
+  transform: translateY(-50%);
+  min-width: 260px;
+  min-height: 120px;
+  border: 2px solid red;
+  background: rgba(255,255,255,0);
+  color: red;
+  padding: 12px;
+  display: none;
+}
+
+#survivalDesc {
+    position: absolute;
+  left: 70%;
   top: 50%;
   transform: translateY(-50%);
   min-width: 260px;
@@ -696,9 +710,8 @@ a.btn,
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 10000;
+    z-index: 100000000000;
     color: white;
-    //font-family: Arial, sans-serif;
 }
 
 .game-overlay-content {
@@ -739,4 +752,101 @@ a.btn,
 
 #pauseMenu, #deathMenu, #arenaMenu {
     display: none;
+}
+
+.PlayerProfile {
+  position: absolute;
+  top: 85%;
+  left: 0%;
+  width: 450px;
+  height: 100px;
+  border: solid 2px red;
+  border-radius: 0px 0px 30px 0px;
+  color: red;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: 90px 245px 100px;
+  box-shadow: 0 0 8px red;
+  text-shadow: 0 0 8px red;
+  align-items: center;
+  z-index: 999999;
+}
+
+.PlayerStatArea {
+  margin-top: 9px;
+  margin-bottom: 10px;
+  height: 81px;
+  grid-template-rows: 27px 27px 27px;
+}
+
+
+.profileStat {
+  margin: 0;
+}
+
+#profilePicture {
+  width: 90px;
+  height: 90px;
+}
+
+#pfpSelect {
+  display: grid;
+  height: 510px;
+  width: 510px;
+}
+
+.selectMenu {
+  display: grid;
+  height: 510px;
+  width: 510px;
+  grid-template-columns: 170px 170px 170px;
+   overflow-y: auto;
+   overflow-x: hidden;
+   scrollbar-width: 5px;
+   scrollbar-color: red rgb(0, 0 ,0 ,0);
+   
+}
+
+.pfpImage {
+  position: relative;
+  height: 120px;
+  width: 120px;
+}
+
+.mapImage {
+  position: relative;
+  height: 120px;
+  width: 120px;
+  border-radius: 10px;
+}
+
+.pfpText {
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.survivalText {
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-size: 15px;
+}
+
+.selectItem {
+  height: 170px;
+  width: 170px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.realMenu {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
 }

@@ -1,11 +1,21 @@
 let fps = 60;
 let frameDuration = 1000 / fps;
 
+let trueLevel = 1;
+let trueXP = 10;
+let trueXPCap = 10;
+let PlayerName = "Player";
+let ProfilePicture = "1";
+
+
 function StartTheGame() {
+    document.getElementById("PlayerProfile").style.opacity = 0;
     document.getElementById("mainMenu").style.display = "flex";
+    document.getElementById("PlayerProfile").style.display = "grid";
     for (let i = 0; i < 61; i++) {
         setTimeout(() => {
             document.getElementById("mainMenu").style.opacity = i/60;
+            document.getElementById("PlayerProfile").style.opacity = i/60;
             document.getElementById("ClickToPlay").style.opacity = (60-i)/60;
             console.log((60-i)/60)
             if (i == 60) {
@@ -33,6 +43,84 @@ function StartTheGame() {
             
         }, 16*i)
         
+    }
+    
+}
+
+function setProfilePicture (pfpId) {
+    switch (pfpId) {
+        case "1": return "Assets/Images/Player.png";
+        case "2": return "Assets/Images/Dom.png";
+        case "3": return "Assets/Images/Zuk.png";
+        case "4": return "Assets/Images/Cheng.png";
+        case "5": return "Assets/Images/Mason.png";
+    }
+    return "Assets/Images/Player.png"
+}
+
+function GetPlayerTitle(level) {
+    if (level >= 100) {
+        return "THE CALC SLAYER"
+    } else if (level >= 95) {
+        return "CALC VETERAN"
+    } else if (level >= 90) {
+        return "CALC WARRIOR"
+    } else if (level >= 85) {
+        return "CALC WARRIOR"
+    } else if (level >= 80) {
+        return "CALC ROOKIE"
+    } else if (level >= 75) {
+        return "CALC NOOB"
+    } else if (level >= 70) {
+        return "PRECALC SLAYER"
+    } else if (level >= 65) {
+        return "PRECALC VETERAN"
+    } else if (level >= 60) {
+        return "PRECALC WARRIOR"
+    } else if (level >= 55) {
+        return "PRECALC SURVIVOR"
+    } else if (level >= 50) {
+        return "ALGEBRA MASTER"
+    } else if (level >= 45) {
+        return "ALGEBRA VETERAN"
+    } else if (level >= 40) {
+        return "ALGEBRA WARRIOR"
+    } else if (level >= 35) {
+        return "ALGEBRA SURVIVOR"
+    } else if (level >= 30) {
+        return "SLAYER"
+    } else if (level >= 25) {
+        return "VETERAN"
+    } else if (level >= 20) {
+        return "WARRIOR"
+    } else if (level >= 15) {
+        return "SURVIVOR"
+    } else if (level >= 10) {
+        return "EXPERIENCED NOOB"
+    } else if (level >= 5) {
+        return "BETTER NOOB"
+    } else {
+        return "NOOB"
+    }
+
+
+}
+
+function convertBigNumber(num) {
+    if (num >= 1e18) {
+        return (num / 1e18).toFixed(1) + "Q";
+    } else if (num >= 1e15) {
+        return (num / 1e15).toFixed(1) + "q";
+    } if (num >= 1e12) {
+        return (num / 1e12).toFixed(1) + "T";
+    } else if (num >= 1e9) {
+        return (num / 1e9).toFixed(1) + "B";
+    } else if (num >= 1e6) {
+        return (num / 1e6).toFixed(1) + "M";
+    } else if (num >= 1e3) {
+        return (num / 1e3).toFixed(1) + "K";
+    } else {
+        return num;
     }
     
 }
@@ -615,6 +703,29 @@ function SFXVolume(volume) {
 
 window.onload = function() {
 
+    if (!localStorage.getItem(Filename+"hasVisited3")) {
+        localStorage.setItem(Filename+"hasVisited3", "true");
+        localStorage.setItem(Filename+"XP", "0");
+        localStorage.setItem(Filename+"Level", "1");
+        localStorage.setItem(Filename+"PlayerName", "Player");
+        localStorage.setItem(Filename+"ProfilePicture", "1");
+
+    } else {
+        trueXP = parseInt(localStorage.getItem(Filename+"XP"));
+        trueLevel = parseInt(localStorage.getItem(Filename+"Level"));
+        PlayerName = localStorage.getItem(Filename+"PlayerName");
+        ProfilePicture = localStorage.getItem(Filename+"ProfilePicture");
+    }
+
+
+    trueXPCap = Math.floor(5000 * (1.1 ** (trueLevel-1)));
+    
+    document.getElementById("PlayerLevel").innerHTML =  trueLevel;
+    document.getElementById("PlayerXP").innerHTML =  "XP: " + convertBigNumber(trueXP) +" / " + convertBigNumber(trueXPCap);
+    document.getElementById("PlayerTitle").innerHTML = GetPlayerTitle(trueLevel);
+    document.getElementById("PlayerName").innerHTML = PlayerName;
+
+
     if (!localStorage.getItem(Filename+"hasVisited2")) {
         localStorage.setItem(Filename+"hasVisited2", "true");
         localStorage.setItem(Filename+"FPSCap", "60")
@@ -1080,7 +1191,7 @@ window.onload = function() {
     }
         
     }
-
+    loadProfile();
     document.getElementById("TrueLoadingText").innerHTML = "Loading Assets...";
     preloadImages(imagePaths).then(() => {
         loadInGame();
@@ -3638,7 +3749,7 @@ function update(timestamp) {
                         } else {
                             
                             try {
-                                if (enemy.hpText) enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+                                if (enemy.hpText) enemy.hpText.innerText = convertBigNumber(Math.ceil(enemy.enemyHP));
                             } catch (e) {}
                             
                             return true; 
@@ -3693,7 +3804,7 @@ function update(timestamp) {
                         } else {
                             
                             try {
-                                if (enemy.hpText) enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+                                if (enemy.hpText) enemy.hpText.innerText = convertBigNumber(Math.ceil(enemy.enemyHP));
                             } catch (e) {}
                             
                             return true; 
@@ -3874,7 +3985,7 @@ function update(timestamp) {
                         } else {
                             
                             try {
-                                if (enemy.hpText) enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+                                if (enemy.hpText) enemy.hpText.innerText = convertBigNumber(Math.ceil(enemy.enemyHP));
                             } catch (e) {}
                             
                             return true; 
@@ -3966,7 +4077,7 @@ function update(timestamp) {
     
     enemies.forEach(enemy => {
         if (enemy instanceof Charger || enemy instanceof RangedCharger || enemy instanceof Tank || enemy instanceof PinkyCharger) {
-            enemy.hpText.innerText = Math.ceil(enemy.enemyHP);
+            enemy.hpText.innerText = convertBigNumber(Math.ceil(enemy.enemyHP));
         }
     });
 }
@@ -4085,6 +4196,33 @@ if (playerhp <= 0) {
                     `Best Time: ${localStorage.getItem(Filename+"Time")} seconds<br>` +
                     `Highest Wave: ${localStorage.getItem(Filename+"Wave")}`;
             }
+
+            trueXP += score;
+            let leveledup = 0;
+            while (true) {
+                trueXPCap = Math.floor(5000 * (1.1 ** (trueLevel-1)));
+
+                if (trueXP < trueXPCap) {
+                    break;
+                }
+                trueXP -= trueXPCap;
+                trueLevel++;
+                leveledup++;
+            }
+
+            trueXPCap = Math.floor(5000 * (1.1 ** (trueLevel-1)))
+
+            let xpText = "You earned " + convertBigNumber(score) + " XP. ";
+
+            if (leveledup > 0) {
+                xpText += "<br>You leveled up " + leveledup + " times.<br>You are now level " + trueLevel + ".";
+            }
+
+            localStorage.setItem(Filename+"XP", trueXP);
+            localStorage.setItem(Filename+"XPCap", trueXPCap);
+            localStorage.setItem(Filename+"Level", trueLevel);
+
+            document.getElementById('XPStats').innerHTML = xpText;
             
             showOverlay('deathMenu');
             document.getElementById('restartButton').onclick = () => {
@@ -4115,7 +4253,14 @@ if (playerhp <= 0) {
 
 requestAnimationFrame(update);
 
-
+function loadProfile() {
+    ProfilePicture = localStorage.getItem(Filename+"ProfilePicture");
+    document.getElementById("PlayerLevel").innerHTML =  trueLevel;
+    document.getElementById("PlayerXP").innerHTML =  "XP: " + convertBigNumber(trueXP) +" / " + convertBigNumber(trueXPCap);
+    document.getElementById("PlayerTitle").innerHTML = GetPlayerTitle(trueLevel);
+    document.getElementById("PlayerName").innerHTML = PlayerName;
+    document.getElementById("profilePicture").src = setProfilePicture(ProfilePicture);
+}
 
 let gameStarted = false;
 let difficultyLevel = 1; 
@@ -4130,6 +4275,7 @@ function showGameUI() {
     const hud = document.getElementById("playerHUD");
     const maps = document.getElementById("mapMenu");
     const fpsco = document.getElementById("FPSCounter");
+    const pp = document.getElementById("PlayerProfile");
     if (fpsco) fpsco.style.display = "flex";
     if (menu) menu.style.display = "none";
     if (diff) diff.style.display = "none";
@@ -4137,6 +4283,7 @@ function showGameUI() {
     if (opt) opt.style.display = "none";
     if (area) area.style.display = "block";
     if (hud) hud.style.display = "grid";
+    if (pp) pp.style.display = "none";
     backgroundMusic.pause();
     backgroundMusic.currentTime = 0;
     if (device == "phone" || device == "tablet") {
@@ -4174,12 +4321,14 @@ function showMainMenu() {
     const area = document.getElementById("gameArea");
     const hud = document.getElementById("playerHUD");
     const fpsco = document.getElementById("FPSCounter");
+    const pp = document.getElementById("PlayerProfile");
     if (fpsco) fpsco.style.display = "none";
     if (menu) menu.style.display = "flex";
     if (diff) diff.style.display = "none";
     if (area) area.style.display = "none";
     if (opt) opt.style.display = "none";
     if (hud) hud.style.display = "none";
+    if (pp) pp.style.display = "grid";
     TheyDontStopComing.pause();
     TheyDontStopComing.currentTime = 0;
     ATMOC.pause();
@@ -4194,6 +4343,7 @@ function showMainMenu() {
     PILINGBODIES.currentTime = 0;
     backgroundMusic.play()
     backgroundMusic.loop = true;
+    loadProfile();
 }
 
 
@@ -4388,17 +4538,23 @@ document.addEventListener("DOMContentLoaded", () => {
     const diffMenu = document.getElementById("difficultyMenu");
     const optMenu = document.getElementById("optionsMenu");
     const mainMenu = document.getElementById("mainMenu");
+    const survivalMenu = document.getElementById("survivalMenu");
+    const survivalBtn = document.getElementById("survivalButton");
     const backBtn = document.getElementById("backToMain");
     const backBtn2 = document.getElementById("backToMain2");
     const backBtn3 = document.getElementById("backToMain3");
+    const backBtn4 = document.getElementById("backToMain4");
+    const backBtn5 = document.getElementById("backToMain5");
     const d1 = document.getElementById("difficulty1");
     const d2 = document.getElementById("difficulty2");
     const d3 = document.getElementById("difficulty3");
     const d4 = document.getElementById("difficulty4");
     const diffDesc = document.getElementById("difficultyDesc");
     const mapDesc = document.getElementById("mapDesc");
+    const survivalDesc = document.getElementById("survivalDesc");
     const optDesc = document.getElementById("optionsDesc");
     const mapmenu = document.getElementById("mapMenu");
+    const pfpMenu = document.getElementById("pfpMenu");
     const m0 = document.getElementById("map0");
     const m1 = document.getElementById("map1");
     const m2 = document.getElementById("map2");
@@ -4409,6 +4565,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const o2 = document.getElementById("options2");
     const o3 = document.getElementById("options3");
     const o4 = document.getElementById("options4");
+    const o5 = document.getElementById("options5");
+    const o6 = document.getElementById("options6");
+    const p1 = document.getElementById("PFP1");
+    const p2 = document.getElementById("PFP2");
+    const p3 = document.getElementById("PFP3");
+    const p4 = document.getElementById("PFP4");
+    const p5 = document.getElementById("PFP5");
+    let chosenMap = 0;
     if (helpBtn) helpBtn.addEventListener("click", () => {
            window.open("help.html", "_blank");
 
@@ -4418,17 +4582,11 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("dmTitle").innerHTML = "STATS"
          let SHS = localStorage.getItem(Filename+"SHS");
          document.getElementById('deathStats').innerHTML = "";
-        if (true) {
+         document.getElementById('XPStats').innerHTML = "";
             document.getElementById('highScoreStats').innerHTML = 
                 `High Score: ${localStorage.getItem(Filename+"HS")}<br>` +
                 `Best Time: ${localStorage.getItem(Filename+"Time")} seconds<br>` +
                 `Highest Wave: ${localStorage.getItem(Filename+"Wave")}`;
-        } else {
-            document.getElementById('highScoreStats').innerHTML = 
-                `High Score: ${0}<br>` +
-                `Best Time: ${0} seconds<br>` +
-                `Highest Wave: ${0}`;
-        }
         
         showOverlay('deathMenu');
         document.getElementById('restartButton').onclick = () => {
@@ -4440,7 +4598,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (playBtn) playBtn.addEventListener("click", (e) => {
         e.preventDefault();
         if (mainMenu) mainMenu.style.display = "none";
-        if (diffMenu) diffMenu.style.display = "flex";
+        if (mapmenu) mapmenu.style.display = "flex";
+        loadProfile();
+    });
+
+    if (survivalBtn) survivalBtn.addEventListener("click", (e) => {
+        e.preventDefault();
+        if (mapmenu) mapmenu.style.display = "none";
+        if (survivalMenu) survivalMenu.style.display = "flex";
+        loadProfile();
     });
 
     if (optBtn) optBtn.addEventListener("click", (e) => {
@@ -4481,16 +4647,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (backBtn) backBtn.addEventListener("click", () => {
      
-
+            loadProfile();
             if (diffMenu) diffMenu.style.display = "none";
-            if (mainMenu) mainMenu.style.display = "flex";
+            if (mapmenu) mapmenu.style.display = "flex";
 
         
     });
 
      if (backBtn2) backBtn2.addEventListener("click", () => {
      
-       
+            loadProfile();
             if (mapmenu) mapmenu.style.display = "none";
             if (mainMenu) mainMenu.style.display = "flex";
 
@@ -4500,9 +4666,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (backBtn3) backBtn3.addEventListener("click", () => {
      
-       
+            loadProfile();
             if (optMenu) optMenu.style.display = "none";
             if (mainMenu) mainMenu.style.display = "flex";
+
+        
+    });
+
+    if (backBtn4) backBtn4.addEventListener("click", () => {
+            loadProfile();
+       
+            if (pfpMenu) pfpMenu.style.display = "none";
+            if (optMenu) optMenu.style.display = "flex";
+
+        
+    });
+
+    if (backBtn5) backBtn5.addEventListener("click", () => {
+            loadProfile();
+       
+            if (survivalMenu) survivalMenu.style.display = "none";
+            if (mapmenu) mapmenu.style.display = "flex";
 
         
     });
@@ -4557,6 +4741,20 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         console.log("Show High Score set to:", localStorage.getItem(Filename+"SHS"));
     });
+
+    if (o5) o5.addEventListener("click", () => {
+        const newName = prompt("Insert your new player name:");
+        if (newName != PlayerName && newName != null && newName.trim() !== "") {
+            localStorage.setItem(Filename+"PlayerName", newName);
+            PlayerName = newName;
+            document.getElementById("PlayerName").innerHTML = PlayerName;
+        }
+    });
+
+    if (o6) o6.addEventListener("click", () => {
+        if (optMenu) optMenu.style.display = "none";
+        if (pfpMenu) pfpMenu.style.display = "flex";
+    });
     
     difficulty = 0;
     function chooseDifficulty(level) {
@@ -4564,17 +4762,28 @@ document.addEventListener("DOMContentLoaded", () => {
         difficulty = level; 
         diffMenu.style.display = "none";
         mapmenu.style.display = "flex";
+        chooseMap(chosenMap);
         
         
         
-        if (m0) m0.addEventListener("click", () => chooseMap(0));
-        if (m1) m1.addEventListener("click", () => chooseMap(1));
-        if (m2) m2.addEventListener("click", () => chooseMap(2));
-        if (m3) m3.addEventListener("click", () => chooseMap(3));
-        if (m4) m4.addEventListener("click", () => chooseMap(4));
-        if (m5) m5.addEventListener("click", () => chooseMap(5));
+        
         
     }
+
+    function MapChoice(map) {
+        chosenMap = map;
+        survivalMenu.style.display = "none";
+        diffMenu.style.display = "flex";
+    }
+    
+    if (m0) m0.addEventListener("click", () => {
+        alert("Sorry, the campaign is still being worked on right now!")
+    });
+    if (m1) m1.addEventListener("click", () => MapChoice(1));
+    if (m2) m2.addEventListener("click", () => MapChoice(2));
+    if (m3) m3.addEventListener("click", () => MapChoice(3));
+    if (m4) m4.addEventListener("click", () => MapChoice(4));
+    if (m5) m5.addEventListener("click", () => MapChoice(5));
 
     function chooseMap(map) {
         RoomType = map;
@@ -4596,6 +4805,33 @@ document.addEventListener("DOMContentLoaded", () => {
         startGameFromMenu();
 
     }
+
+    if (p1) p1.addEventListener("click", () => {
+        localStorage.setItem(Filename+"ProfilePicture", "1");
+        document.getElementById("profilePicture").src = setProfilePicture("1");
+    });
+
+    if (p2) p2.addEventListener("click", () => {
+        console.log("P2 clicked");
+        localStorage.setItem(Filename+"ProfilePicture", "2");
+        document.getElementById("profilePicture").src = setProfilePicture("2");
+    });
+
+    if (p3) p3.addEventListener("click", () => {
+        localStorage.setItem(Filename+"ProfilePicture", "3");
+        document.getElementById("profilePicture").src = setProfilePicture("3");
+    });
+
+    if (p4) p4.addEventListener("click", () => {
+        localStorage.setItem(Filename+"ProfilePicture", "4");
+        document.getElementById("profilePicture").src = setProfilePicture("4");
+    });
+
+    if (p5) p5.addEventListener("click", () => {
+        localStorage.setItem(Filename+"ProfilePicture", "5");
+        document.getElementById("profilePicture").src = setProfilePicture("5");
+    });
+
 
 
     function reallyChooseThat() {
@@ -4626,6 +4862,12 @@ document.addEventListener("DOMContentLoaded", () => {
         mapDesc.style.display = msg ? "block" : "none";
     }
 
+     function setSDesc(msg) {
+        if (!survivalDesc) return;
+        survivalDesc.innerHTML = msg;
+        survivalDesc.style.display = msg ? "block" : "none";
+    }
+
     function setOptDesc(msg) {
         if (!optDesc) return;
         optDesc.innerHTML = msg;
@@ -4642,31 +4884,38 @@ document.addEventListener("DOMContentLoaded", () => {
     if (d3) d3.addEventListener("mouseleave", clearDesc);
     if (d4) d4.addEventListener("mouseleave", clearDesc);
 
-    if (m0) m0.addEventListener("mouseenter", () => setMDesc("Difficulty: Harder than Calc III.<br>Description: The full expeirence of Shanvanth's Last Stand. WARNING: Not working yet"));
-    if (m1) m1.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy.<br>Description: Ah, Mr. Loveday's room, a nice open haven for Shanvanth. Now it has become a warzone. Where is Mr. Loveday?"));
-    if (m2) m2.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
-    if (m3) m3.addEventListener("mouseenter", () => setMDesc("Difficulty: Medium.<br>Description: A semi open room with desks and chairs all over. Shanvanth must face his lunch room's actual purpose."));
-    if (m4) m4.addEventListener("mouseenter", () => setMDesc("Difficulty: Hard.<br>Description: Shanvanth's physics room, turned into a colloseum. Ms. Labrash's Table plan now gets in the way of Shanvanth's shots and movements, who will struggle to survive."));
-    if (m5) m5.addEventListener("mouseenter", () => setMDesc("Difficulty: Easy.<br>Description: Shanvanth digs more into his mind... is something.. wrong with him? A semi open map, something seriously wrong must have happened in here..."));
+    if (m0) m0.addEventListener("mouseenter", () => setMDesc("The full expeirence of Shanvanth's Last Stand. WARNING: Not working yet"));
+    if (survivalBtn) survivalBtn.addEventListener("mouseenter", () => setMDesc("Endless waves of enemies that just keep getting stronger. How long can your survive?"));
+    if (m1) m1.addEventListener("mouseenter", () => setSDesc("Difficulty: Easy.<br>Description: Ah, Mr. Loveday's room, a nice open haven for Shanvanth. Now it has become a warzone. Where is Mr. Loveday?"));
+    if (m2) m2.addEventListener("mouseenter", () => setSDesc("Difficulty: Hard.<br>Description: A closed off room with chairs blocking the way. Shanvanth will get swarmed very quickly if he isn't efficient with his defence."));
+    if (m3) m3.addEventListener("mouseenter", () => setSDesc("Difficulty: Medium.<br>Description: A semi open room with desks and chairs all over. Shanvanth must face his lunch room's actual purpose."));
+    if (m4) m4.addEventListener("mouseenter", () => setSDesc("Difficulty: Hard.<br>Description: Shanvanth's physics room, turned into a colloseum. Ms. Labrash's Table plan now gets in the way of Shanvanth's shots and movements, who will struggle to survive."));
+    if (m5) m5.addEventListener("mouseenter", () => setSDesc("Difficulty: Easy.<br>Description: Shanvanth digs more into his mind... is something.. wrong with him? A semi open map, something seriously wrong must have happened in here..."));
     
     const clearmapDesc = () => setMDesc("");
+    const clearSDesc = () => setSDesc("");
     if (m0) m0.addEventListener("mouseleave", clearmapDesc);
-    if (m1) m1.addEventListener("mouseleave", clearmapDesc);
-    if (m2) m2.addEventListener("mouseleave", clearmapDesc);
-    if (m3) m3.addEventListener("mouseleave", clearmapDesc);
-    if (m4) m4.addEventListener("mouseleave", clearmapDesc);
-    if (m5) m5.addEventListener("mouseleave", clearmapDesc);
+    if (survivalBtn) survivalBtn.addEventListener("mouseleave", clearmapDesc);
+    if (m1) m1.addEventListener("mouseleave", clearSDesc);
+    if (m2) m2.addEventListener("mouseleave", clearSDesc);
+    if (m3) m3.addEventListener("mouseleave", clearSDesc);
+    if (m4) m4.addEventListener("mouseleave", clearSDesc);
+    if (m5) m5.addEventListener("mouseleave", clearSDesc);
 
 
     if (o1) o1.addEventListener("mouseenter", () => setOptDesc("Toggle background music on or off. Turns off both the menu and in-game music."));
     if (o2) o2.addEventListener("mouseenter", () => setOptDesc("Toggle sound effects on or off. Includes Death sounds, weapon sounds, enemy sounds, and the dash chime."));
     if (o3) o3.addEventListener("mouseenter", () => setOptDesc("Toggle whether to show your high score at the end of each game."));
     if (o4) o4.addEventListener("mouseenter", () => setOptDesc("Toggle FPS Cap from 60 to 30. If you're consistently running under 50 fps, or you are playing at a lower power mode, you should play on 30 fps. Play on 60 fps for the best experience."));
+    if (o5) o5.addEventListener("mouseenter", () => setOptDesc("Change your player name. This will be used for your player profile"));
+    if (o6) o6.addEventListener("mouseenter", () => setOptDesc("Change your player profile picture to a character in game."));
     const clearOptDesc = () => setOptDesc("");
     if (o1) o1.addEventListener("mouseleave", clearOptDesc);
     if (o2) o2.addEventListener("mouseleave", clearOptDesc);
     if (o3) o3.addEventListener("mouseleave", clearOptDesc);
     if (o4) o4.addEventListener("mouseleave", clearOptDesc);
+    if (o5) o5.addEventListener("mouseleave", clearOptDesc);
+    if (o6) o6.addEventListener("mouseleave", clearOptDesc);
     
 });
 

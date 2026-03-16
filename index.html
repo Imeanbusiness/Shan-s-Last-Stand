@@ -63,6 +63,15 @@
   </div>
   -->
   <p id = "FPSCounter">FPS: 0</p>
+  <div class="PlayerProfile" id = "PlayerProfile" style="display:none;" >
+    <img src="Assets/Images/Player.png" id = "profilePicture">
+    <div class = "PlayerStatArea">
+      <h3 id = "PlayerName" class = "profileStat">Player</h3> 
+      <p id = "PlayerXP" class = "profileStat">XP: 0 / 5k</p>
+      <p id = "PlayerTitle" class = "profileStat">NOOB</p>
+    </div>
+    <h2 id = "PlayerLevel">1</h2>
+  </div>
   <div id="mainMenu" style="display:none;">
     <div class="menuContent">
       <h1 class = "title">Shanvanth's Last Stand</h1>
@@ -96,24 +105,83 @@
         <button id="options2">SFX: ON</button>
         <button id="options3">Show High Score: ON</button>
         <button id="options4">FPS Cap: 60</button>
+        <button id="options5">Change Name</button>
+        <button id="options6">Change Profile Icon</button>
       </div>
       <button id="backToMain3">Back</button>
+    </div>
+  </div>
+  <div id="pfpMenu" style = "display:none;" class = "realMenu">
+    <div class="menuContent">
+      
+      <h1 class = "title">Shanvanth's Last Stand</h1>
+      <h3>Select a Profile Picture</h3>
+        <div id="pfpSelect" class = "selectMenu"> 
+          <div id = "PFP1" class = "selectItem">
+            <img src = "Assets/Images/Player.png" class = "pfpImage">
+            <p class = "pfpText">Shanvanth</p>
+          </div>
+          <div id = "PFP2" class = "selectItem">
+            <img src = "Assets/Images/Dom.png" class = "pfpImage">
+            <p class = "pfpText">Dominic</p>
+          </div>
+          <div id = "PFP3" class = "selectItem">
+            <img src = "Assets/Images/Zuk.png" class = "pfpImage">
+            <p class = "pfpText">Zuk</p>
+          </div>
+          <div id = "PFP4" class = "selectItem">
+            <img src = "Assets/Images/Cheng.png" class = "pfpImage">
+            <p class = "pfpText">Cheng Feng</p>
+          </div>
+          <div id = "PFP5" class = "selectItem">
+            <img src = "Assets/Images/Mason.png" class = "pfpImage">
+            <p class = "pfpText">Mason</p>
+          </div>
+        </div>
+        <button id="backToMain4">Back</button>
     </div>
   </div>
   <div id="mapMenu" style="display:none;">
     <div id="mapDesc"></div>
     <div class="menuContent">
       <h1 class = "title">Shanvanth's Last Stand</h1>
-      <h3>Select Map</h3>
+      <h3>Select Gamemode</h3>
       <div class="difficultyButtons">
         <button id="map0">Campaign</button>
-        <button id="map1">Calculus Classroom</button>
-        <button id="map2">Robotics Room</button>
-        <button id="map3">English Classroom</button>
-        <button id="map4">Physics Classroom</button>
-        <button id="map5">Pysch Classroom</button>
+        <button id="survivalButton">Wave Survival</button>
       </div>
       <button id="backToMain2">Back</button>
+    </div>
+  </div>
+  <div id = "survivalMenu" style = "display:none" class = "realMenu">
+    <div id="survivalDesc"></div>
+    <div class="menuContent">
+      <h1 class = "title">Shanvanth's Last Stand</h1>
+      <h3>Select Map</h3>
+      <div class="selectMenu">
+        <div id = "map1" class = "selectItem">
+          <img src ="Assets/Images/m1Image.png" class = "mapImage">
+          <p class = "survivalText">Calculus Room</p>
+        </div>
+        <div id = "map2" class = "selectItem">
+          <img src ="Assets/Images/m2Image.png" class = "mapImage">
+          <p class = "survivalText">Robotics Room</p>
+        </div>
+        <div id = "map3" class = "selectItem">
+          <img src ="Assets/Images/m3Image.png" class = "mapImage">
+          <p class = "survivalText">English Room</p>
+        </div>
+        <div id = "map4" class = "selectItem">
+          <img src ="Assets/Images/m4Image.png" class = "mapImage">
+          <p class = "survivalText">Physics Room</p>
+        </div>
+        <div id = "map5" class = "selectItem">
+          <img src ="Assets/Images/m5Image.png" class = "mapImage">
+          <p class = "survivalText">Pysch Room</p>
+        </div>
+        
+      </div>
+      <button id="backToMain5">Back</button>
     </div>
   </div>
   <div id="gameArea" style="display:none;">
@@ -166,6 +234,7 @@
             <h2 id = "dmTitle">Game Over</h2>
             <p id="deathStats"></p>
             <p id="highScoreStats"></p>
+            <p id="XPStats"></p>
             <button id="restartButton">Return to Menu</button>
         </div>
     </div>
